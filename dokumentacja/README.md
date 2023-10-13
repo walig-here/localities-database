@@ -1,0 +1,1 @@
+Folder z wersjami finalnymi dokumentów w formacie .pdf

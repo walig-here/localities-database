@@ -1,0 +1,1 @@
+Folder z plikami ostatniego etapu projektu zakładającego przeprowadzenie prezentacji multimedialnej

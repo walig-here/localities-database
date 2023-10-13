@@ -1,0 +1,1 @@
+Folder zawierający pliki niezbędne do implementacji bazy danych

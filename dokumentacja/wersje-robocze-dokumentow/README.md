@@ -1,0 +1,1 @@
+Folder z wersjami roboczymi dokumentów w formacie .docx

@@ -1,0 +1,1 @@
+Folder zawierający pliki aplikacji dostępowej

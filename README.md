@@ -3,6 +3,7 @@ Repozytorium zawiera materiały z projektu na kurs Bazy Danych 2 z Politechniki 
 
 ## Przydatne linki
 * Wytyczne projektowe: http://roman.ptak.staff.iiar.pwr.wroc.pl/BD_projekt_wytyczne_v3_2.pdf 
+* Slajdy z wykładu: https://drive.google.com/drive/folders/1vSrnOFch_-IFo2I0gcLNuVJf2tr_Bsfs
 
 ## Etapy projektu
 Praca nad projektem została podzielona na kolejne etapy, kótre dodatkowo opatrzone są dedykowaną dokumentacją.

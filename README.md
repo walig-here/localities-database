@@ -27,3 +27,5 @@ Zaimplementowanie za pomocą języka Java desktopowej aplikacji dostępowej, bę
 
 ### Etap 5 - Prezentacja i zakończenie projektu ( do 26.01.2023)
 Zakończenie prac nad projektem. Przeprowadzenie prezentacji multimedialnej i oddanie pełnej dokumentacji.
+
+:>

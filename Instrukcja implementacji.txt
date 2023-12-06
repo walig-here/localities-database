@@ -1,0 +1,39 @@
+==================================================================================================================================================
+STWORZENIE BAZY
+==================================================================================================================================================
+1.	Pobrać serwer MariaDB (wersja 10.11.6) na swój komputer z tej strony: 
+	https://mariadb.org/download/?t=mariadb&p=mariadb&r=10.11.6&os=windows&cpu=x86_64&pkg=msi&m=vpsFree.
+
+2. 	Zainstalować pobrany serwer zgodnie z poradnikiem: 
+	https://www.youtube.com/watch?v=-ARMty_N0RU&ab_channel=JavaCodeJunkie
+
+3. 	Połączyć się z zainstalowanym serwerem bazodanowym poprzez program HeidiSQL tak jak na poradniku pod linkiem: 
+	https://youtu.be/8rC_FsQX7xo?t=569
+
+4. 	Sklonować repozytorium z githuba. Powinny tam znajdować się wszytskie potrzebne skrypty. Repo pod linkiem: 
+	https://github.com/walig-here/bazy-danych-projekt
+
+5. 	Po połączeniu z serwerem z górnego menu w HeidiSQL wybrać opcję "Plik->Uruchom SQL z pliku". W oknie nawigacyjnym wskazać plik 
+	"stowrzenie-bazy-wersja-1.sql". Znajduje się on w sklonowanym repozytorium w folderze: "baza-danych/skrypty/skrypty-tworzące". 
+	Wygeneruje on na waszym serwerze bazę danych "projekt_bd". Powinna ona pojawić się na liście baz danych po lewej stronie okna z HeidiSQL.
+
+
+==================================================================================================================================================
+WPROWADZANIE ZMIAN DO BAZY
+==================================================================================================================================================
+1. 	W HeidiSQL wybierzcie z górnego menu opcję "Plik->Załaduj plik SQL". Wówczas otworzy się okno nawigacji. W sklonowanym z githuba repo 
+	znajduje się folder ze skryptami: "baza-danych/skrypty/skrypty-tworzące". Zamieszczone są w nim foldery, które przechowują skrypty 
+	definiujące poszczególne elementy bazy danych (tabele, widoki, wyzwalacze, model bezpieczeństwa, procedury). Należy wejść w folder zawierający 
+	te elementy, które macie modyfikować, a następnie wybrać odpowiedni plik ze skryptami. W ten sposób ten plik powinien załatować się do 
+	HeidiSQL, gdzie można go swobodnie edytować.
+
+2.	Odnajdźcie blok tworzący element, którym macie się zająć, a następnie w miejsce, gdzie znajduje komentarz "-- uzupełnienić" wprowadźcie
+	swój kod implementacją elementu.
+	
+3. 	Po napisaniu kodu spróbujcie go wykonać klikając opcję "Wykonaj SQL" na panelu z narzędziami aplikacji HeidiSQL (skrót klawiszowy F9).
+	Jeżeli kod jest poprawny składniowo, to wszystko powinno pójść gładko i wasze zmiany zostąną wprowadzone do bazy. W wypadku wystąpienia 
+	błędów wyświetlą się one na konsoli w dolnej częście ekranu.
+
+4. 	Jeżeli wprowadziliście już w pliku se skryptem wszystkie zmiany to można go zapisać i zamknąć. Po zapisaniu skryptu spushujcie waszą pracę
+	do repozytorium na githubie. W wiadomości dołączonej do commita dodajcie informację jakie elementy zotały przez was zmienione (np. zaimplementowano 
+	procedury X, Y, Z). Ułatwi to śledzenie zmian dla reszty grupy.

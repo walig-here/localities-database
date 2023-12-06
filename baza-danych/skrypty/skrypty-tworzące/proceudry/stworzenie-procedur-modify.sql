@@ -1,6 +1,6 @@
 -- modify_locality
 DELIMITER //
-CREATE PROCEDURE modify_locality (
+CREATE OR REPLACE PROCEDURE modify_locality (
 	IN locality_id INT(10),
 	IN locality_name VARCHAR(50),
 	IN locality_desc VARCHAR(1000),
@@ -16,7 +16,7 @@ DELIMITER ;
 
 -- modify_attraction
 DELIMITER //
-CREATE PROCEDURE modify_attraction (
+CREATE OR REPLACE PROCEDURE modify_attraction (
 	IN attraction_id INT(10),
 	IN attraction_name VARCHAR(50),
 	IN attraction_desc VARCHAR(1000)
@@ -28,7 +28,7 @@ DELIMITER ;
 
 -- modify_user_role
 DELIMITER //
-CREATE PROCEDURE modify_user_role (
+CREATE OR REPLACE PROCEDURE modify_user_role (
 	IN login VARCHAR(30),
 	IN user_role VARCHAR(30)
 ) BEGIN
@@ -39,7 +39,7 @@ DELIMITER ;
 
 -- modify_figure_caption
 DELIMITER //
-CREATE PROCEDURE modify_figure_caption (
+CREATE OR REPLACE OR REPLACE PROCEDURE modify_figure_caption (
 	IN figure_id INT(10),
 	IN attraction_id INT(10),
 	IN caption VARCHAR(255)

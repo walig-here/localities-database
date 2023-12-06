@@ -1,6 +1,6 @@
 -- del_locality
 DELIMITER //
-CREATE PROCEDURE del_locality (
+CREATE OR REPLACE PROCEDURE del_locality (
 	IN locality_id INT(10)
 ) BEGIN
 	-- uzupełnić
@@ -10,7 +10,7 @@ DELIMITER ;
 
 -- del_locality_from_fav_list
 DELIMITER //
-CREATE PROCEDURE del_locality_from_fav_list (
+CREATE OR REPLACE PROCEDURE del_locality_from_fav_list (
 	IN locality_id INT(10)
 ) BEGIN
 	-- uzupełnić
@@ -20,7 +20,7 @@ DELIMITER ;
 
 -- del_user
 DELIMITER //
-CREATE PROCEDURE del_user (
+CREATE OR REPLACE PROCEDURE del_user (
 	IN user_login VARCHAR(30)
 ) BEGIN
 	-- Usunięcie użytkownika z serwera bazodanowego
@@ -37,7 +37,7 @@ DELIMITER ;
 
 -- del_attraction
 DELIMITER //
-CREATE PROCEDURE del_attraction (
+CREATE OR REPLACE PROCEDURE del_attraction (
 	IN attraction_id INT(10)
 ) BEGIN
 	-- uzupełnić

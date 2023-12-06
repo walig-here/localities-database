@@ -1,6 +1,6 @@
 -- add_new_locality
 DELIMITER //
-CREATE PROCEDURE add_new_locality (
+CREATE OR REPLACE PROCEDURE add_new_locality (
 	IN locality_name VARCHAR(30),
 	IN locality_desc VARCHAR(1000),
 	IN pop INT(10),
@@ -15,7 +15,7 @@ DELIMITER ;
 
 -- add_new_attraction
 DELIMITER //
-CREATE PROCEDURE add_new_attraction (
+CREATE OR REPLACE PROCEDURE add_new_attraction (
 	IN attraction_name VARCHAR(30),
 	IN attraction_desc VARCHAR(1000),
 	IN locality_id INT(10),
@@ -30,7 +30,7 @@ DELIMITER ;
 
 -- add_locality_to_fav_list
 DELIMITER //
-CREATE PROCEDURE add_locality_to_fav_list (
+CREATE OR REPLACE PROCEDURE add_locality_to_fav_list (
 	IN locality_id INT(10),
 	IN adnotation VARCHAR(1000)
 ) BEGIN
@@ -41,7 +41,7 @@ DELIMITER ;
 
 -- register_user
 DELIMITER //
-CREATE PROCEDURE register_user (
+CREATE OR REPLACE PROCEDURE register_user (
 	IN	user_login  VARCHAR(30),
 	IN user_password VARCHAR(48)
 ) BEGIN

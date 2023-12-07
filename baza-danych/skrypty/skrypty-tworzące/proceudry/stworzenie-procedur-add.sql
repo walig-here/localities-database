@@ -45,26 +45,39 @@ CREATE OR REPLACE PROCEDURE register_user (
 	IN	user_login  VARCHAR(30),
 	IN user_password VARCHAR(48)
 ) BEGIN
+	
+	-- Pierwsze konto w systemie otrzymuje role administratora merytorycznego
+	DECLARE user_amount INT;
+	DECLARE user_role VARCHAR(30);
+	SELECT COUNT(*) INTO user_amount FROM users;
+	
 	-- Dodanie nowego konta do serwera bazodanowego
 	set @sql = concat("CREATE USER '",`user_login`,"'@'%","' IDENTIFIED BY '",`user_password`,"'");
    PREPARE stmt1 FROM @sql;
    EXECUTE stmt1;
    DEALLOCATE PREPARE stmt1;
 
-   set @sql = concat("GRANT viewer TO '",`user_login`,"' ");
+	-- Ustalenie roli użytkownika
+	IF user_amount = 0 THEN
+		SET user_role = 'technical_administrator';
+	ELSE
+		SET user_role = 'viewer';
+	END IF;
+	
+	set @sql = concat("GRANT ",`user_role`," TO ",`user_login`);
    PREPARE stmt2 FROM @sql;
    EXECUTE stmt2;
    DEALLOCATE PREPARE stmt2;
    FLUSH PRIVILEGES;
    
-   set @sql = concat("SET DEFAULT ROLE viewer FOR '",`user_login`,"' ");
+   set @sql = concat("SET DEFAULT ROLE ",`user_role`," FOR ",`user_login`);
    PREPARE stmt2 FROM @sql;
    EXECUTE stmt2;
    DEALLOCATE PREPARE stmt2;
    FLUSH PRIVILEGES;
 	
 	-- Dodanie nowego konta do bazy danych
-	INSERT INTO users (users.login,users.`password`,users.role) VALUES (user_login, user_password, 'viewer');
+	INSERT INTO users (users.login,users.`password`,users.role) VALUES (user_login, user_password, user_role);
 END;
 // 
 DELIMITER ;

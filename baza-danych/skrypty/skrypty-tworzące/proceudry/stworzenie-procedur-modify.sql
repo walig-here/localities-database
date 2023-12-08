@@ -5,6 +5,7 @@ CREATE OR REPLACE PROCEDURE modify_locality (
 	IN locality_name VARCHAR(50),
 	IN locality_desc VARCHAR(1000),
 	IN pop INT(10),
+	IN locality_type INT(10),
 	IN municipality_id INT(10),
 	IN latititude REAL,
 	IN longitude REAL
@@ -27,6 +28,16 @@ CREATE OR REPLACE PROCEDURE modify_locality (
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania w tym województwie!';	
 	END IF;
 	
+	-- Sprawdzenie, czy gmina podana przez użytkownika istnieje
+	IF municipality_id IS NOT NULL AND NOT EXISTS (SELECT * FROM administrative_units AS au WHERE au.administrative_unit_id = municipality_id AND au.`type` = 'gmina') THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Podana gmina nie istnieje!';	
+	END IF;
+	
+	-- Sprawdzenie, czy typ miejscowości podany przez użytkownika istnieje
+	IF locality_type IS NOT NULL AND NOT EXISTS (SELECT * FROM locality_types AS lt WHERE lt.locality_type_id = locality_type) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Podany typ miejscowości nie istnieje!';	
+	END IF;
+	
 	-- Aktualizacja danych miejscowości
     UPDATE Localities
     SET
@@ -35,11 +46,9 @@ CREATE OR REPLACE PROCEDURE modify_locality (
         population = COALESCE(pop, Localities.population),
         municipality_id = COALESCE(municipality_id, Localities.municipality_id),
         latitude = COALESCE(lat, Localities.latitude),
-        longitude = COALESCE(lon, Localities.longitude)
+        longitude = COALESCE(lon, Localities.longitude),
+        locality_type_id = COALESCE(locality_type, localities.locality_type_id)
     WHERE locality_id = Localities.locality_id;
-    
-    -- Aktualizacja typu miejscowości na podstawie populacji
-    -- TO DO
 	
 END;
 // 

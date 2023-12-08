@@ -16,7 +16,7 @@ CREATE TABLE Attraction_Types (
 
 -- Tabela Administrative_units ---------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE TABLE Administrative_units (
-  administrative_unit_id       int(10) NOT NULL AUTO_INCREMENT, 
+  administrative_unit_id       int(10) NOT NULL, 
   name                         varchar(50) NOT NULL, 
   type                         varchar(30) NOT NULL, 
   superior_administrative_unit int(10), 

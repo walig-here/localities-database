@@ -40,11 +40,11 @@ CREATE OR REPLACE PROCEDURE modify_locality (
     UPDATE Localities
     SET
         name = COALESCE(`name`, Localities.`name`),
-        description = COALESCE(`desc`, Localities.`description`),
+        description = COALESCE(`locality_desc`, Localities.`description`),
         population = COALESCE(pop, Localities.population),
         municipality_id = COALESCE(municipality_id, Localities.municipality_id),
-        latitude = COALESCE(lat, Localities.latitude),
-        longitude = COALESCE(lon, Localities.longitude),
+        latitude = COALESCE(latititude, Localities.latitude),
+        longitude = COALESCE(longitude, Localities.longitude),
         locality_type_id = COALESCE(locality_type, localities.locality_type_id)
     WHERE locality_id = Localities.locality_id;
 	
@@ -137,12 +137,32 @@ DELIMITER ;
 
 -- modify_figure_caption
 DELIMITER //
-CREATE OR REPLACE OR REPLACE PROCEDURE modify_figure_caption (
+CREATE OR REPLACE PROCEDURE modify_figure_caption (
 	IN figure_id INT(10),
 	IN attraction_id INT(10),
 	IN caption VARCHAR(255)
 ) BEGIN
-	-- uzupełnić
+	
+	-- Sprawdzenie, czy użytkownik to administrator merytoryczny
+	IF NOT EXISTS (SELECT * FROM user_account WHERE my_role = 'meritorical_administrator') THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania danych!';
+	END IF;
+	
+	-- Sprawdzenie czy istnieje powiązanie między wskazaną atrakcją a wskazanym obrazkiem
+	IF NOT EXISTS (SELECT * FROM figures_containing_attractions fca WHERE fca.figure_id = figure_id AND fca.attraction_id = attraction_id) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Wskazany obrazek nie jest przypisany do wskazanej atrakcji!';
+	END IF;
+	
+	-- Sprawdzenie czy atrakcja, którą opisuje ten obrazek może być zarządzana przez użytkownika wywołującego procedurę
+	IF NOT EXISTS (SELECT * FROM managed_attractions AS ma WHERE ma.attraction_id = attraction_id) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania tej atrakcji!';
+	END IF;
+	
+	-- Wprowadzenie zmian
+	UPDATE figures_containing_attractions AS fca
+	SET fca.caption = COALESCE(caption, fca.caption)
+	WHERE fca.figure_id = figure_id AND fca.attraction_id = attraction_id;
+	
 END;
 // 
 DELIMITER ;

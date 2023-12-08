@@ -53,7 +53,7 @@ CREATE TABLE Localities (
   locality_id      int(5) NOT NULL AUTO_INCREMENT, 
   name             varchar(50) NOT NULL, 
   DESCRIPTION  	 varchar(1000), 
-  population       int(10) UNSIGNED NOT NULL, 
+  population       int(10) UNSIGNED, 
   municipality_id  int(10) NOT NULL, 
   latitude         real, 
   longitude        real, 

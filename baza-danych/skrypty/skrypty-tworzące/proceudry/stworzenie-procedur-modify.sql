@@ -10,17 +10,15 @@ CREATE OR REPLACE PROCEDURE modify_locality (
 	IN latititude REAL,
 	IN longitude REAL
 ) BEGIN	
-	-- Sprawdzenie, czy miejscowość znajdje się w bazie danych
-	SELECT *
-	FROM localities
-	WHERE projekt_bd.localities.locality_id = locality_id;
-	IF NOT EXISTS (SELECT * FROM localities WHERE locality_id = locality_id) THEN
-		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Wskazana miejscowość nie znajduje się w bazie!';
-	END IF;
 	
 	-- Sprawdzenie, czy użytkownik to administrator merytoryczny
 	IF NOT EXISTS (SELECT * FROM user_account WHERE my_role = 'meritorical_administrator') THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania danych!';
+	END IF;
+	
+	-- Sprawdzenie, czy miejscowość znajdje się w bazie danych
+	IF NOT EXISTS (SELECT * FROM localities WHERE localities.locality_id = locality_id) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Wskazana miejscowość nie znajduje się w bazie!';
 	END IF;
 	
 	-- Sprawdzenie, czy miejscowość znajduje się w województwie zarządzanym przez użytkownika
@@ -61,7 +59,28 @@ CREATE OR REPLACE PROCEDURE modify_attraction (
 	IN attraction_name VARCHAR(50),
 	IN attraction_desc VARCHAR(1000)
 ) BEGIN
-	-- uzupełnić
+	
+	-- Sprawdzenie, czy użytkownik to administrator merytoryczny
+	IF NOT EXISTS (SELECT * FROM user_account WHERE my_role = 'meritorical_administrator') THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania danych!';
+	END IF;
+	
+	-- Sprawdzenie, czy atrakcja znajdje się w bazie danych
+	IF NOT EXISTS (SELECT * FROM attractions AS a WHERE a.attraction_id = attraction_id) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Wskazana atrakcja nie znajduje się w bazie!';
+	END IF;
+	
+	-- Sprawdzenie, czy atrakcja znajduje się w województwie zarządzanym przez użytkownika
+	IF NOT EXISTS (SELECT * FROM managed_attractions AS ma WHERE ma.attraction_id = attraction_id) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania w tym województwie!';	
+	END IF;
+	
+	-- Aktualizacja danych miejscowości
+    UPDATE attractions AS a
+    SET
+        name = COALESCE(attraction_name, a.`name`),
+        description = COALESCE(attraction_desc, a.`description`)
+    WHERE attraction_id = a.attraction_id;
 END;
 // 
 DELIMITER ;
@@ -72,7 +91,46 @@ CREATE OR REPLACE PROCEDURE modify_user_role (
 	IN login VARCHAR(30),
 	IN user_role VARCHAR(30)
 ) BEGIN
-	-- uzupełnić
+	
+	-- Sprawdzenie czy użytkownik jest administratorem merytorycznym lub użytkownikiem root
+	IF SESSION_USER() LIKE 'root@%' THEN
+		SELECT 'Wymuszono zmianę roli użytkownika' AS Message;
+	ELSEIF NOT EXISTS (SELECT * FROM user_account WHERE my_role = 'technical_administrator') THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie masz uprawnień do zmiany ról użytkowników!';		
+	END IF;
+	
+	-- Sprawdzenie, czy w bazie znajduje się użytkownik o podanym loginie
+	IF NOT EXISTS (SELECT * FROM users AS u WHERE u.login = login) THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Wskazany użytkownik nie znajduje się w bazie danych!';			
+	END IF;
+	
+	-- Sprawdzenie czy zadana rola nie przyjęła jedną z 3 dozwolonych wartości
+	IF user_role != 'viewer' AND user_role != 'technical_administrator' AND user_role != 'meritorical_administrator' THEN
+		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Podana rola jest niepoprawna!';
+	END IF;
+	
+	-- Ustalenie roli na serwerze bazodanowym i odebranie poprzedniej roli
+	SET @sql = concat("REVOKE ",(SELECT `role` FROM users AS u WHERE u.login = login)," FROM ",`login`);
+	PREPARE stmt2 FROM @sql;
+	EXECUTE stmt2;
+	DEALLOCATE PREPARE stmt2;
+	
+	SET @sql = concat("GRANT ",`user_role`," TO ",`login`);
+	PREPARE stmt2 FROM @sql;
+	EXECUTE stmt2;
+	DEALLOCATE PREPARE stmt2;
+	
+	SET @sql = concat("SET DEFAULT ROLE ",`user_role`," FOR ",`login`);
+	PREPARE stmt2 FROM @SQL;
+	EXECUTE stmt2;
+	DEALLOCATE PREPARE stmt2;
+	FLUSH PRIVILEGES;
+	
+	-- Ustalenie roli w bazie danych
+	UPDATE users AS u
+	SET u.`role` = user_role
+	WHERE u.login = login;
+	
 END;
 // 
 DELIMITER ;

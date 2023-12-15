@@ -9,7 +9,7 @@ CREATE OR REPLACE PROCEDURE del_locality (
         LEAVE PROCEDURE;
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM Localities WHERE id = locality_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM localities WHERE id = locality_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Miejscowosc nie istnieje w bazie danych';
         LEAVE PROCEDURE;
@@ -18,7 +18,7 @@ CREATE OR REPLACE PROCEDURE del_locality (
     -- Sprawdzenie, czy miejscowość jest zlokalizowana w województwie zarządzanym przez użytkownika
     IF NOT EXISTS (
         SELECT 1 
-        FROM Voivodships_Administrated_By_Users v
+        FROM voivodships_administrated_by_users v
         INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
         WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
     ) THEN
@@ -28,7 +28,7 @@ CREATE OR REPLACE PROCEDURE del_locality (
     END IF;
 
     -- Usunięcie miejscowości
-    DELETE FROM Localities WHERE id = locality_id;
+    DELETE FROM localities WHERE id = locality_id;
 END;
 // 
 DELIMITER ;

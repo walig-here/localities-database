@@ -110,7 +110,35 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
 	IN attraction_id INT(10),
 	IN caption VARCHAR(255)
 ) BEGIN
-	-- uzupełnić
+	IF figure_id IS NULL OR attraction_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna przypisac ilustracji: figure_id lub attraction_id są NULL';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy figure_id i attraction_id znajdują się w bazie danych
+    IF NOT EXISTS (SELECT 1 FROM Figures WHERE id = figure_id) OR 
+       NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Ilustracja lub atrakcja nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Voivodships_Administrated_By_Users v
+        INNER JOIN Attractions a ON a.voivodship_id = v.voivodship_id
+        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID()
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Atrakcja nie znajduje się w województwie zarządzanym przez użytkownika';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Przypisanie ilustracji do atrakcji
+    INSERT INTO Figures_Containing_Attractions (figure_id, attraction_id, caption)
+    VALUES (figure_id, attraction_id, caption);
 END;
 // 
 DELIMITER ;

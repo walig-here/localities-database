@@ -5,7 +5,36 @@ CREATE OR REPLACE PROCEDURE assign_permission_to_user (
 	IN login VARCHAR(30),
 	IN permission_id INT(10)
 ) BEGIN
-	-- uzupełnić
+	IF voivodship_id IS NULL OR login IS NULL OR permission_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna przypisac uprawnien: jeden z parametrow jest NULL';
+        LEAVE PROCEDURE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM Users WHERE login = login AND is_metrytoryczny_admin = 1) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Uzytkownik nie posiada roli administratora metrytorycznego';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy parametry znajdują się w bazie danych
+    IF NOT EXISTS (SELECT 1 FROM Voivodships WHERE id = voivodship_id) OR 
+       NOT EXISTS (SELECT 1 FROM Permissions WHERE id = permission_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Wojewodztwo lub uprawnienie nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Nadanie uprawnienia
+    INSERT INTO Users_Permissions_In_Voivodships (user_login, voivodship_id, permission_id)
+    VALUES (login, voivodship_id, permission_id);
+
+    -- Aktualizacja tabeli, jeśli to konieczne
+    IF NOT EXISTS (SELECT 1 FROM Voivodships_Administrated_By_Users WHERE user_login = login AND voivodship_id = voivodship_id) THEN
+        INSERT INTO Voivodships_Administrated_By_Users (user_login, voivodship_id)
+        VALUES (login, voivodship_id);
+    END IF;
+
 END;
 // 
 DELIMITER ;

@@ -11,26 +11,26 @@ CREATE OR REPLACE PROCEDURE assign_permission_to_user (
         LEAVE PROCEDURE;
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM Users WHERE login = login AND is_metrytoryczny_admin = 1) THEN
+    IF NOT EXISTS (SELECT 1 FROM users WHERE login = login AND is_metrytoryczny_admin = 1) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Uzytkownik nie posiada roli administratora metrytorycznego';
         LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy parametry znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM Voivodships WHERE id = voivodship_id) OR 
-       NOT EXISTS (SELECT 1 FROM Permissions WHERE id = permission_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM voivodships WHERE id = voivodship_id) OR 
+       NOT EXISTS (SELECT 1 FROM permissions WHERE id = permission_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Wojewodztwo lub uprawnienie nie istnieje w bazie danych';
         LEAVE PROCEDURE;
     END IF;
 
     -- Nadanie uprawnienia
-    INSERT INTO Users_Permissions_In_Voivodships (user_login, voivodship_id, permission_id)
+    INSERT INTO users_permissions_in_voivodships (user_login, voivodship_id, permission_id)
     VALUES (login, voivodship_id, permission_id);
 
     -- Aktualizacja tabeli, jeśli to konieczne
-    IF NOT EXISTS (SELECT 1 FROM Voivodships_Administrated_By_Users WHERE user_login = login AND voivodship_id = voivodship_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM voivodships_administrated_by_users WHERE user_login = login AND voivodship_id = voivodship_id) THEN
         INSERT INTO Voivodships_Administrated_By_Users (user_login, voivodship_id)
         VALUES (login, voivodship_id);
     END IF;
@@ -54,8 +54,8 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
         LEAVE PROCEDURE;
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) OR 
-       NOT EXISTS (SELECT 1 FROM Localities WHERE id = locality_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) OR 
+       NOT EXISTS (SELECT 1 FROM localities WHERE id = locality_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja lub miejscowosc nie istnieje w bazie danych';
         LEAVE PROCEDURE;
@@ -64,7 +64,7 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
     -- Sprawdzenie, czy miejscowość należy do województwa zarządzanego przez użytkownika
     IF NOT EXISTS (
         SELECT 1 
-        FROM Voivodships_Administrated_By_Users v
+        FROM voivodships_administrated_by_users v
         INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
         WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
     ) THEN
@@ -76,7 +76,7 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
     -- Sprawdzenie, czy lokalizacja istnieje w bazie, jeśli nie, to dodanie jej
     IF NOT EXISTS (
         SELECT 1 
-        FROM Locations 
+        FROM locations 
         WHERE locality_id = locality_id AND street = street 
             AND building_number = building_number AND flat_number = flat_number
     ) THEN
@@ -105,8 +105,8 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     END IF;
 
     -- Sprawdzenie, czy type_id i attraction_id znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM Types WHERE id = type_id) OR 
-       NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM types WHERE id = type_id) OR 
+       NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Typ atrakcji lub atrakcja nie istnieje w bazie danych';
         LEAVE PROCEDURE;
@@ -115,8 +115,8 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     -- Sprawdzenie czy atrakcja jest zlokalizowana w województwie zarządzanym przez administratora i czy ma on uprawnienia
     IF NOT EXISTS (
         SELECT 1 
-        FROM Voivodships_Administrated_By_Users v
-        INNER JOIN Attractions a ON a.voivodship_id = v.voivodship_id
+        FROM voivodships_administrated_by_users v
+        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
         WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID() AND v.has_attraction_management_permission = 1
     ) THEN
         SIGNAL SQLSTATE '45000'
@@ -125,7 +125,7 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     END IF;
 
     -- Przypisanie typu atrakcji do atrakcji
-    INSERT INTO Types_Assigned_To_Attractions (type_id, attraction_id)
+    INSERT INTO types_assigned_to_attractions (type_id, attraction_id)
     VALUES (type_id, attraction_id);
 END;
 // 
@@ -145,8 +145,8 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     END IF;
 
     -- Sprawdzenie, czy figure_id i attraction_id znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM Figures WHERE id = figure_id) OR 
-       NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM figures WHERE id = figure_id) OR 
+       NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Ilustracja lub atrakcja nie istnieje w bazie danych';
         LEAVE PROCEDURE;
@@ -155,8 +155,8 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
     IF NOT EXISTS (
         SELECT 1 
-        FROM Voivodships_Administrated_By_Users v
-        INNER JOIN Attractions a ON a.voivodship_id = v.voivodship_id
+        FROM voivodships_administrated_by_users v
+        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
         WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID()
     ) THEN
         SIGNAL SQLSTATE '45000'
@@ -165,7 +165,7 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     END IF;
 
     -- Przypisanie ilustracji do atrakcji
-    INSERT INTO Figures_Containing_Attractions (figure_id, attraction_id, caption)
+    INSERT INTO figures_containing_attractions (figure_id, attraction_id, caption)
     VALUES (figure_id, attraction_id, caption);
 END;
 // 

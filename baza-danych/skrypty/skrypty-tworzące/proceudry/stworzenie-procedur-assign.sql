@@ -48,7 +48,46 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
 	IN building_number VARCHAR(50),
 	IN flat_number VARCHAR(50)
 ) BEGIN
-	-- uzupełnić
+	IF attraction_id IS NULL OR locality_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna przypisac atrakcji: attraction_id lub locality_id sa NULL';
+        LEAVE PROCEDURE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) OR 
+       NOT EXISTS (SELECT 1 FROM Localities WHERE id = locality_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Atrakcja lub miejscowosc nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy miejscowość należy do województwa zarządzanego przez użytkownika
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Voivodships_Administrated_By_Users v
+        INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
+        WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Miejscowosc nie nalezy do wojewodztwa zarzadzanego przez uzytkownika';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy lokalizacja istnieje w bazie, jeśli nie, to dodanie jej
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Locations 
+        WHERE locality_id = locality_id AND street = street 
+            AND building_number = building_number AND flat_number = flat_number
+    ) THEN
+        INSERT INTO Locations (locality_id, street, building_number, flat_number)
+        VALUES (locality_id, street, building_number, flat_number);
+    END IF;
+
+    -- Przypisanie atrakcji do lokalizacji
+    INSERT INTO Attractions_locations (attraction_id, locality_id, street, building_number, flat_number)
+    VALUES (attraction_id, locality_id, street, building_number, flat_number);
+
 END;
 // 
 DELIMITER ;

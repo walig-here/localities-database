@@ -98,7 +98,35 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
 	IN type_id INT(10),
 	IN attraction_id INT(10)
 ) BEGIN
-	-- uzupełnić
+    IF type_id IS NULL OR attraction_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna przypisac typu: type_id lub attraction_id sa NULL';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy type_id i attraction_id znajdują się w bazie danych
+    IF NOT EXISTS (SELECT 1 FROM Types WHERE id = type_id) OR 
+       NOT EXISTS (SELECT 1 FROM Attractions WHERE id = attraction_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Typ atrakcji lub atrakcja nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie czy atrakcja jest zlokalizowana w województwie zarządzanym przez administratora i czy ma on uprawnienia
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Voivodships_Administrated_By_Users v
+        INNER JOIN Attractions a ON a.voivodship_id = v.voivodship_id
+        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID() AND v.has_attraction_management_permission = 1
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Uzytkownik nie ma uprawnien do zarzadzania atrakcjami w wojewodztwie, w którym znajduje sie atrakcja';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Przypisanie typu atrakcji do atrakcji
+    INSERT INTO Types_Assigned_To_Attractions (type_id, attraction_id)
+    VALUES (type_id, attraction_id);
 END;
 // 
 DELIMITER ;

@@ -3,7 +3,32 @@ DELIMITER //
 CREATE OR REPLACE PROCEDURE del_locality (
 	IN locality_id INT(10)
 ) BEGIN
-	-- uzupełnić
+	    IF locality_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna usunac miejscowosci: locality_id jest NULL';
+        LEAVE PROCEDURE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM Localities WHERE id = locality_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Miejscowosc nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy miejscowość jest zlokalizowana w województwie zarządzanym przez użytkownika
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM Voivodships_Administrated_By_Users v
+        INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
+        WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Miejscowosc nie znajduje sie w wojewodztwie zarzadzanym przez uzytkownika';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Usunięcie miejscowości
+    DELETE FROM Localities WHERE id = locality_id;
 END;
 // 
 DELIMITER ;

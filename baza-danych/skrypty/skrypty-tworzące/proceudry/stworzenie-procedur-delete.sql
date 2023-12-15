@@ -81,7 +81,32 @@ DELIMITER //
 CREATE OR REPLACE PROCEDURE del_attraction (
 	IN attraction_id INT(10)
 ) BEGIN
-	-- uzupełnić
+	    IF attraction_id IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Nie mozna usunac atrakcji';
+        LEAVE PROCEDURE;
+    END IF;
+
+    IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Atrakcja nie istnieje w bazie danych';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
+    IF NOT EXISTS (
+        SELECT 1 
+        FROM voivodships_administrated_by_users v
+        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
+        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID()
+    ) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Atrakcja nie znajduje sie w wojewodztwie zarzadzanym przez uzytkownika';
+        LEAVE PROCEDURE;
+    END IF;
+
+    -- Usunięcie atrakcji
+    DELETE FROM attractions WHERE id = attraction_id;
 END;
 // 
 DELIMITER ;

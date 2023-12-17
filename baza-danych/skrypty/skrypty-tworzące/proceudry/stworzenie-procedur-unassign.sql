@@ -9,7 +9,7 @@ BEGIN
     DECLARE is_admin INT;
     SELECT COUNT(*) INTO is_admin
     FROM users
-    WHERE login = user_login AND role = 'administrator_merytoryczny';
+    WHERE login = user_login AND `role` = 'meritorical_administrator';
 
     IF is_admin = 0 THEN
         SIGNAL SQLSTATE '45000'

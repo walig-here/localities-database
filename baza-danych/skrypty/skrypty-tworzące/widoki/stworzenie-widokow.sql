@@ -1,5 +1,5 @@
 -- Widok Managed_Attractions -----------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Managed_Attractions AS
+CREATE OR REPLACE VIEW Managed_Attractions AS
 SELECT
 	Attractions.attraction_id,
 	Attractions.name AS attraction_name,
@@ -14,6 +14,7 @@ SELECT
 FROM
 	Users INNER JOIN
 	Voivodships_Administrated_By_Users ON Users.login = Voivodships_Administrated_By_Users.login INNER JOIN
+	users_permissions_in_voivodships AS upv ON upv.voivodship_id = voivodships_administrated_by_users.voivodship_id INNER JOIN
 	Administrative_units AS Voivodship ON Voivodships_Administrated_By_Users.voivodship_id = Voivodship.administrative_unit_id INNER JOIN
 	Administrative_units AS County ON Voivodship.administrative_unit_id = County.superior_administrative_unit INNER JOIN
 	Administrative_units AS Municipality ON County.administrative_unit_id = Municipality.superior_administrative_unit INNER JOIN
@@ -22,10 +23,10 @@ FROM
 	Attractions_locations ON Locations.location_id = Attractions_locations.location_id INNER JOIN
 	Attractions ON Attractions_locations.attraction_id = Attractions.attraction_id
 WHERE
-	SESSION_USER() LIKE CONCAT(users.login,'@','%');
+	SESSION_USER() LIKE CONCAT(users.login,'@','%') AND upv.permission_id = 2;
 
 -- Widok Managed_Localities -----------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Managed_Localities AS
+CREATE OR REPLACE VIEW Managed_Localities AS
 SELECT
 	Localities.locality_id,
 	Localities.name AS locality_name,
@@ -40,16 +41,17 @@ SELECT
 FROM
 	Users INNER JOIN
 	Voivodships_Administrated_By_Users ON Users.login = Voivodships_Administrated_By_Users.login INNER JOIN
+	users_permissions_in_voivodships AS upv ON upv.voivodship_id = voivodships_administrated_by_users.voivodship_id INNER JOIN
 	Administrative_units AS Voivodship ON Voivodships_Administrated_By_Users.voivodship_id = Voivodship.administrative_unit_id INNER JOIN
 	Administrative_units AS County ON Voivodship.administrative_unit_id = County.superior_administrative_unit INNER JOIN
 	Administrative_units AS Municipality ON County.administrative_unit_id = Municipality.superior_administrative_unit INNER JOIN
 	Localities ON Municipality.administrative_unit_id = Localities.municipality_id INNER JOIN
 	Locality_Types ON Localities.locality_type_id = Locality_Types.locality_type_id
 WHERE
-	SESSION_USER() LIKE CONCAT(users.login,'@','%');
+	SESSION_USER() LIKE CONCAT(users.login,'@','%') AND upv.permission_id = 1;
 
 -- Widok User_Favourite_Localities ---------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW User_Favourite_Localities AS
+CREATE OR REPLACE VIEW User_Favourite_Localities AS
 SELECT
 	Localities.locality_id,
 	Localities.name AS locality_name,
@@ -74,7 +76,7 @@ WHERE
 	SESSION_USER() LIKE CONCAT(users.login,'@','%');
 
 -- Widok User_Permissions -----------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW User_Permissions AS
+CREATE OR REPLACE VIEW User_Permissions AS
 SELECT
 	Permissions.permission_id,
 	Permissions.name AS permission_name,
@@ -91,7 +93,7 @@ WHERE
 	SESSION_USER() LIKE CONCAT(users.login,'@','%');
 
 -- Widok Full_Localities_Data -------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Full_Localities_Data AS
+CREATE OR REPLACE VIEW Full_Localities_Data AS
 SELECT
 	Localities.locality_id,
 	Localities.name AS locality_name,
@@ -111,13 +113,14 @@ FROM
 	Administrative_units AS Voivodship ON County.superior_administrative_unit = Voivodship.administrative_unit_id;
 
 -- Widok Locations_of_Attractions ---------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Locations_of_Attractions AS
+CREATE OR REPLACE VIEW Locations_of_Attractions AS
 SELECT
 	Locations.location_id,
 	Voivodship.name AS voivodship_name,
 	County.name AS county_name,
 	Municipality.name AS municipality_name,
 	Localities.name AS locality_name,
+	Localities.locality_id AS locality_id,
 	Locations.street,
 	Locations.building_number,
 	Locations.flat_number,
@@ -134,7 +137,7 @@ FROM
 	Administrative_units AS Voivodship ON County.superior_administrative_unit = Voivodship.administrative_unit_id;
 
 -- Widok Registered_Users -----------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Registered_Users AS
+CREATE OR REPLACE VIEW Registered_Users AS
 SELECT
 	Users.login,
 	Users.role
@@ -142,7 +145,7 @@ FROM
 	users;
 
 -- Widok User_Account ----------------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW User_Account AS
+CREATE OR REPLACE VIEW User_Account AS
 SELECT
 	Users.login AS my_login,
 	Users.role AS my_role
@@ -152,7 +155,7 @@ WHERE
 	SESSION_USER() LIKE CONCAT(users.login,'@','%');
 
 -- Widok Granted_permissions ---------------------------------------------------------------------------------------------------------------------------------------------------
-CREATE VIEW Granted_permissions AS
+CREATE OR REPLACE VIEW Granted_permissions AS
 SELECT
 	Permissions.permission_id,
 	Permissions.name AS permission_name,

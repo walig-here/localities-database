@@ -6,29 +6,25 @@ CREATE OR REPLACE PROCEDURE del_locality (
 	    IF locality_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna usunac miejscowosci: locality_id jest NULL';
-        LEAVE PROCEDURE;
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM localities WHERE id = locality_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM localities AS l WHERE l.locality_id = locality_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Miejscowosc nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy miejscowość jest zlokalizowana w województwie zarządzanym przez użytkownika
     IF NOT EXISTS (
-        SELECT 1 
-        FROM voivodships_administrated_by_users v
-        INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
-        WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
+        SELECT 1  
+        FROM managed_localities AS ml
+        WHERE ml.locality_id = locality_id
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Miejscowosc nie znajduje sie w wojewodztwie zarzadzanym przez uzytkownika';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Usunięcie miejscowości
-    DELETE FROM localities WHERE id = locality_id;
+    DELETE FROM localities WHERE localities.locality_id = locality_id;
 END;
 // 
 DELIMITER ;
@@ -84,13 +80,11 @@ CREATE OR REPLACE PROCEDURE del_attraction (
 	    IF attraction_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna usunac atrakcji';
-        LEAVE PROCEDURE;
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
@@ -102,7 +96,6 @@ CREATE OR REPLACE PROCEDURE del_attraction (
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie znajduje sie w wojewodztwie zarzadzanym przez uzytkownika';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Usunięcie atrakcji

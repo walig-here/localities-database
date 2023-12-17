@@ -8,32 +8,29 @@ CREATE OR REPLACE PROCEDURE assign_permission_to_user (
 	IF voivodship_id IS NULL OR login IS NULL OR permission_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna przypisac uprawnien: jeden z parametrow jest NULL';
-        LEAVE PROCEDURE;
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM users WHERE login = login AND is_metrytoryczny_admin = 1) THEN
+    IF NOT EXISTS (SELECT 1 FROM users WHERE users.login = login AND `role` = 'meritorical_administrator') THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Uzytkownik nie posiada roli administratora metrytorycznego';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy parametry znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM voivodships WHERE id = voivodship_id) OR 
-       NOT EXISTS (SELECT 1 FROM permissions WHERE id = permission_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM administrative_units WHERE administrative_unit_id = voivodship_id) OR 
+       NOT EXISTS (SELECT 1 FROM permissions WHERE permission_id = permission_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Wojewodztwo lub uprawnienie nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
+    END IF;
+    
+    -- Aktualizacja tabeli, jeśli to konieczne
+    IF NOT EXISTS (SELECT 1 FROM voivodships_administrated_by_users AS vau WHERE vau.login = login AND vau.voivodship_id = voivodship_id) THEN
+        INSERT INTO Voivodships_Administrated_By_Users (login, voivodship_id)
+        VALUES (login, voivodship_id);
     END IF;
 
     -- Nadanie uprawnienia
-    INSERT INTO users_permissions_in_voivodships (user_login, voivodship_id, permission_id)
+    INSERT INTO users_permissions_in_voivodships (login, voivodship_id, permission_id)
     VALUES (login, voivodship_id, permission_id);
-
-    -- Aktualizacja tabeli, jeśli to konieczne
-    IF NOT EXISTS (SELECT 1 FROM voivodships_administrated_by_users WHERE user_login = login AND voivodship_id = voivodship_id) THEN
-        INSERT INTO Voivodships_Administrated_By_Users (user_login, voivodship_id)
-        VALUES (login, voivodship_id);
-    END IF;
 
 END;
 // 
@@ -51,14 +48,12 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
 	IF attraction_id IS NULL OR locality_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna przypisac atrakcji: attraction_id lub locality_id sa NULL';
-        LEAVE PROCEDURE;
     END IF;
 
     IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) OR 
        NOT EXISTS (SELECT 1 FROM localities WHERE id = locality_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja lub miejscowosc nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy miejscowość należy do województwa zarządzanego przez użytkownika
@@ -70,7 +65,6 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Miejscowosc nie nalezy do wojewodztwa zarzadzanego przez uzytkownika';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy lokalizacja istnieje w bazie, jeśli nie, to dodanie jej
@@ -101,7 +95,6 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     IF type_id IS NULL OR attraction_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna przypisac typu: type_id lub attraction_id sa NULL';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy type_id i attraction_id znajdują się w bazie danych
@@ -109,7 +102,6 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
        NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Typ atrakcji lub atrakcja nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie czy atrakcja jest zlokalizowana w województwie zarządzanym przez administratora i czy ma on uprawnienia
@@ -121,7 +113,6 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Uzytkownik nie ma uprawnien do zarzadzania atrakcjami w wojewodztwie, w którym znajduje sie atrakcja';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Przypisanie typu atrakcji do atrakcji
@@ -141,7 +132,6 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
 	IF figure_id IS NULL OR attraction_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna przypisac ilustracji: figure_id lub attraction_id są NULL';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy figure_id i attraction_id znajdują się w bazie danych
@@ -149,7 +139,6 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
        NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Ilustracja lub atrakcja nie istnieje w bazie danych';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
@@ -161,7 +150,6 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie znajduje się w województwie zarządzanym przez użytkownika';
-        LEAVE PROCEDURE;
     END IF;
 
     -- Przypisanie ilustracji do atrakcji

@@ -34,7 +34,9 @@ DELIMITER //
 CREATE OR REPLACE PROCEDURE del_locality_from_fav_list (
 	IN locality_id INT(10)
 ) BEGIN
-	-- uzupełnić
+	 IF locality_id IS NOT NULL THEN
+        DELETE FROM favourite_localities WHERE locality_id = locality_id;
+    END IF;
 END;
 // 
 DELIMITER ;

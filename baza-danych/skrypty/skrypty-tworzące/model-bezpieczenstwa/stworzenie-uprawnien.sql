@@ -1,5 +1,5 @@
 -- Rola przeglądającego
-CREATE ROLE viewer;
+CREATE OR REPLACE ROLE viewer;
 	GRANT SELECT ON projekt_bd.full_localities_data TO viewer;
 	GRANT SELECT ON projekt_bd.user_favourite_localities TO viewer;
 	GRANT SELECT ON projekt_bd.user_permissions TO viewer;
@@ -23,12 +23,14 @@ CREATE ROLE viewer;
 FLUSH PRIVILEGES;
 
 -- Rola administratora technicznego
-CREATE ROLE technical_administrator;
+CREATE OR REPLACE ROLE technical_administrator;
 	GRANT SELECT ON projekt_bd.registered_users TO technical_administrator;
 	GRANT SELECT ON projekt_bd.granted_permissions TO technical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.unassign_permission_from_user TO technical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.assign_permission_to_user TO technical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.modify_user_role TO technical_administrator;
+	GRANT EXECUTE ON PROCEDURE projekt_bd.get_voivodships_managed_by_user TO technical_administrator;
+	GRANT EXECUTE ON PROCEDURE projekt_bd.get_user_permissions_in_voivodship TO technical_administrator;
 	
 	GRANT SELECT ON projekt_bd.full_localities_data TO technical_administrator;
 	GRANT SELECT ON projekt_bd.user_favourite_localities TO technical_administrator;
@@ -53,8 +55,10 @@ CREATE ROLE technical_administrator;
 FLUSH PRIVILEGES;
 
 -- Rola administratora merytorycznego
-CREATE ROLE meritorical_administrator;
+CREATE OR REPLACE ROLE meritorical_administrator;
 	GRANT SELECT ON projekt_bd.managed_localities TO meritorical_administrator;
+	GRANT INSERT ON porjekt_bd.figures TO meritorical_administrator;
+	GRANT DELETE ON porjekt_bd.figures TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.del_locality TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.modify_locality TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.add_new_locality TO meritorical_administrator;

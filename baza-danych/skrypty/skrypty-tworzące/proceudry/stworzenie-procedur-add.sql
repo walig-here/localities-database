@@ -189,7 +189,29 @@ CREATE OR REPLACE PROCEDURE add_locality_to_fav_list (
 	IN locality_id INT(10),
 	IN adnotation VARCHAR(1000)
 ) BEGIN
-	-- uzupełnić
+
+	-- Sprawdzenie, czy miejscowość znajduje się w bazie danych
+	IF NOT EXISTS (
+		SELECT 1
+		FROM localities AS l
+		WHERE l.locality_id = locality_id
+	) THEN
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Ta miejscowośc nie istnieje!';
+	END IF;
+	
+	-- Dodanie miejscowości do listy ulubionych
+	INSERT INTO favourite_localities (
+		locality_id,
+		login,
+		adnotation
+	)
+	VALUES (
+		locality_id,
+		(SELECT my_login FROM user_account),
+		adnotation
+	);
+
 END;
 // 
 DELIMITER ;

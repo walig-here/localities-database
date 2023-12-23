@@ -1,3 +1,7 @@
+-- Tabela return_table -----------------------------------------------------------------------------------------------------------------------------------------------------------
+CREATE OR REPLACE TABLE result_table AS
+SELECT 1 AS Message;
+
 -- Tabela Permissions ------------------------------------------------------------------------------------------------------------------------------------------------------------
 CREATE OR REPLACE TABLE Permissions (
   permission_id int(10) NOT NULL AUTO_INCREMENT, 

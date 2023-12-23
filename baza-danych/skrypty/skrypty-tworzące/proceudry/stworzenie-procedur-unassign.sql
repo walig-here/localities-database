@@ -29,8 +29,8 @@ BEGIN
             SET MESSAGE_TEXT = 'Nieprawidłowe parametry: voivodship_id nie może być NULL, gdy permission_id jest NOT NULL';
         
         ELSE
-            DELETE FROM users_permissions_in_voivodships
-            WHERE user_login = user_login;
+            DELETE FROM users_permissions_in_voivodships AS upiv
+            WHERE upiv.user_login = user_login AND upiv.permission_id = permission_id;
         END IF;
     END IF;
 END //

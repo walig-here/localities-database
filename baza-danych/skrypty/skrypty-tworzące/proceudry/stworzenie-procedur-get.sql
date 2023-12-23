@@ -47,8 +47,8 @@ CREATE OR REPLACE PROCEDURE get_locations_from_locality (
 	END IF;
 	
 	-- Pobranie lokacji znajdujących się w miejscowości
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT *
 		FROM locations_of_attractions AS loa
 		WHERE loa.locality_id = locality_id;
@@ -74,8 +74,8 @@ CREATE OR REPLACE PROCEDURE get_voivodships_managed_by_user (
 	END IF;
 	
 	-- Pobranie województw zarządzanych przez użytkownika
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT 	
 			gp.voivodship_id,
 			gp.voivodship_name
@@ -114,8 +114,8 @@ CREATE OR REPLACE PROCEDURE get_user_permissions_in_voivodship (
 	END IF;	
 	
 	-- Pobranie upranień użytkownika w województwie
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT 	
 			gp.voivodship_id,
 			gp.voivodship_name
@@ -143,8 +143,8 @@ CREATE OR REPLACE PROCEDURE get_attractions_in_locality (
 	END IF;
 	
 	-- Pobranie wszystkich atrakcji w danej miejscowości
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT *
 		FROM locations_of_attractions AS loa
 		WHERE loa.locality_id = locality_id;
@@ -170,8 +170,8 @@ CREATE OR REPLACE PROCEDURE get_figures_assigned_to_attraction (
 	END IF;
 	
 	-- Pobranie przypisanych do atrakcji obrazków
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT `at`.*
 		FROM figures_containing_attractions AS fca
 		JOIN figures AS f ON fca.figure_id = f.figure_id
@@ -198,8 +198,8 @@ CREATE OR REPLACE PROCEDURE get_types_assigned_to_attraction (
 	END IF;
 	
 	-- Pobranie typów przypisanych do atrakcji
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT `at`.*
 		FROM types_assigned_to_attractions AS tata
 		JOIN attraction_types AS `at` ON tata.attraction_type_id = `at`.attraction_type_id
@@ -226,8 +226,8 @@ CREATE OR REPLACE PROCEDURE get_counties_from_voivodship (
 	END IF;
 	
 	-- Pobranie powiatów z województwa
-	DROP TEMPORARY TABLE IF EXISTS return_table;
-	CREATE TEMPORARY TABLE return_table AS
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
 		SELECT 
 			au.administrative_unit_id,
 			au.`name`
@@ -255,11 +255,13 @@ CREATE OR REPLACE PROCEDURE get_municipalities_from_county (
 	END IF;
 	
 	-- Pobranie gmin z powiatu
-	SELECT 
-		au.administrative_unit_id,
-		au.`name`
-	FROM administrative_units AS au
-	WHERE `type` = 'gmina' AND superior_administrative_unit = county_id;
+	DROP TABLE IF EXISTS return_table;
+	CREATE TABLE return_table AS
+		SELECT 
+			au.administrative_unit_id,
+			au.`name`
+		FROM administrative_units AS au
+		WHERE `type` = 'gmina' AND superior_administrative_unit = county_id;
 	
 END;
 // 

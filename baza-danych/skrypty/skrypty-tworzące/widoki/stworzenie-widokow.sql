@@ -102,8 +102,11 @@ SELECT
 	Localities.latitude AS locality_latitude,
 	Localities.longitude AS locality_longitude,
 	Locality_Types.name AS locality_type,
+	Municipality.administrative_unit_id AS municipality_id,
 	Municipality.name AS municipality_name,
+	County.administrative_unit_id AS county_id,
 	County.name AS county_name,
+	Voivodship.administrative_unit_id AS voivodship_id,
 	Voivodship.name AS voivodship_name
 FROM
 	Localities INNER JOIN

@@ -87,8 +87,9 @@ BEGIN
 	-- Sprawdzenie, czy użytkownik ma uprawnienie do dodawania atrakcji do wskazanej miejscowości
 	IF NOT EXISTS (
 		SELECT 1
-		FROM managed_localities AS ml
-		WHERE ml.locality_id = locality_id
+		FROM full_localities_data AS fld
+		JOIN user_permissions AS up ON up.voivodship_id = fld.voivodship_id
+		WHERE fld.locality_id = locality_id AND up.permission_id = 2
 	) THEN
 		SIGNAL SQLSTATE '45000' 
 		SET MESSAGE_TEXT = 'Nie masz uprawnień do dodawania atrakcji w tym województwie!';
@@ -211,7 +212,7 @@ BEGIN
 		WHERE lt.locality_type_id = locality_type_id
 	) THEN
 		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Podana typ miejscowości nie istnieje!';
+		SET MESSAGE_TEXT = 'Podany typ miejscowości nie istnieje!';
 	END IF;
 	
 	-- Dodanie miejscowości
@@ -3134,42 +3135,83 @@ CREATE PROCEDURE `assign_attraction_to_locality`(
 	IN flat_number VARCHAR(50)
 )
 BEGIN
+	DECLARE location_id INT(10);
+
+	IF NOT EXISTS (SELECT 1 FROM user_account AS ua WHERE ua.my_role = 'meritorical_administrator') THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Uzytkownik nie posiada roli administratora metrytorycznego';
+    END IF;
+
 	IF attraction_id IS NULL OR locality_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna przypisac atrakcji: attraction_id lub locality_id sa NULL';
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) OR 
-       NOT EXISTS (SELECT 1 FROM localities WHERE id = locality_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM attractions AS a WHERE a.attraction_id = attraction_id) OR 
+       NOT EXISTS (SELECT 1 FROM localities AS l WHERE l.locality_id = locality_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja lub miejscowosc nie istnieje w bazie danych';
     END IF;
+    
+    -- Sprawdzenie, czy użytkownik ma uprawnienie do dodawania atrakcji do wskazanej miejscowości
+	IF NOT EXISTS (
+		SELECT 1
+		FROM full_localities_data AS fld
+		JOIN user_permissions AS up ON up.voivodship_id = fld.voivodship_id
+		WHERE fld.locality_id = locality_id AND up.permission_id = 2
+	) THEN
+		SIGNAL SQLSTATE '45000' 
+		SET MESSAGE_TEXT = 'Nie masz uprawnień do dodawania atrakcji w tym województwie!';
+	END IF;
 
-    -- Sprawdzenie, czy miejscowość należy do województwa zarządzanego przez użytkownika
-    IF NOT EXISTS (
-        SELECT 1 
-        FROM voivodships_administrated_by_users v
-        INNER JOIN Localities l ON l.voivodship_id = v.voivodship_id
-        WHERE l.id = locality_id AND v.user_id = CURRENT_USER_ID()
-    ) THEN
-        SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Miejscowosc nie nalezy do wojewodztwa zarzadzanego przez uzytkownika';
-    END IF;
-
-    -- Sprawdzenie, czy lokalizacja istnieje w bazie, jeśli nie, to dodanie jej
-    IF NOT EXISTS (
-        SELECT 1 
-        FROM locations 
-        WHERE locality_id = locality_id AND street = street 
-            AND building_number = building_number AND flat_number = flat_number
-    ) THEN
-        INSERT INTO Locations (locality_id, street, building_number, flat_number)
-        VALUES (locality_id, street, building_number, flat_number);
-    END IF;
-
-    -- Przypisanie atrakcji do lokalizacji
-    INSERT INTO Attractions_locations (attraction_id, locality_id, street, building_number, flat_number)
-    VALUES (attraction_id, locality_id, street, building_number, flat_number);
+    -- Sprawdzenie czy adres jaki ma zostać przypisany do atrakcji już istnieje w bazie
+	-- Jeżeli nie to należy go stworzyć, w przeciwnym wypadku można po prostu przypisać atrakcję do 
+	-- istniejącego adresu
+	IF NOT EXISTS (
+		SELECT loa.location_id
+		FROM locations_of_attractions AS loa
+		WHERE 
+			loa.locality_id = locality_id AND 
+			(loa.street = street OR (loa.street IS NULL AND street IS NULL)) AND 
+			(loa.building_number = building_number OR (loa.building_number IS NULL AND building_number IS NULL)) AND
+			(loa.flat_number = flat_number OR (loa.flat_number IS NULL AND flat_number IS NULL))
+		LIMIT 1
+	) THEN
+		INSERT INTO locations (
+			locality_id,
+			street,
+			building_number,
+			flat_number
+		)
+		VALUES (
+			locality_id,
+			street,
+			building_number,
+			flat_number
+		);
+		
+		SET location_id = LAST_INSERT_ID();
+	ELSE 
+		SELECT loa.location_id
+		INTO location_id
+		FROM locations_of_attractions AS loa
+		WHERE 
+			loa.locality_id = locality_id AND 
+			(loa.street = street OR (loa.street IS NULL AND street IS NULL)) AND 
+			(loa.building_number = building_number OR (loa.building_number IS NULL AND building_number IS NULL)) AND
+			(loa.flat_number = flat_number OR (loa.flat_number IS NULL AND flat_number IS NULL))
+			LIMIT 1;
+	END IF;
+	
+	-- Przypisanie atrakcji do adresu
+	INSERT INTO attractions_locations(
+		attraction_id,
+		location_id
+	)
+	VALUES (
+		attraction_id,
+		location_id
+	);
 
 END//
 DELIMITER ;

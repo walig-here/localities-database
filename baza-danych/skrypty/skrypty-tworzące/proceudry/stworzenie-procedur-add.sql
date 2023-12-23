@@ -51,7 +51,7 @@ CREATE OR REPLACE PROCEDURE add_new_locality (
 		WHERE lt.locality_type_id = locality_type_id
 	) THEN
 		SIGNAL SQLSTATE '45000'
-		SET MESSAGE_TEXT = 'Podana typ miejscowości nie istnieje!';
+		SET MESSAGE_TEXT = 'Podany typ miejscowości nie istnieje!';
 	END IF;
 	
 	-- Dodanie miejscowości
@@ -112,8 +112,9 @@ CREATE OR REPLACE PROCEDURE add_new_attraction (
 	-- Sprawdzenie, czy użytkownik ma uprawnienie do dodawania atrakcji do wskazanej miejscowości
 	IF NOT EXISTS (
 		SELECT 1
-		FROM managed_localities AS ml
-		WHERE ml.locality_id = locality_id
+		FROM full_localities_data AS fld
+		JOIN user_permissions AS up ON up.voivodship_id = fld.voivodship_id
+		WHERE fld.locality_id = locality_id AND up.permission_id = 2
 	) THEN
 		SIGNAL SQLSTATE '45000' 
 		SET MESSAGE_TEXT = 'Nie masz uprawnień do dodawania atrakcji w tym województwie!';

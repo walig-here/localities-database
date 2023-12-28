@@ -20,6 +20,9 @@ CREATE OR REPLACE ROLE viewer;
 	GRANT SELECT ON projekt_bd.locality_types TO viewer;
 	GRANT SELECT ON projekt_bd.figures TO viewer;
 	GRANT SELECT ON projekt_bd.attraction_types TO viewer;
+
+	GRANT SELECT ON projekt_bd.return_table TO viewer;
+	GRANT FILE ON *.* TO viewer;
 FLUSH PRIVILEGES;
 
 -- Rola administratora technicznego
@@ -52,13 +55,16 @@ CREATE OR REPLACE ROLE technical_administrator;
 	GRANT SELECT ON projekt_bd.locality_types TO technical_administrator;
 	GRANT SELECT ON projekt_bd.figures TO technical_administrator;
 	GRANT SELECT ON projekt_bd.attraction_types TO technical_administrator;
+
+	GRANT SELECT ON projekt_bd.return_table TO technical_administrator;
+	GRANT FILE ON *.* TO technical_administrator;
 FLUSH PRIVILEGES;
 
 -- Rola administratora merytorycznego
 CREATE OR REPLACE ROLE meritorical_administrator;
 	GRANT SELECT ON projekt_bd.managed_localities TO meritorical_administrator;
-	GRANT INSERT ON porjekt_bd.figures TO meritorical_administrator;
-	GRANT DELETE ON porjekt_bd.figures TO meritorical_administrator;
+	GRANT INSERT ON projekt_bd.figures TO meritorical_administrator;
+	GRANT DELETE ON projekt_bd.figures TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.del_locality TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.modify_locality TO meritorical_administrator;
 	GRANT EXECUTE ON PROCEDURE projekt_bd.add_new_locality TO meritorical_administrator;
@@ -95,4 +101,7 @@ CREATE OR REPLACE ROLE meritorical_administrator;
 	GRANT SELECT ON projekt_bd.locality_types TO meritorical_administrator;
 	GRANT SELECT ON projekt_bd.figures TO meritorical_administrator;
 	GRANT SELECT ON projekt_bd.attraction_types TO meritorical_administrator;
+
+	GRANT SELECT ON projekt_bd.return_table TO meritorical_administrator;
+	GRANT FILE ON *.* TO meritorical_administrator;
 FLUSH PRIVILEGES;

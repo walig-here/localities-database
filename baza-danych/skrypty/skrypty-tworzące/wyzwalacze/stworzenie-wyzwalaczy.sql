@@ -40,62 +40,24 @@ BEGIN
 END; //
 DELIMITER ;
 
--- Wyzwalacz After_Delete_On_Locations --------------------------------------------------------------------------------------------------------------------------------------------
+-- Wyzwalacz Afrer_Delete_On_Attractions ---------------------------------------------------------------------------------------------------------------------------------
 DELIMITER //
-CREATE OR REPLACE TRIGGER After_Delete_On_Locations 
-	AFTER DELETE ON locations 
-	FOR EACH ROW
-BEGIN
-		
-		-- Usunięcie wszystkich atrakcji, dla których była to jedyna lokalizacja
-		DELETE FROM attractions
-		WHERE 0 = (
-			SELECT COUNT(*)
-			FROM locations_of_attractions AS loa
-			WHERE loa.attraction_id = attraction_id
-		);
-		
-END; //
-DELIMITER ;
-
--- Wyzwalacz Afrer_Delete_On_Attractions_Locations ---------------------------------------------------------------------------------------------------------------------------------
-DELIMITER //
-CREATE OR REPLACE TRIGGER After_Delete_On_Attractions_Locations 
-	AFTER DELETE ON attractions_locations FOR EACH ROW
+CREATE OR REPLACE TRIGGER After_Delete_On_Attractions
+	AFTER DELETE ON attractions FOR EACH ROW
 BEGIN
 		
 		-- Usunięcie wszystkich lokalizacji, które nie są przypiane do żandej atrakcji
 		DELETE FROM locations
-		WHERE 0 = (
-			SELECT COUNT(*)
-			FROM locations_of_attractions AS loa
-			WHERE loa.location_id = location_id
+		WHERE location_id NOT IN (
+			SELECT DISTINCT al.location_id
+			FROM attractions_locations AS al
 		);
-		
-		-- Usunięcie wszystkich atrakcji, które nie są przypisane do żadnej lokalizacji
-		DELETE FROM attractions
-		WHERE 0 = (
-			SELECT COUNT(*)
-			FROM locations_of_attractions AS loa
-			WHERE loa.attraction_id = attraction_id
-		);
-		
-END; //
-DELIMITER ;
-
-
--- Wyzwalacz After_Delete_On_Figures_Containing_Attractions ------------------------------------------------------------------------------------------------------------------------
-DELIMITER //
-CREATE OR REPLACE TRIGGER After_Delete_On_Figures_Containing_Attractions
-	AFTER DELETE ON figures_containing_attractions FOR EACH ROW
-BEGIN
 		
 		-- Usunięcie wszystkich ilustracji, które nie są przypisane do żadnej atrakcji
 		DELETE FROM figures
-		WHERE 0 = (
-			SELECT COUNT(*)
-			FROM figures_containing_attractions AS fca
-			WHERE fca.figure_id = figure_id
+		WHERE figure_id NOT IN (
+			SELECT DISTINCT figure_id
+			FROM figures_containing_attractions
 		);
 		
 END; //
@@ -109,10 +71,25 @@ BEGIN
 		
 		-- Usunięcie użytkownikom uprawnień do zarządzenai wszystkimi województtwami, w których nie mają przypisanych uprawnień
 		DELETE FROM voivodships_administrated_by_users
-		WHERE 0 = (
-			SELECT COUNT(*)
+		WHERE (voivodship_id, login) NOT IN (
+			SELECT DISTINCT voivodship_id, login
 			FROM users_permissions_in_voivodships AS upv
-			WHERE upv.voivodship_id = voivodship_id AND upv.login = login
+		);
+		
+END; //
+DELIMITER ;
+
+-- Wyzwalacz Afrer_Delete_On_Localities ---------------------------------------------------------------------------------------------------------------------------------
+DELIMITER //
+CREATE OR REPLACE TRIGGER After_Delete_On_Localities
+	AFTER DELETE ON localities FOR EACH ROW
+BEGIN
+		
+		-- Usunięcie wszystkich atrakcji, które były zlokalizowane tylko w tej miejscowości
+		DELETE FROM attractions
+		WHERE attraction_id NOT IN (
+			SELECT DISTINCT al.attraction_id
+			FROM attractions_locations AS al
 		);
 		
 END; //

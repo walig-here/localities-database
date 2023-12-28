@@ -1,0 +1,32 @@
+#================================================================================#
+SCENARIUSZ 1 -	poprawna zmiana roli użytkownika o loginie "user_2" na role
+		administratora merytorycznego.
+
+----------------------------------------------------------------------------------
+CALL modify_user_role('user_2', 'meritorical_administrator');
+SELECT *  FROM registered_users;
+----------------------------------------------------------------------------------
+
+Zmieniono rolę użytkownika na administratora merytorycznego.
+
+#================================================================================#
+SCENARIUSZ 2 -	zmiana roli użytkownika o loginie "user_2" na niepopawną rolę.
+
+----------------------------------------------------------------------------------
+CALL modify_user_role('user_2', 'role');
+SELECT *  FROM registered_users;
+----------------------------------------------------------------------------------
+
+Nie zmieniono roli użytkownika.
+
+#================================================================================#
+SCENARIUSZ 3 -	zmiana roli nieistniejącecego w bazie danych.
+
+----------------------------------------------------------------------------------
+CALL modify_user_role('214', 'meritorical_administrator');
+SELECT *  FROM registered_users;
+----------------------------------------------------------------------------------
+
+Nie zmieniono roli użytkownika.
+
+#================================================================================#

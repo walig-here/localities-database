@@ -1,0 +1,34 @@
+#================================================================================#
+SCENARIUSZ 1 -	poprawna rejestracja nowego użytkownika o loginie "user_1" oraz
+		haśle "123". Jest to pierwszy użytkownik w systemie.
+
+ 
+CALL register_user('user_1', '123');
+SELECT * FROM registered_users;
+----------------------------------------------------------------------------------
+
+Nowy użytkownik o roli administratora technicznego został dodany do bazy danych.
+
+#================================================================================#
+SCENARIUSZ 2 -	poprawna rejestracja nowego użytkownika o loginie "user_2" oraz 
+		haśle "123". Nie jest to pierwszy użytkownik w systemie.
+
+----------------------------------------------------------------------------------
+CALL register_user('user_1', '123');
+CALL register_user('user_2', '123');
+SELECT * FROM registered_users;
+----------------------------------------------------------------------------------
+
+Nowy użytkownik o roli przeglądającego został dodany do bazy danych.
+
+#================================================================================#
+SCENARIUSZ 3 -	rejestracja użytkownika o loginie '' (pusty ciąg znaków).
+
+----------------------------------------------------------------------------------
+CALL register_user('', '123');
+SELECT * FROM registered_users;
+----------------------------------------------------------------------------------
+
+Użytkownik nie został zarejestrowany.
+
+#================================================================================#

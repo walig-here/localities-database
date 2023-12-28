@@ -1,0 +1,106 @@
+#================================================================================#
+SCENARIUSZ 1 -	poprawna przypisanie użytkownikowi uprawnienia.
+
+----------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	1
+);
+SELECT * FROM granted_permissions;
+----------------------------------------------------------------------------------
+
+Poprawie nadano administratorowi merytorycznemu uprawnienie do edytowania 
+mejscowości w województwie Dolnośląskim.
+
+#================================================================================#
+SCENARIUSZ 2 -	nadanie użytkownikowi drugi raz tego samego uprawnienia.
+
+----------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	1
+);
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	1
+);
+SELECT * FROM granted_permissions;
+----------------------------------------------------------------------------------
+
+Nie udało się nadać uprawnienia.
+
+#================================================================================#
+SCENARIUSZ 3 - 	próba nadania uprawnienia w nieistniejącym województwie.
+
+----------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	-1234,
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	1
+);
+SELECT * FROM granted_permissions;
+----------------------------------------------------------------------------------
+
+Nie udało się nadać uprawnienia.
+
+#================================================================================#
+SCENARIUSZ 4 -	próba nadania uprawnienia nieistniejącemu użytkownikowi.
+
+----------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	'user',
+	1
+);
+SELECT * FROM granted_permissions;
+----------------------------------------------------------------------------------
+
+Nie udało się nadać uprawnienia.
+
+#================================================================================#
+SCENARIUSZ 5 - próba nadania nieistniejącego uprawnienia.
+
+----------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	64
+);
+SELECT * FROM granted_permissions;
+---------------------------------------------------------------------------------
+
+Nie udało się nadać uprawnienia.
+
+#================================================================================#
+SCENARIUSZ 6 -	próba nadania uprawnienia użytkownikowi, który nie jest 				administratorem merytorycznym.
+
+---------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT my_login FROM user_account),
+	1
+);
+SELECT * FROM granted_permissions;
+---------------------------------------------------------------------------------
+
+Nie udało się nadać uprawnienia.
+
+#================================================================================#
+SCENARIUSZ 7 -	nadanie kolejnego uprawnienia w województwie, w którym użytkownik
+		posiada już inne uprawnienie.
+
+---------------------------------------------------------------------------------
+CALL assign_permission_to_user(
+	(SELECT au.administrative_unit_id FROM administrative_units AS au WHERE `name` = 'Dolnośląskie' LIMIT 1),
+	(SELECT u.login FROM registered_users AS u WHERE u.`role` = 'meritorical_administrator' LIMIT 1),
+	2
+);
+SELECT * FROM granted_permissions;
+---------------------------------------------------------------------------------
+
+Udało się nadać uprawnienie.
+
+#================================================================================#

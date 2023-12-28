@@ -49,7 +49,16 @@ CREATE OR REPLACE PROCEDURE get_locations_from_locality (
 	-- Pobranie lokacji znajdujących się w miejscowości
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
-		SELECT *
+		SELECT 
+			loa.location_id,
+			loa.voivodship_name,
+			loa.county_name,
+			loa.municipality_name,
+			loa.locality_id,
+			loa.locality_name,
+			loa.street,
+			loa.building_number,
+			loa.flat_number
 		FROM locations_of_attractions AS loa
 		WHERE loa.locality_id = locality_id;
 	
@@ -117,8 +126,8 @@ CREATE OR REPLACE PROCEDURE get_user_permissions_in_voivodship (
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
 		SELECT 	
-			gp.voivodship_id,
-			gp.voivodship_name
+			gp.permission_name,
+			gp.permission_desc
 		FROM granted_permissions AS gp
 		WHERE gp.user_login = login AND gp.voivodship_id = voivodship_id;
 
@@ -145,7 +154,13 @@ CREATE OR REPLACE PROCEDURE get_attractions_in_locality (
 	-- Pobranie wszystkich atrakcji w danej miejscowości
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
-		SELECT *
+		SELECT 
+			loa.attraction_id,
+			loa.attraction_name,
+			loa.attraction_desc,
+			loa.street,
+			loa.building_number,
+			loa.flat_number
 		FROM locations_of_attractions AS loa
 		WHERE loa.locality_id = locality_id;
 
@@ -172,7 +187,10 @@ CREATE OR REPLACE PROCEDURE get_figures_assigned_to_attraction (
 	-- Pobranie przypisanych do atrakcji obrazków
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
-		SELECT `at`.*
+		SELECT 
+			f.figure_id,
+			f.figure,
+			fca.caption
 		FROM figures_containing_attractions AS fca
 		JOIN figures AS f ON fca.figure_id = f.figure_id
 		WHERE fca.attraction_id = attraction_id;

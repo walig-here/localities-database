@@ -85,10 +85,10 @@ SELECT
 	Voivodship.name AS voivodship_name
 FROM
 	Users INNER JOIN
-	Voivodships_Administrated_By_Users ON Users.login = Voivodships_Administrated_By_Users.login INNER JOIN
-	Administrative_units AS Voivodship ON Voivodships_Administrated_By_Users.voivodship_id = Voivodship.administrative_unit_id INNER JOIN
-	Users_Permissions_In_Voivodships ON Voivodships_Administrated_By_Users.voivodship_id = Users_Permissions_In_Voivodships.voivodship_id INNER JOIN
-	Permissions ON Users_Permissions_In_Voivodships.permission_id = Permissions.permission_id
+	Voivodships_Administrated_By_Users AS vau ON Users.login = vau.login INNER JOIN
+	Administrative_units AS Voivodship ON vau.voivodship_id = Voivodship.administrative_unit_id INNER JOIN
+	Users_Permissions_In_Voivodships AS upv ON vau.voivodship_id = upv.voivodship_id AND vau.login = upv.login INNER JOIN
+	Permissions ON upv.permission_id = Permissions.permission_id
 WHERE
 	SESSION_USER() LIKE CONCAT(users.login,'@','%');
 
@@ -169,7 +169,7 @@ SELECT
 	Voivodship.name AS voivodship_name
 FROM
 	Permissions INNER JOIN
-	Users_Permissions_In_Voivodships ON Permissions.permission_id = Users_Permissions_In_Voivodships.permission_id INNER JOIN
-	Voivodships_Administrated_By_Users ON Users_Permissions_In_Voivodships.voivodship_id = Voivodships_Administrated_By_Users.voivodship_id INNER JOIN
-	Users ON Voivodships_Administrated_By_Users.login = Users.login INNER JOIN
-	Administrative_units AS Voivodship ON Voivodships_Administrated_By_Users.voivodship_id = Voivodship.administrative_unit_id;
+	users_permissions_in_voivodships AS upv ON Permissions.permission_id = upv.permission_id INNER JOIN
+	voivodships_administrated_by_users AS vau ON upv.voivodship_id = vau.voivodship_id AND upv.login = vau.login INNER JOIN
+	Users ON vau.login = Users.login INNER JOIN
+	Administrative_units AS Voivodship ON vau.voivodship_id = Voivodship.administrative_unit_id;

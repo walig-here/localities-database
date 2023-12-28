@@ -36,11 +36,17 @@ CREATE OR REPLACE PROCEDURE modify_locality (
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Podany typ miejscowości nie istnieje!';	
 	END IF;
 	
+	-- Sprawdzenie, czy nazwa miejscowości nie jest pusta
+	IF locality_name = '' THEN
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Nazwa miejscowości jest niepoprawna!';
+	END if;
+	
 	-- Aktualizacja danych miejscowości
     UPDATE Localities
     SET
-        name = COALESCE(`name`, Localities.`name`),
-        description = COALESCE(`locality_desc`, Localities.`description`),
+        `name` = COALESCE(`locality_name`, Localities.`name`),
+        `description` = COALESCE(`locality_desc`, Localities.`description`),
         population = COALESCE(pop, Localities.population),
         municipality_id = COALESCE(municipality_id, Localities.municipality_id),
         latitude = COALESCE(latititude, Localities.latitude),
@@ -73,6 +79,12 @@ CREATE OR REPLACE PROCEDURE modify_attraction (
 	-- Sprawdzenie, czy atrakcja znajduje się w województwie zarządzanym przez użytkownika
 	IF NOT EXISTS (SELECT * FROM managed_attractions AS ma WHERE ma.attraction_id = attraction_id) THEN
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Nie posiadasz uprawnień do edytowania w tym województwie!';	
+	END IF;
+	
+	-- Sprawdzenie, czy nadana nazwa jest poprawna
+	IF attraction_name = '' THEN
+		SIGNAL SQLSTATE '45000'
+		SET MESSAGE_TEXT = 'Nazwa atrakcji jest niepoprawna!';
 	END IF;
 	
 	-- Aktualizacja danych miejscowości

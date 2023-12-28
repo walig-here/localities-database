@@ -22,8 +22,12 @@ CREATE OR REPLACE PROCEDURE assign_permission_to_user (
         SET MESSAGE_TEXT = 'Wojewodztwo lub uprawnienie nie istnieje w bazie danych';
     END IF;
     
-    -- Aktualizacja tabeli, jeśli to konieczne
-    IF NOT EXISTS (SELECT 1 FROM voivodships_administrated_by_users AS vau WHERE vau.login = login AND vau.voivodship_id = voivodship_id) THEN
+   -- Aktualizacja tabeli, jeśli to konieczne
+   IF NOT EXISTS (
+	 	SELECT 1 
+		FROM voivodships_administrated_by_users AS vau 
+		WHERE vau.login = login AND vau.voivodship_id = voivodship_id
+	) THEN
         INSERT INTO Voivodships_Administrated_By_Users (login, voivodship_id)
         VALUES (login, voivodship_id);
     END IF;
@@ -66,9 +70,8 @@ CREATE OR REPLACE PROCEDURE assign_attraction_to_locality (
     -- Sprawdzenie, czy użytkownik ma uprawnienie do dodawania atrakcji do wskazanej miejscowości
 	IF NOT EXISTS (
 		SELECT 1
-		FROM full_localities_data AS fld
-		JOIN user_permissions AS up ON up.voivodship_id = fld.voivodship_id
-		WHERE fld.locality_id = locality_id AND up.permission_id = 2
+		FROM managed_attractions AS ma
+		WHERE ma.attraction_id = attraction_id
 	) THEN
 		SIGNAL SQLSTATE '45000' 
 		SET MESSAGE_TEXT = 'Nie masz uprawnień do dodawania atrakcji w tym województwie!';
@@ -139,8 +142,8 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     END IF;
 
     -- Sprawdzenie, czy type_id i attraction_id znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM types WHERE id = type_id) OR 
-       NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM attraction_types WHERE attraction_type_id = type_id) OR 
+       NOT EXISTS (SELECT 1 FROM attractions AS a WHERE a.attraction_id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Typ atrakcji lub atrakcja nie istnieje w bazie danych';
     END IF;
@@ -148,16 +151,15 @@ CREATE OR REPLACE PROCEDURE assign_type_to_attraction (
     -- Sprawdzenie czy atrakcja jest zlokalizowana w województwie zarządzanym przez administratora i czy ma on uprawnienia
     IF NOT EXISTS (
         SELECT 1 
-        FROM voivodships_administrated_by_users v
-        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
-        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID() AND v.has_attraction_management_permission = 1
+        FROM managed_attractions ma
+        WHERE ma.attraction_id = attraction_id
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Uzytkownik nie ma uprawnien do zarzadzania atrakcjami w wojewodztwie, w którym znajduje sie atrakcja';
     END IF;
 
     -- Przypisanie typu atrakcji do atrakcji
-    INSERT INTO types_assigned_to_attractions (type_id, attraction_id)
+    INSERT INTO types_assigned_to_attractions (attraction_type_id, attraction_id)
     VALUES (type_id, attraction_id);
 END;
 // 
@@ -176,8 +178,8 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     END IF;
 
     -- Sprawdzenie, czy figure_id i attraction_id znajdują się w bazie danych
-    IF NOT EXISTS (SELECT 1 FROM figures WHERE id = figure_id) OR 
-       NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM figures AS f WHERE f.figure_id = figure_id) OR 
+       NOT EXISTS (SELECT 1 FROM attractions AS a WHERE a.attraction_id = attraction_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Ilustracja lub atrakcja nie istnieje w bazie danych';
     END IF;
@@ -185,9 +187,8 @@ CREATE OR REPLACE PROCEDURE assign_figure_to_attraction (
     -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
     IF NOT EXISTS (
         SELECT 1 
-        FROM voivodships_administrated_by_users v
-        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
-        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID()
+        FROM managed_attractions AS ma
+        WHERE ma.attraction_id = attraction_id
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie znajduje się w województwie zarządzanym przez użytkownika';

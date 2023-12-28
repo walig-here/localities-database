@@ -32,10 +32,11 @@ DELIMITER ;
 -- del_locality_from_fav_list
 DELIMITER //
 CREATE OR REPLACE PROCEDURE del_locality_from_fav_list (
-	IN locality_id INT(10)
+	IN locality_identifier INT(10)
 ) BEGIN
-	 IF locality_id IS NOT NULL THEN
-        DELETE FROM user_favourite_localities WHERE locality_id = locality_id;
+	 IF locality_identifier IS NOT NULL THEN
+        DELETE FROM favourite_localities 
+		  WHERE locality_id = locality_identifier AND SESSION_USER() LIKE CONCAT(login,'@','%');
     END IF;
 END;
 // 
@@ -47,10 +48,17 @@ CREATE OR REPLACE PROCEDURE del_user (
 	IN user_login VARCHAR(30)
 ) BEGIN
 	
+	DECLARE caller_role VARCHAR(30);
+	
+	-- Jeżeli w parametrze zamiast loginu podano null, to należy przyjąć login wywołującego metodę użytkownika
+	IF user_login IS NULL THEN
+		SELECT `my_login`
+		INTO user_login
+		FROM user_account;
+	END IF;
 	
 	-- Jeżeli użytkownik wykonujący komendę nie jest administratorem technicznym, to moze usunąć wyłącznie
 	-- swoje konto
-	DECLARE caller_role VARCHAR(30);
 	SELECT `role` 
 	INTO caller_role 
 	FROM users
@@ -77,14 +85,14 @@ DELIMITER ;
 -- del_attraction
 DELIMITER //
 CREATE OR REPLACE PROCEDURE del_attraction (
-	IN attraction_id INT(10)
+	IN attr_id INT(10)
 ) BEGIN
-	    IF attraction_id IS NULL THEN
+	    IF attr_id IS NULL THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Nie mozna usunac atrakcji';
     END IF;
 
-    IF NOT EXISTS (SELECT 1 FROM attractions WHERE id = attraction_id) THEN
+    IF NOT EXISTS (SELECT 1 FROM attractions AS a WHERE a.attraction_id = attr_id) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie istnieje w bazie danych';
     END IF;
@@ -92,16 +100,15 @@ CREATE OR REPLACE PROCEDURE del_attraction (
     -- Sprawdzenie, czy atrakcja jest zlokalizowana w województwie zarządzanym przez użytkownika
     IF NOT EXISTS (
         SELECT 1 
-        FROM voivodships_administrated_by_users v
-        INNER JOIN attractions a ON a.voivodship_id = v.voivodship_id
-        WHERE a.id = attraction_id AND v.user_id = CURRENT_USER_ID()
+        FROM managed_attractions AS ma
+		  WHERE ma.attraction_id = attr_id
     ) THEN
         SIGNAL SQLSTATE '45000'
         SET MESSAGE_TEXT = 'Atrakcja nie znajduje sie w wojewodztwie zarzadzanym przez uzytkownika';
     END IF;
 
     -- Usunięcie atrakcji
-    DELETE FROM attractions WHERE id = attraction_id;
+    DELETE FROM attractions WHERE attraction_id = attr_id;
 END;
 // 
 DELIMITER ;

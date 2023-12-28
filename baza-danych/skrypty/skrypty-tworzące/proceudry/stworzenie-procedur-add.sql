@@ -16,7 +16,7 @@ CREATE OR REPLACE PROCEDURE add_new_locality (
 	END IF;
 
 	-- Sprawdzedznie czy podano nazwę miejscowości
-	IF locality_name = NULL THEN
+	IF locality_name = NULL OR locality_name = '' THEN
 		SIGNAL SQLSTATE '45000'
 		SET MESSAGE_TEXT = 'Nazwa miejscowosci nie może być pusta!';
 	END IF;
@@ -98,7 +98,7 @@ CREATE OR REPLACE PROCEDURE add_new_attraction (
 	END IF;
 	
 	-- Sprawdzedznie czy podano nazwę atrakcji
-	IF attraction_name = NULL THEN
+	IF attraction_name = NULL OR attraction_name = '' THEN
 		SIGNAL SQLSTATE '45000'
 		SET MESSAGE_TEXT = 'Nazwa atrakcji nie może być pusta!';
 	END IF; 

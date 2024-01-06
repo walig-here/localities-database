@@ -36,6 +36,7 @@ public class HorizontalComponentsStrip extends GuiComponent {
         super(parent);
         setLayout(null);
         setSizeOfElement(0, SEPARATOR);
+        setBackground(Color.WHITE);
     }
 
     /**

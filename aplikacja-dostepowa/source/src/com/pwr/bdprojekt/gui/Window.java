@@ -2,8 +2,11 @@ package com.pwr.bdprojekt.gui;
 
 import com.pwr.bdprojekt.gui.displays.*;
 import com.pwr.bdprojekt.gui.events.*;
+import com.pwr.bdprojekt.logic.Application;
 
 import javax.swing.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 /**
  * Okno aplikacji
@@ -113,7 +116,14 @@ public class Window {
 		frame.setSize(w, h);
 		frame.setResizable(false);
 		frame.setVisible(true);
-		frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+
+		frame.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				super.windowClosing(e);
+				Application.quit();
+			}
+		});
 
 		event_handler = new EventHandler(current_view);
 
@@ -126,8 +136,14 @@ public class Window {
 	 * Zamyka okno aplikacji. Zwraca informacje o powodzeniu akcji.
 	 */
 	public static boolean close() {
-		// TODO - implement Window.close
-		throw new UnsupportedOperationException();
+		frame.setVisible(false);
+		frame.dispose();
+
+		return true;
+	}
+
+	public static void showMessageBox(String message){
+		JOptionPane.showMessageDialog(frame, message);
 	}
 
 }

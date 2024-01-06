@@ -1,6 +1,7 @@
 package com.pwr.bdprojekt.gui.components;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Dowolny element GUI.
@@ -54,9 +55,8 @@ public abstract class GuiComponent extends JPanel {
 	 * */
 	public void setSizeOfElement(int width, int height)
 	{
-		int final_width = width;
-		int final_height = height;
-		setBounds(getX(), getY(), final_width, final_height);
+		setBounds(getX(), getY(), width, height);
+		setPreferredSize(new Dimension(width, height));
 		redraw();
 	}
 

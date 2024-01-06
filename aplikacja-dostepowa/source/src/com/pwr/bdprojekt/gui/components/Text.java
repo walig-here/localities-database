@@ -45,12 +45,12 @@ public class Text extends GuiComponent {
 
     @Override
     protected void redraw() {
-        label.setBounds(0, 0, parent.getWidth(), getHeight());
+        label.setBounds(0, 0, getWidth(), getHeight());
     }
 
     @Override
     protected void updateData(String[] data) {
-
+        // nie ma czego aktualizować
     }
 
     public String getText(){

@@ -55,7 +55,6 @@ public class LoginView extends View {
 
 		// Panel logowania
 		login_panel = new PanelWithHeader(main_panel, "Logowanie i rejestracja");
-		login_panel.setScrollableVertically(false);
 
 		// Pole do wprowadzania loginu
 		login = new TextField(main_panel, "Login", "", 1);

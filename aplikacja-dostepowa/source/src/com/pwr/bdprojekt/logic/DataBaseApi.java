@@ -2,7 +2,83 @@ package com.pwr.bdprojekt.logic;
 
 import com.pwr.bdprojekt.logic.entities.*;
 
+import java.sql.*;
+
 public class DataBaseApi {
+
+//======================================================================================================================
+// POLA
+
+	/**
+	 * Połączenie z bazą jako użytkownik root
+	 * */
+	private static Connection root_connection = null;
+
+	/**
+	 * Połączenie z bazą jako właściwy użytkownik Bazy Miejscowości
+	 * */
+	private static Connection user_connection = null;
+
+//======================================================================================================================
+// METODY
+
+	/**
+	 * Ustanowienie połączenia z bazą danych.
+	 * @param login nazwa użytkownika ustanawiającego połączenie
+	 * @param password hasło użytkownika ustanawiającego połączenie
+	 * */
+	public static boolean connect(String login, String password){
+		Connection connection_to_establish;
+
+		String url = "jdbc:mariadb://localhost:3306/projekt_bd?user=" + login + "&password=" + password;
+		try {
+			connection_to_establish = DriverManager.getConnection(url);
+		} catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Cannot connect to database as " + login);
+			return false;
+		}
+
+		if(login.equals("root")){
+			root_connection = connection_to_establish;
+		}
+		else if(root_connection != null){
+			user_connection = connection_to_establish;
+		}
+		else {
+			// Jeżeli nie ustanowiono połączenia root, to aplikacja nie powinna pozwolić na nawiązania połączenia
+			// użytkownika
+			return false;
+		}
+
+		System.out.println("Connected to database as " + login);
+		return true;
+	}
+
+	/**
+	 * Zamyka połączenie wskazanego użytkownika
+	 * @param login nazwa użytkownika, którego połączenie zamykamy
+	 * */
+	public static boolean closeConnection(String login){
+		Connection connection_to_establish;
+		if(login.equals("root")){
+			connection_to_establish = root_connection;
+		}
+		else {
+			connection_to_establish = user_connection;
+		}
+
+		try {
+			connection_to_establish.close();
+		} catch (SQLException e) {
+			System.out.println("Cannot close connection to database as " + login);
+			e.printStackTrace();
+			return false;
+		}
+
+		System.out.println("Closed connection to database as " + login);
+		return true;
+	}
 
 	/**
 	 * 

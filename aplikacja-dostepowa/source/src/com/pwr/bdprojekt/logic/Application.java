@@ -161,12 +161,20 @@ public class Application {
 	}
 
 	public static void open() {
+		is_running = true;
 		Window.open("Baza danych miejscowości", 800, 600);
+		if(!DataBaseApi.connect("root", "admin")){
+			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
+			quit();
+		}
 	}
 
 	public static void quit() {
-		// TODO - implement Logic.quit
-		throw new UnsupportedOperationException();
+		is_running = false;
+		Window.close();
+		DataBaseApi.closeConnection("root");
+		if(current_user != null)
+			DataBaseApi.closeConnection(current_user.getLogin());
 	}
 
 	public static void openHomeDisplay() {

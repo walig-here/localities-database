@@ -25,6 +25,11 @@ public class PanelWithHeader extends GuiComponent {
 	 * */
 	public final static int S = 10;
 
+	/**
+	 * Szerokość paska sklorowania
+	 * */
+	public final static int SCROLLBAR_WIDTH = 19;
+
 //======================================================================================================================
 // ## POLA ##
 
@@ -42,6 +47,11 @@ public class PanelWithHeader extends GuiComponent {
 	 * Pod-panel zawierający ułożone jeden na drugim elementy GUI, które zawarte są na panelu.
 	 * */
 	private final VerticalComponentsStrip elements_subpanel;
+
+	/**
+	 * Informuje, czy panel jest skrolowalny w pionie
+	 * */
+	private boolean vertically_scrollable;
 
 //======================================================================================================================
 // ## METODY ##
@@ -61,7 +71,10 @@ public class PanelWithHeader extends GuiComponent {
 		scroll = new JScrollPane(elements_subpanel);
 		scroll.setBackground(Color.WHITE);
 		scroll.setHorizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER);
+		scroll.setBorder(null);
+		elements_subpanel.setBackground(Color.WHITE);
 		this.add(scroll);
+		vertically_scrollable = false;
 
 		// Zatwierdzenie rozmieszczenia elementów
 		setLayout(null);
@@ -95,7 +108,8 @@ public class PanelWithHeader extends GuiComponent {
 	 * @param scrollable czy pasek może być skrolowany w pionie.
 	 */
 	public void setScrollableVertically(boolean scrollable) {
-		if(scrollable){
+		vertically_scrollable = scrollable;
+		if(vertically_scrollable){
 			scroll.setBorder(BorderFactory.createLineBorder(Color.BLACK));
 			scroll.setVerticalScrollBarPolicy(VERTICAL_SCROLLBAR_ALWAYS);
 		}
@@ -115,16 +129,20 @@ public class PanelWithHeader extends GuiComponent {
 		);
 
 		// Ustalenie wymiarów panelu skrolowanego
+		final int SCROLL_WIDTH = parent.getWidth()-2*S;
 		scroll.setBounds(
 				parent.getX()+S,
 				header.getBottomY(),
-				parent.getWidth()-2*S,
+				SCROLL_WIDTH,
 				parent.getHeight()-2*S-LABEL_H
 		);
 
 		// Ustalenie wymiarów panelu z komponentami składowymi
 		elements_subpanel.setPosition(0, 0);
-		elements_subpanel.setSizeOfElement(scroll.getWidth(), elements_subpanel.getHeight());
+		elements_subpanel.setSizeOfElement(
+				vertically_scrollable ? SCROLL_WIDTH - SCROLLBAR_WIDTH : SCROLL_WIDTH,
+				elements_subpanel.getHeight()
+		);
 	}
 
 	@Override

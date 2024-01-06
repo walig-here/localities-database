@@ -37,10 +37,10 @@ public class Window {
 		switch (current_view_type)
 		{
 			case HOME_ADMIN_TECH:
-					current_view = new HomeView(frame,true);
+					current_view = new HomeView(frame,true, event_handler);
 					break;
 			case HOME:
-					current_view = new HomeView(frame, false);
+					current_view = new HomeView(frame, false, event_handler);
 					break;
 			case ADDRESS_EDITOR:
 					current_view = new AddressEditorView(frame);
@@ -127,7 +127,7 @@ public class Window {
 
 		event_handler = new EventHandler(current_view);
 
-		switchToView(ViewType.LOGIN);
+		switchToView(ViewType.HOME_ADMIN_TECH);
 
 		return true;
 	}

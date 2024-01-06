@@ -4,7 +4,11 @@ import javax.swing.*;
 import java.awt.*;
 
 /**
- * Niemodyfikowalny tekst wyświetlany na GUI
+ * Niemodyfikowalny tekst wyświetlany na GUI. Dane dla metody updateData():
+ *
+ *
+ *  <p> 0. login użytkownika </p>
+ *  <p> 1. rola użytkownika </p>
  * */
 public class Text extends GuiComponent {
 
@@ -55,5 +59,9 @@ public class Text extends GuiComponent {
 
     public String getText(){
         return label.getText();
+    }
+
+    public void setText(String text){
+        label.setText(text);
     }
 }

@@ -12,7 +12,7 @@ public class AssignAttractionView extends View {
 	 * @param data
 	 */
 	public AssignAttractionView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement AssignAttractionView.AssignAttractionView
 		throw new UnsupportedOperationException();
 	}

@@ -51,7 +51,7 @@ public class LoginView extends View {
 	 * Inicjalizacja widoku logowania i rejestracji
 	 * */
 	public LoginView(JFrame parent, EventHandler event_handler) {
-		super(parent, true);
+		super(parent, true, null);
 
 		// Panel logowania
 		login_panel = new PanelWithHeader(main_panel, "Logowanie i rejestracja");

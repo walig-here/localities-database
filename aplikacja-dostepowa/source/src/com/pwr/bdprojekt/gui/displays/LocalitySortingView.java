@@ -12,7 +12,7 @@ public class LocalitySortingView extends View {
 	private SingleChoiceList population;
 
 	public LocalitySortingView(JFrame parent) {
-		super(parent, false);
+		super(parent, false, null);
 	}
 
 	@Override

@@ -11,7 +11,7 @@ public class PermissionToRegionEditorView extends View {
 	 * @param data
 	 */
 	public PermissionToRegionEditorView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement PermissionToRegionEditorView.PermissionToRegionEditorView
 		throw new UnsupportedOperationException();
 	}

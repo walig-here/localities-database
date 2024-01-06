@@ -1,6 +1,7 @@
 package com.pwr.bdprojekt.gui.displays;
 
 import com.pwr.bdprojekt.gui.components.*;
+import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +35,7 @@ public abstract class View {
 	/**
 	 * Wysokość belki nawigacyjnej
 	 * */
-	protected static final int TOPBAR_HEIGHT = 30;
+	protected static final int TOPBAR_HEIGHT = Text.LETTER_HEIGHT;
 
 //======================================================================================================================
 // METODY
@@ -44,7 +45,7 @@ public abstract class View {
 	 * @param parent okno, w którym wyświetlony ma zostać widok
 	 * @param hide_top_bar czy belka nawigacyjna ma zostać ukryta?
 	 * */
-	public View(JFrame parent, boolean hide_top_bar)
+	public View(JFrame parent, boolean hide_top_bar, EventHandler event_handler)
 	{
 		parent_window = parent;
 
@@ -55,7 +56,7 @@ public abstract class View {
 
 		// Belka nawigacyjna
 		if(!hide_top_bar){
-			topbar = new TopBar(main_panel);
+			topbar = new TopBar(main_panel, event_handler);
 		}
 		else
 			topbar = null;

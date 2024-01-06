@@ -11,7 +11,7 @@ public class UserSortingView extends View {
 	 * @param data
 	 */
 	public UserSortingView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement UserSortingView.UserSortingView
 		throw new UnsupportedOperationException();
 	}

@@ -15,7 +15,7 @@ public class LocalityEditorView extends View {
 	private PanelWithHeader locality_attributes_list;
 
 	public LocalityEditorView(JFrame parent) {
-		super(parent, false);
+		super(parent, false, null);
 	}
 
 	@Override

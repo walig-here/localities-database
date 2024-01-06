@@ -17,7 +17,7 @@ public class LocalityFilteringView extends View {
 	private MultiChoiceList municipalities_list;
 
 	public LocalityFilteringView(JFrame parent) {
-		super(parent, false);
+		super(parent, false, null);
 	}
 
 	@Override

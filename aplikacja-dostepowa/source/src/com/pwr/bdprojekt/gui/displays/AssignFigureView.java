@@ -13,7 +13,7 @@ public class AssignFigureView extends View {
 	 * @param data
 	 */
 	public AssignFigureView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement AssignFigureView.AssignFigureView
 		throw new UnsupportedOperationException();
 	}

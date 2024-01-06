@@ -11,7 +11,7 @@ public class PermissionInRegionEditorView extends View {
 	private TextField desc;
 
 	public PermissionInRegionEditorView(JFrame parent) {
-		super(parent, false);
+		super(parent, false, null);
 	}
 
 	@Override

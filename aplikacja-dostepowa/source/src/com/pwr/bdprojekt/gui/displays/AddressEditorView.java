@@ -14,7 +14,7 @@ public class AddressEditorView extends View {
 	private PanelWithHeader address_attributes;	// panel z atrybutami adresu
 
 	public AddressEditorView(JFrame parent) {
-		super(parent, false);
+		super(parent, false, null);
 		address_attributes = new PanelWithHeader(main_panel, "Edytor...");
 	}
 

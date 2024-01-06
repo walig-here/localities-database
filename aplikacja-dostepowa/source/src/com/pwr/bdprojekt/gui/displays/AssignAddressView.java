@@ -12,7 +12,7 @@ public class AssignAddressView extends View {
 	 * @param data
 	 */
 	public AssignAddressView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement AssignAddressView.AssignAddressView
 		throw new UnsupportedOperationException();
 	}

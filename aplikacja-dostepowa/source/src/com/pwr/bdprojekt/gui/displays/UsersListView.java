@@ -11,7 +11,7 @@ public class UsersListView extends View {
 	 * @param data
 	 */
 	public UsersListView(String[] data) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement UsersListView.UsersListView
 		throw new UnsupportedOperationException();
 	}

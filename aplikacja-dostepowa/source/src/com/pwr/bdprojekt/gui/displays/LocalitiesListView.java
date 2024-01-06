@@ -10,7 +10,7 @@ public class LocalitiesListView extends View {
 	private LocalityListElement[] localities;
 
 	public LocalitiesListView(JFrame parent) {
-		super(parent,false);
+		super(parent,false, null);
 	}
 
 	@Override

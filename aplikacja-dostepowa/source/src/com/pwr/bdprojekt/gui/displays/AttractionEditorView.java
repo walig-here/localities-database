@@ -14,7 +14,7 @@ public class AttractionEditorView extends View {
 	 * @param attraction_id
 	 */
 	public AttractionEditorView(String attraction_id) {
-		super(null, false);
+		super(null, false, null);
 		// TODO - implement AttractionEditorView.AttractionEditorView
 		throw new UnsupportedOperationException();
 	}

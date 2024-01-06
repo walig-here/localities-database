@@ -64,7 +64,8 @@ public class PanelWithHeader extends GuiComponent {
 		super(parent);
 
 		// Nagłówek
-		this.header = new Text(this, header);
+		this.header = new Text(this, header, 1);
+		this.header.setBold(true);
 		elements_subpanel = new VerticalComponentsStrip(this);
 
 		// Pod-panel elementów
@@ -129,12 +130,12 @@ public class PanelWithHeader extends GuiComponent {
 		);
 
 		// Ustalenie wymiarów panelu skrolowanego
-		final int SCROLL_WIDTH = parent.getWidth()-2*S;
+		final int SCROLL_WIDTH = getWidth()-2*S;
 		scroll.setBounds(
-				parent.getX()+S,
+				getX()+S,
 				header.getBottomY(),
 				SCROLL_WIDTH,
-				parent.getHeight()-2*S-LABEL_H
+				getHeight()-2*S-LABEL_H
 		);
 
 		// Ustalenie wymiarów panelu z komponentami składowymi

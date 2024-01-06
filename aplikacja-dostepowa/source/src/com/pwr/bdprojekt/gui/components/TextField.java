@@ -65,7 +65,7 @@ public class TextField extends GuiComponent {
         super(parent);
 
         // Podpis
-        this.label = new Text(this, label);
+        this.label = new Text(this, label, 1);
 
         // Zawartość pola
         this.default_value = default_value;

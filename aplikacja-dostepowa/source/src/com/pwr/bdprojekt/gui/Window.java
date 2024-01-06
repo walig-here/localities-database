@@ -127,7 +127,7 @@ public class Window {
 
 		event_handler = new EventHandler(current_view);
 
-		switchToView(ViewType.HOME_ADMIN_TECH);
+		switchToView(ViewType.ADDRESS_EDITOR);
 
 		return true;
 	}

@@ -18,7 +18,7 @@ public class Text extends GuiComponent {
     /**
      * Wysokość tekstu
      * */
-    public static final int LETTER_HEIGHT = 20;
+    public static final int LETTER_HEIGHT = 16;
 
 //======================================================================================================================
 // POLA
@@ -28,6 +28,11 @@ public class Text extends GuiComponent {
      * */
     JTextArea label;
 
+    /**
+     * Liczba wyświetlanych linii tekstu
+     * */
+    private int number_of_lines;
+
 //======================================================================================================================
 // METODY
 
@@ -35,14 +40,16 @@ public class Text extends GuiComponent {
      * Stworzenie elementu wyświetlającego tekst na GUI.
      * @param parent element lub panel, na którym wyświetlany ma być tekst
      * @param text tekst do wyświetlenia
+     * @param number_of_lines liczba linii tekstu do wyświetlenia
      * */
-    public Text(JPanel parent, String text) {
+    public Text(JPanel parent, String text, int number_of_lines) {
         super(parent);
         label = new JTextArea(text);
         label.setEditable(false);
         add(label);
-        setSizeOfElement(0,LETTER_HEIGHT);
+        setSizeOfElement(0,LETTER_HEIGHT * number_of_lines + 2);
         setLayout(null);
+        this.number_of_lines = number_of_lines;
 
         redraw();
     }
@@ -63,5 +70,13 @@ public class Text extends GuiComponent {
 
     public void setText(String text){
         label.setText(text);
+    }
+
+    public void setBold(boolean bold){
+        Font f = label.getFont();
+        if(bold)
+            label.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
+        else
+            label.setFont(f.deriveFont(f.getStyle() & ~Font.BOLD));
     }
 }

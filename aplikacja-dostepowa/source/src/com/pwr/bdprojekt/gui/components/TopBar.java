@@ -82,11 +82,11 @@ public class TopBar extends GuiComponent {
 		elements_panel.insertComponent(user_data_panel);
 
 		// Login
-		login = new Text(elements_panel, "login");
+		login = new Text(elements_panel, "login", 2);
 		user_data_panel.insertComponent(login);
 
 		// rola
-		role = new Text(elements_panel, "rola");
+		role = new Text(elements_panel, "rola", 1);
 		user_data_panel.insertComponent(role);
 
 		// panel nawigacyjny

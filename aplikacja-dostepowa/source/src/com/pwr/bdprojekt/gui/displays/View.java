@@ -35,7 +35,7 @@ public abstract class View {
 	/**
 	 * Wysokość belki nawigacyjnej
 	 * */
-	protected static final int TOPBAR_HEIGHT = Text.LETTER_HEIGHT;
+	protected static final int TOPBAR_HEIGHT = Text.LETTER_HEIGHT + 2;
 
 //======================================================================================================================
 // METODY

@@ -37,4 +37,19 @@ public interface EventCommand {
 	 * Wylogowanie aktualnego użytkownika
 	 * */
 	String logOutCurrentUser = "log out";
+
+	/**
+	 * Otwarcie widoku listy miejscowości
+	 * */
+	String openLocalityList = "locality list";
+
+	/**
+	 * Otwarcie widoku listy ulubionych miejscowości
+	 * */
+	String openFavouriteList = "favourite list";
+
+	/**
+	 * Otwarcie widoku listy użytkowników
+	 * */
+	String openUserList = "user list";
 }

@@ -51,4 +51,24 @@ public class EventCommandGenerator {
         return EventCommand.logOutCurrentUser;
     }
 
+    /**
+     * Otworzenie widoku listy miejscowości
+     * */
+    static public String openLocalityList(){
+        return EventCommand.openLocalityList;
+    }
+
+    /**
+     * Otworzenie widoku listy ulubionych miejscowości
+     * */
+    static public String openFavourtieList(){
+        return EventCommand.openFavouriteList;
+    }
+
+    /**
+     * Otworzenie widoku listy użytkowników
+     * */
+    static public String openUserList(){
+        return EventCommand.openUserList;
+    }
 }

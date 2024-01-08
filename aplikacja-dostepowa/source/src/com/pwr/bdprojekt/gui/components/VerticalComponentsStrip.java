@@ -75,8 +75,8 @@ public class VerticalComponentsStrip extends GuiComponent {
     protected void redraw() {
         int height = SEPARATOR;
         for (GuiComponent child_component : getAllComponents()) {
-            child_component.setPosition(0, height);
-            child_component.setSizeOfElement(getWidth(), child_component.getHeight());
+            child_component.setPosition(SEPARATOR, height);
+            child_component.setSizeOfElement(getWidth()-2*SEPARATOR, child_component.getHeight());
             height += child_component.getHeight()+SEPARATOR;
         }
         setBounds(getX(), getY(), getWidth(), height);

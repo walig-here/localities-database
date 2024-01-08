@@ -52,4 +52,14 @@ public interface EventCommand {
 	 * Otwarcie widoku listy użytkowników
 	 * */
 	String openUserList = "user list";
+
+	/**
+	 * Dodanie nowego adresu do miejscowości i przypisanie do niego atrakcji
+	 * */
+	String addAddressToLocalityAndAssignAttractionToIt = "new address";
+
+	/**
+	 * Otwarcie widoku przypisania atrakcji do adresu z miejscowości
+	 * */
+	String openAssignAttractionToAddressFromLocalityView = "locality addresses";
 }

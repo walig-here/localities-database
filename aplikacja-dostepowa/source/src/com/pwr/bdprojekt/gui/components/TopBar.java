@@ -24,19 +24,9 @@ public class TopBar extends GuiComponent {
 	private HorizontalComponentsStrip elements_panel;
 
 	/**
-	 * Panel z danymi użytkownika
+	 * Logik i rola aktualnie zalogowanego użytkownika
 	 * */
-	private HorizontalComponentsStrip user_data_panel;
-
-	/**
-	 * Login aktualnie zalogowanego użytkownika
-	 * */
-	private Text login;
-
-	/**
-	 * Rola aktualnie zalowogwanego użytkownika
-	 * */
-	private Text role;
+	private Text loginAndRole;
 
 	/**
 	 * Panel z przyciskami nawigacyjnymi
@@ -77,17 +67,9 @@ public class TopBar extends GuiComponent {
 		// Panel elementów
 		elements_panel = new HorizontalComponentsStrip(this);
 
-		// Panel danych użytkownika
-		user_data_panel = new HorizontalComponentsStrip(elements_panel);
-		elements_panel.insertComponent(user_data_panel);
-
 		// Login
-		login = new Text(elements_panel, "login", 2);
-		user_data_panel.insertComponent(login);
-
-		// rola
-		role = new Text(elements_panel, "rola", 1);
-		user_data_panel.insertComponent(role);
+		loginAndRole = new Text(elements_panel, "login i rola", 2);
+		elements_panel.insertComponent(loginAndRole);
 
 		// panel nawigacyjny
 		navigation_panel = new HorizontalComponentsStrip(elements_panel);
@@ -152,7 +134,6 @@ public class TopBar extends GuiComponent {
 	@Override
 	protected void updateData(String[] data) {
 		// Dane użytkownika
-		login.setText(data[0]);
-		role.setText("("+data[1]+")");
+		loginAndRole.setText(data[0]+" ("+data[1]+")");
 	}
 }

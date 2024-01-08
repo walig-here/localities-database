@@ -31,7 +31,7 @@ public class Window {
 	 * Przełączenie aktualnego widoku
 	 * @param new_view_type widok, na który chcemy się przełączyć
 	 */
-	public static void switchToView(ViewType new_view_type)
+	public static void switchToView(ViewType new_view_type, String[] data)
 	{
 		current_view_type = new_view_type;
 		switch (current_view_type)
@@ -43,7 +43,7 @@ public class Window {
 					current_view = new HomeView(frame, false, event_handler);
 					break;
 			case ADDRESS_EDITOR:
-					current_view = new AddressEditorView(frame);
+					current_view = new AddressEditorView(frame, event_handler);
 					break;
 			case ATTRACTION_EDITOR:
 					break;
@@ -87,6 +87,7 @@ public class Window {
 			case EMPTY:
 					break;
 		}
+		current_view.refresh(data);
 	}
 
 	/**
@@ -127,7 +128,11 @@ public class Window {
 
 		event_handler = new EventHandler(current_view);
 
-		switchToView(ViewType.ADDRESS_EDITOR);
+		String[] data = new String[]{
+			"user 1", "rola użytkownika",
+			"Wrocław", "1", "2"
+		};
+		switchToView(ViewType.ADDRESS_EDITOR, data);
 
 		return true;
 	}

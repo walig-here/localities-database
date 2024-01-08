@@ -183,6 +183,6 @@ public class HomeView extends View {
 
     @Override
     protected void updateData(String[] data) {
-        topbar.refresh(Arrays.copyOfRange(data, 0, 1));
+        topbar.refresh(Arrays.copyOfRange(data, 0, 2));
     }
 }

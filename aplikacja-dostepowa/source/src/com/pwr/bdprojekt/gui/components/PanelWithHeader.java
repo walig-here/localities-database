@@ -120,6 +120,20 @@ public class PanelWithHeader extends GuiComponent {
 		}
 	}
 
+	/**
+	 * Pobranie treści nagłówka
+	 * */
+	public String getHeaderText(){
+		return header.getText();
+	}
+
+	/**
+	 * Ustalenie treści nagłówka
+	 * */
+	public void setHeaderText(String text){
+		header.setText(text);
+	}
+
 	@Override
 	protected void redraw() {
 		// Ustalenie wymiarów nagłówka

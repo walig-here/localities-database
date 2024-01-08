@@ -71,4 +71,18 @@ public class EventCommandGenerator {
     static public String openUserList(){
         return EventCommand.openUserList;
     }
+
+    /**
+     * Dodanie nowego adresu do miejscowości i przypisanie do niego atrakcji
+     * */
+    static public String addAddressToLocalityAndAssignAttractionToIt(){
+        return EventCommand.addAddressToLocalityAndAssignAttractionToIt;
+    }
+
+    /**
+     * Otwarcie widoku przypisania atrakcji do adresu z miejscowości
+     * */
+    static public String openAssignAttractionToAddressFromLocalityView(){
+        return EventCommand.openAssignAttractionToAddressFromLocalityView;
+    }
 }

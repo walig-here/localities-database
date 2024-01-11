@@ -190,7 +190,7 @@ public class AttractionEditorView extends View {
 		// dane bazowe
 		attraction_id = data[2];
 		name.setDefaultValue(data[3], name.getText().equals(""));
-		description.setDefaultValue(data[4], name.getText().equals(""));
+		description.setDefaultValue(data[4], description.getText().equals(""));
 		attraction_type.setElements(data[5].split(","));
 
 		// typy

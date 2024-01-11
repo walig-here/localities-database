@@ -151,4 +151,39 @@ public class AddressEditorView extends View {
 		locality_id = data[3];
 		attraction_id = data[4];
 	}
+
+	/**
+	 * Pobranie nazwy ulicy
+	 * */
+	public String getStreetName(){
+		return street_name.getText();
+	}
+
+	/**
+	 * Pobranie numery budynku
+	 * */
+	public String getBuildingNumber(){
+		return building_number.getText();
+	}
+
+	/**
+	 * Pobranie numeru lokalu
+	 * */
+	public String getFlatNumber(){
+		return flat_number.getText();
+	}
+
+	/**
+	 * Pobranie id miejscowości
+	 * */
+	public int getLocalityId(){
+		return Integer.parseInt(locality_id);
+	}
+
+	/**
+	 * Pobranie id atrakcji
+	 * */
+	public int getAttractionId(){
+		return Integer.parseInt(attraction_id);
+	}
 }

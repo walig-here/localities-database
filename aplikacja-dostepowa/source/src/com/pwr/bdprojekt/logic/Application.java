@@ -162,7 +162,7 @@ public class Application {
 
 	public static void open() {
 		is_running = true;
-		Window.open("Baza danych miejscowości", 1000, 600);
+		Window.open("Baza danych miejscowości", 975, 1000);
 		if(!DataBaseApi.connect("root", "admin")){
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();

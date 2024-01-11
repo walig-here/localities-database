@@ -18,7 +18,7 @@ public class Text extends GuiComponent {
     /**
      * Wysokość tekstu
      * */
-    public static final int LETTER_HEIGHT = 16;
+    public static final int LETTER_HEIGHT = 20;
 
 //======================================================================================================================
 // POLA

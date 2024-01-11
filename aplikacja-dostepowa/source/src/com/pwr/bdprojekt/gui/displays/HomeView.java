@@ -3,13 +3,10 @@ package com.pwr.bdprojekt.gui.displays;
 import com.pwr.bdprojekt.gui.components.Button;
 import com.pwr.bdprojekt.gui.components.PanelWithHeader;
 import com.pwr.bdprojekt.gui.components.Text;
-import com.pwr.bdprojekt.gui.components.VerticalComponentsStrip;
 import com.pwr.bdprojekt.gui.events.EventCommand;
-import com.pwr.bdprojekt.gui.events.EventCommandGenerator;
 import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 
 /**
@@ -104,7 +101,7 @@ public class HomeView extends View {
         locality_list_button = new Button(
                 locality_list_panel,
                 "Otwórz listę miejscowości",
-                EventCommandGenerator.openLocalityList(),
+                EventCommand.openLocalityList,
                 event_handler
         );
         locality_list_panel.insertComponent(locality_list_button);
@@ -121,7 +118,7 @@ public class HomeView extends View {
         favourite_list_button = new Button(
                 elements_panel,
                 "Otwórz listę ulubionych miejscowości",
-                EventCommandGenerator.openFavourtieList(),
+                EventCommand.openFavouriteList,
                 event_handler
         );
         favourite_list_panel.insertComponent(favourite_list_button);
@@ -140,7 +137,7 @@ public class HomeView extends View {
             user_list_button = new Button(
                     main_panel,
                     "Otwórz listę użytkowników",
-                    EventCommandGenerator.openUserList(),
+                    EventCommand.openUserList,
                     event_handler
             );
             user_list_panel.insertComponent(user_list_button);

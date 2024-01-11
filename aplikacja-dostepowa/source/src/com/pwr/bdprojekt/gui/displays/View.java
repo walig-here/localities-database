@@ -91,9 +91,9 @@ public abstract class View {
 	 * @param data zbiór zaktualizowanych danych, których skład różni się w zależności od implementacji widoku
 	 */
 	public void refresh(String[] data){
+		updateData(data);
 		redrawBaseView();
 		redraw();
-		updateData(data);
 	}
 
 	/**

@@ -1,7 +1,7 @@
 package com.pwr.bdprojekt.gui.displays;
 
 import com.pwr.bdprojekt.gui.components.*;
-import com.pwr.bdprojekt.gui.events.EventCommandGenerator;
+import com.pwr.bdprojekt.gui.events.EventCommand;
 import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
@@ -69,11 +69,11 @@ public class LoginView extends View {
 		login_panel.insertComponent(button_panel);
 
 		// Przycisk logowania
-		login_button = new Button(button_panel, "Zaloguj", EventCommandGenerator.loginUser(), event_handler);
+		login_button = new Button(button_panel, "Zaloguj", EventCommand.loginUser, event_handler);
 		button_panel.insertComponent(login_button);
 
 		// Przycisk rejestracji
-		register_button = new Button(button_panel, "Zarejestruj", EventCommandGenerator.registerUser(), event_handler);
+		register_button = new Button(button_panel, "Zarejestruj", EventCommand.registerUser, event_handler);
 		button_panel.insertComponent(register_button);
 
 		// Rozmieszczenie elementów

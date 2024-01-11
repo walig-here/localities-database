@@ -62,4 +62,34 @@ public interface EventCommand {
 	 * Otwarcie widoku przypisania atrakcji do adresu z miejscowości
 	 * */
 	String openAssignAttractionToAddressFromLocalityView = "locality addresses";
+
+	/**
+	 * Otwarcie widoku danych atrakcji
+	 * */
+	String openAttractionView = "attraction";
+
+	/**
+	 * Modifykacja danych bazowych atrakcji
+	 * */
+	String modifyBaseAttractionData = "update attraction";
+
+	/**
+	 * Usunięcie przypisania adresu
+	 * */
+	String unassignAddressFromAttraction = "unassign address ";
+
+	/**
+	 * Modyfikacja podpisu ilustacji przypisanej do atrakcji
+	 * */
+	String modifyCaptionOfFigureAssignToAttraction = "modify caption ";
+
+	/**
+	 * Usunięcie przypisania ilustracji do atrakcji
+	 * */
+	String unassignFigureFromAttraction = "unassign figure ";
+
+	/**
+	 * Otworzenie widoku przypisania atrakcji do ilustracji
+	 * */
+	String openAssignAttractionToFigure = "figures";
 }

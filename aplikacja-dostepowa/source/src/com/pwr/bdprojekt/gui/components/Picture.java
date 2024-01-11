@@ -37,13 +37,13 @@ public class Picture extends GuiComponent{
             BufferedImage loaded_file = ImageIO.read(new File("resources/"+path));
             figure = new JLabel(new ImageIcon(loaded_file));
             figure.setBounds(0, 0, loaded_file.getWidth(), loaded_file.getHeight());
+            add(figure);
         } catch (IOException e) {
             figure = new JLabel();
             System.out.println("Cannot load image from file: " + path);
         }
         setBorder(BorderFactory.createLineBorder(Color.BLACK));
         setBackground(Color.BLUE);
-        add(figure);
 
         // Rozkład elementów
         setLayout(null);
@@ -53,6 +53,7 @@ public class Picture extends GuiComponent{
     @Override
     protected void redraw() {
         figure.setBounds(0, 0, figure.getWidth(), figure.getHeight());
+        setBounds(getX(), getY(), getWidth(), figure.getHeight());
     }
 
     @Override

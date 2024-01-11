@@ -3,11 +3,10 @@ package com.pwr.bdprojekt.gui.displays;
 import com.pwr.bdprojekt.gui.components.*;
 import com.pwr.bdprojekt.gui.components.Button;
 import com.pwr.bdprojekt.gui.components.TextField;
-import com.pwr.bdprojekt.gui.events.EventCommandGenerator;
+import com.pwr.bdprojekt.gui.events.EventCommand;
 import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
-import java.awt.*;
 import java.util.Arrays;
 
 /**
@@ -107,7 +106,7 @@ public class AddressEditorView extends View {
 		confirm_button = new Button(
 				main_panel,
 				"Zatwierdź",
-				EventCommandGenerator.addAddressToLocalityAndAssignAttractionToIt(),
+				EventCommand.addAddressToLocalityAndAssignAttractionToIt,
 				event_handler
 		);
 		buttons_panel.insertComponent(confirm_button);
@@ -116,7 +115,7 @@ public class AddressEditorView extends View {
 		cancel_button = new Button(
 			main_panel,
 			"Anuluj",
-			EventCommandGenerator.openAssignAttractionToAddressFromLocalityView(),
+			EventCommand.openAssignAttractionToAddressFromLocalityView,
 			event_handler
 		);
 		buttons_panel.insertComponent(cancel_button);

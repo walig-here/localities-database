@@ -74,15 +74,18 @@ public class TextField extends GuiComponent {
         add(content);
         number_of_lines = lines;
 		setSizeOfElement(0, Text.HEIGHT + number_of_lines * Text.HEIGHT);
+        setBackground(Color.WHITE);
 
         // Rozmieszczenie elementów
         setLayout(null);
 		redraw();
     }
 
+    /**
+     * Pobranie zawartości
+     * */
     public String getText() {
-        // TODO - implement ResetableTextField.getText
-        throw new UnsupportedOperationException();
+        return content.getText();
     }
 
     /**
@@ -111,20 +114,11 @@ public class TextField extends GuiComponent {
         content.setText(default_value);
     }
 
-
-    /**
-     * @param editable
-     */
-    public void setEditable(boolean editable) {
-        // TODO - implement ResetableTextField.setEditable
-        throw new UnsupportedOperationException();
-    }
-
     @Override
     protected void redraw() {
 		// Podpis
         label.setPosition(0, 0);
-        label.setSizeOfElement(getWidth(), Text.LETTER_HEIGHT);
+        label.setSizeOfElement(getWidth(), label.getHeight());
 
         // Wariant z możliwościa resetu
         if (reset_button != null) {
@@ -156,7 +150,24 @@ public class TextField extends GuiComponent {
 		setBounds(getX(), getY(), getWidth(), this_height);
     }
 
-    @Override
+    /**
+     * Ustalenie zawartości domyślnej
+     * @param default_value nowa zawartość domyślna
+     * @param set_to_default czy pole tekstowe po wykonaniu metody ma zawierać podaną wartośc odmyślną?
+     * */
+    public void setDefaultValue(String default_value, boolean set_to_default){
+        this.default_value = default_value;
+        if(set_to_default)
+            setText(default_value);
+    }
+
+    /**
+     * Ustalenie zawartości
+     * */
+    public void setText(String text){
+        content.setText(text);
+    }
+
     protected void updateData(String[] data) {
         // zostawić - nie ma tu co tutaj aktualizować
     }

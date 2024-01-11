@@ -1,9 +1,8 @@
 package com.pwr.bdprojekt.gui.components;
 
-import com.pwr.bdprojekt.gui.events.EventCommandGenerator;
+import com.pwr.bdprojekt.gui.events.EventCommand;
 import com.pwr.bdprojekt.gui.events.EventHandler;
-import com.pwr.bdprojekt.logic.Application;
-import com.pwr.bdprojekt.logic.entities.User;
+import org.w3c.dom.events.Event;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,7 +78,7 @@ public class TopBar extends GuiComponent {
 		user_profile_button = new Button(
 				navigation_panel,
 				"Mój profil",
-				EventCommandGenerator.openCurrentUserAccount(),
+				EventCommand.openCurrentUserAccount,
 				event_handler
 		);
 		navigation_panel.insertComponent(user_profile_button);
@@ -88,7 +87,7 @@ public class TopBar extends GuiComponent {
 		previous_view_button = new Button(
 				navigation_panel,
 				"Wstecz",
-				EventCommandGenerator.openPreviousView(),
+				EventCommand.openPreviousView,
 				event_handler
 		);
 		navigation_panel.insertComponent(previous_view_button);
@@ -97,7 +96,7 @@ public class TopBar extends GuiComponent {
 		home_view_button = new Button(
 				navigation_panel,
 				"Główna",
-				EventCommandGenerator.openHomeView(),
+				EventCommand.openHomeView,
 				event_handler
 		);
 		navigation_panel.insertComponent(home_view_button);
@@ -106,7 +105,7 @@ public class TopBar extends GuiComponent {
 		refresh_button = new Button(
 				navigation_panel,
 				"Odśwież",
-				EventCommandGenerator.refreshView(),
+				EventCommand.refreshView,
 				event_handler
 		);
 		navigation_panel.insertComponent(refresh_button);
@@ -115,7 +114,7 @@ public class TopBar extends GuiComponent {
 		log_out_button = new Button(
 			navigation_panel,
 			"Wyloguj",
-			EventCommandGenerator.logOutCurrentUser(),
+				EventCommand.logOutCurrentUser,
 			event_handler
 		);
 		navigation_panel.insertComponent(log_out_button);

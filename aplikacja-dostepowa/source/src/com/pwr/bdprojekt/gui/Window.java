@@ -7,6 +7,7 @@ import com.pwr.bdprojekt.logic.Application;
 import javax.swing.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
 
 /**
  * Okno aplikacji
@@ -46,6 +47,7 @@ public class Window {
 					current_view = new AddressEditorView(frame, event_handler);
 					break;
 			case ATTRACTION_EDITOR:
+					current_view = new AttractionEditorView(frame, event_handler);
 					break;
 			case LOCALITY_EDITOR:
 					break;
@@ -129,10 +131,18 @@ public class Window {
 		event_handler = new EventHandler(current_view);
 
 		String[] data = new String[]{
-			"user 1", "rola użytkownika",
-			"Wrocław", "1", "2"
+			"user 1",
+			"rola użytkownika",
+			"1",
+			"Rynek",
+			"sdadsahdsakjbsjdbidfsavbiyfedvisdfb",
+			String.join(",", new String[]{"1", "2", "3", "4", "5", "6"}),
+			String.join(",", new String[]{"0", "2"}),
+			String.join(";", new String[]{"Wrocław, ul. Sukiennice 15/14", "Bielany Wrocławskie, ul. Kalinowa 7C"}),
+			String.join(",", new String[]{"zerologo.jpg"}),
+			String.join(",", new String[]{"opis obrazka"})
 		};
-		switchToView(ViewType.ADDRESS_EDITOR, data);
+		switchToView(ViewType.ATTRACTION_EDITOR, data);
 
 		return true;
 	}

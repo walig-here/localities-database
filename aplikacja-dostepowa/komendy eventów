@@ -1,0 +1,76 @@
+assignAddressToAttraction - przypisanie atrakcji do adresu ("Przypisz" na ekranie przypisywania adresów)
+	Komenda => assign address;<id atrakcji>;<id adresu>
+	Efekt 	=> przypisanie atrakcji do adresu w bazie danych
+			=> powrót do okna danych miejscowości
+
+
+openHomeView - przejście do ekranu domowego ("Domek" na topbarze)
+	Komenda	=> home
+	Efekt	=> powrót do okna domowego
+
+logOut - wylogowanie aktualnego użytkownika ("wyloguj" na topbarze)
+	Komenda	=> log out
+	efekt	=> usunięcie aktualnego użytkownika
+			=> powrót do ekranu logowania
+
+refreshView - odświeżenie aktualnego widoku
+	komenda	=> refresh
+	efekt	=> odświeżenie widoku 
+
+openPreviousView - powrót do porzedniego widoku ("back" na topbarze)
+	komenda => back
+	efekt	=> powrót do poprzedniego ekranu
+	
+viewAccount - otworzenie widoku konta wskazanego użytkownika
+	komenda => view account;<login>
+	efekt	=> otworzenie widoku konta wskazanego użytkownika
+	
+openAddressEditor - otworzenie edytora adresu w miejscowości
+	komenda	=> address editor;<id atrakcji>;<id miejscowości>
+	efekt	=> otworzenie widoku edytora adresu
+	
+openUserFilters	- otworzenie okna filtrowania listy użytkowników
+	komenda => user filters
+	efekt => otworzenie widoku filtrowania użytkowników
+
+openUserSort - otworzenie okna sortowania użytkowników
+	komenda => user sort
+	efekt => otworzenie okna sortowania użytkowników
+	
+openLocalityList - otwiera listę miejscowości
+	komenda => locality list
+	efekt => otworzenie widoku listy miejscowości
+
+openFavouriteList - otwiera listę ulubionych miejscowości
+	komenda => favourite list
+	efekt => otworzenie listy ulubionych miejscowości
+
+openUserList - otwiera listę użytkowników
+	komenda => user list
+	efekt => otworzenie listy użytkowników
+
+addNewAddress - Dodaje nowy adres do bazy danych i przypisuje do niego atrakcje
+	komenda => new address 
+	efekt => dodanie nowego adresu do bazy danych i przypisanie do niego atrakcji
+			=> przejście do ekranu danych miejscowości
+
+assignAttractionToLocality - Otworzenie widoku przypisania atrakcji adresu z miejscowości
+	komenda	=> locality addresses;<id miejscowości>;<id atrakcji>
+
+updateAttraction - modyfikacja podstawowych danych atrakcji
+	komenda	=> update attraction;<attraction id>
+	efekt	=> zmiana danych atrakcji
+			=> odświeżenie ekranu
+
+unassignFigure - usunięcie przypisania obrazka do atrakcji
+	komenda	=> unassign figure;<id obrazka>;<id atrakcji>
+	efekt	=> usunięcie przypisania obrazek-atrakcja
+			=> odświeżenie ekranu
+
+modifyCaption - modyfikacja podpisu obrazka
+	komenda	=> modify caption;<indeks obrazka na liście>;<id atrakcji>
+	efekt	=> modyfikacja podpisu
+			=> odświeżenie ekranu
+
+openFiguresList - otwiera listę obrazków zawartych w bazie
+	komenda => figures

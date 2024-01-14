@@ -2,6 +2,8 @@ package com.pwr.bdprojekt.gui.components;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
 /**
  * Lista jednokrotnego wyboru.
@@ -133,5 +135,12 @@ public class SingleChoiceList extends GuiComponent {
 	 * */
 	public int getSelectedIndex(){
 		return list.getSelectedIndex();
+	}
+
+	/**
+	 * Ustalenie procedury wykonującej się po zmianie opcji w menu
+	 * */
+	public void setProcedureForSelectionChange(ItemListener procedure){
+		list.addItemListener(procedure);
 	}
 }

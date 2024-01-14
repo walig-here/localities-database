@@ -53,6 +53,7 @@ public class Window {
 					current_view = new LocalityEditorView(frame, event_handler);
 					break;
 			case PERMISSION_EDITOR:
+					current_view = new PermissionInRegionEditorView(frame, event_handler);
 					break;
 			case PERMISSION_TO_REGION_EDITOR:
 					current_view = new PermissionToRegionEditorView(frame, event_handler);
@@ -136,9 +137,12 @@ public class Window {
 			"user 1",
 			"rola użytkownika",
 			"janek13",
-			String.join(",", new String[]{"woj1", "woj2", "woj3", "woj4", "woj5", "woj6"}),
+			"1",
+			"Dolnośląskie",
+			String.join(",", new String[]{"upr1", "upr2", "upr3", "upr4", "upr5", "upr6"}),
+			String.join(";", new String[]{"opis 1", "opis 2", "opis 3", "opis 4", "opis 5", "opis 6"})
 		};
-		switchToView(ViewType.PERMISSION_TO_REGION_EDITOR, data);
+		switchToView(ViewType.PERMISSION_EDITOR, data);
 
 		return true;
 	}

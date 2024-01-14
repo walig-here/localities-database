@@ -162,6 +162,13 @@ public class TextField extends GuiComponent {
     }
 
     /**
+     * Ustalenie, czy pole jest edytowalne
+     * */
+    public void setEditable(boolean editable){
+        content.setEditable(editable);
+    }
+
+    /**
      * Ustalenie zawartości
      * */
     public void setText(String text){

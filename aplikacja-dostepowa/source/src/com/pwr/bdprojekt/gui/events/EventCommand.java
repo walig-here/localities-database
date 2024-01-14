@@ -111,5 +111,10 @@ public interface EventCommand {
 	/**
 	 * Otworzenie widoku nadaniwa uprawnienia w regionie
 	 * */
-	String openAssignPermissionToRegionView = "assign permission";
+	String openAssignPermissionToRegionView = "permissions";
+
+	/**
+	 * Przypisanie użytkownikowi uprawnienia w regionie
+	 * */
+	String assignPermissionInRegionToUser = "assign permission";
 }

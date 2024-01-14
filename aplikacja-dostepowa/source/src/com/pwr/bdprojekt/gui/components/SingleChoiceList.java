@@ -12,11 +12,6 @@ public class SingleChoiceList extends GuiComponent {
 // POLA
 
 	/**
-	 * Indeks domyślnie wybranej opcji z listy.
-	 * */
-	private int default_option_index;
-
-	/**
 	 * Nagłowek listy
 	 * */
 	private Text header;
@@ -24,12 +19,17 @@ public class SingleChoiceList extends GuiComponent {
 	/**
 	 * Lista
 	 * */
-	private JComboBox list;
+	private JComboBox<String> list;
 
 	/**
 	 * Przycisk resetu
 	 * */
 	private Button reset_button;
+
+	/**
+	 * Indeks domyślnie wybranej opcji z listy.
+	 * */
+	private int default_option_index;
 
 //======================================================================================================================
 // METODY
@@ -49,16 +49,9 @@ public class SingleChoiceList extends GuiComponent {
 		this.header = new Text(this, header, 1);
 
 		// Lista
-		list = new JComboBox();
+		list = new JComboBox<>();
 		list.setBackground(Color.WHITE);
 		add(list);
-
-		// Przycisk resetu
-		reset_button = new Button(
-				this,
-				"Reset",
-				a -> reset()
-		);
 
 		// rozmieszczenie elementów
 		setLayout(null);
@@ -79,7 +72,7 @@ public class SingleChoiceList extends GuiComponent {
 	}
 
 	public void reset() {
-		list.setSelectedItem(default_option_index);
+		list.setSelectedIndex(default_option_index);
 	}
 
 	@Override
@@ -113,5 +106,32 @@ public class SingleChoiceList extends GuiComponent {
 	@Override
 	protected void updateData(String[] data) {
 
+	}
+
+	/**
+	 * Ustalenie elementów dostępnych do wyboru na liście
+	 * @param elements elementy dostępne do wyboru na liście
+	 * */
+	public void setElements(String[] elements){
+		list.removeAllItems();
+		for (String element : elements) {
+			list.addItem(element);
+		}
+	}
+
+	/**
+	 * Ustalenie elementu oznaczonego domyślnie na liscie jako wybrany
+	 * @param index indeks wybranego elementu
+	 * */
+	public void setDefaultSelectedElement(String index){
+		default_option_index = Integer.parseInt(index);
+		list.setSelectedIndex(default_option_index);
+	}
+
+	/**
+	 * Pobranie indeksu wybranego elementu
+	 * */
+	public int getSelectedIndex(){
+		return list.getSelectedIndex();
 	}
 }

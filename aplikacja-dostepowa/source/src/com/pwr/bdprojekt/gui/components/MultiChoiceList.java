@@ -141,10 +141,10 @@ public class MultiChoiceList extends GuiComponent {
 	}
 
 	/**
-	 * Ustalenie elementów oznaczonych na liscie jako wybrane
+	 * Ustalenie elementów oznaczonych domyślnie na liscie jako wybrane
 	 * @param indices indeksy wybranych elementów
 	 * */
-	public void setSelectedElements(String[] indices){
+	public void setDefaultSelectedElements(String[] indices){
 		default_options_indices = new int[indices.length];
 		for (int i = 0; i < indices.length; i++) {
 			default_options_indices[i] = Integer.parseInt(indices[i]);

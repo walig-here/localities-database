@@ -92,4 +92,14 @@ public interface EventCommand {
 	 * Otworzenie widoku przypisania atrakcji do ilustracji
 	 * */
 	String openAssignAttractionToFigure = "figures";
+
+	/**
+	 * Otworzenie widoku danych miejscowości
+	 * */
+	String openLocalityView = "locality";
+
+	/**
+	 * Modyfikacja danych miejscowości
+	 * */
+	String modifyLocalityData = "modify locality";
 }

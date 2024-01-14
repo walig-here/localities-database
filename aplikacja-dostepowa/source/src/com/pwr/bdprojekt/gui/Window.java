@@ -50,6 +50,7 @@ public class Window {
 					current_view = new AttractionEditorView(frame, event_handler);
 					break;
 			case LOCALITY_EDITOR:
+					current_view = new LocalityEditorView(frame, event_handler);
 					break;
 			case PERMISSION_EDITOR:
 					break;
@@ -134,15 +135,17 @@ public class Window {
 			"user 1",
 			"rola użytkownika",
 			"1",
-			"Rynek",
-			"sdadsahdsakjbsjdbidfsavbiyfedvisdfb",
-			String.join(",", new String[]{"1", "2", "3", "4", "5", "6"}),
-			String.join(",", new String[]{"0", "2"}),
-			String.join(";", new String[]{"Wrocław, ul. Sukiennice 15/14", "Bielany Wrocławskie, ul. Kalinowa 7C"}),
-			String.join(",", new String[]{"zerologo.jpg"}),
-			String.join(",", new String[]{"opis obrazka"})
+			"Wrocław",
+			"opis",
+			"500123",
+			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5", "typ6"}),
+			"3",
+			String.join(",", new String[]{"gmina1", "gmina2", "gmina3", "gmina4", "gmina5", "gmina6"}),
+			"2",
+			"1.234",
+			"1.567"
 		};
-		switchToView(ViewType.LOGIN, data);
+		switchToView(ViewType.LOCALITY_EDITOR, data);
 
 		return true;
 	}

@@ -309,9 +309,22 @@ public class DataBaseApi {
 	 * @param login
 	 * @param password
 	 */
-	public static boolean registerUser(String login, String password) {
+	public static String registerUser(String login, String password) {
 		// TODO - implement DataBaseApi.registerUser
-		throw new UnsupportedOperationException();
+
+		if(login.equals("")){
+			return "Login nie może być pusty";
+		}
+		try{
+			CallableStatement callableStatement = root_connection.prepareCall("call register_user(?,?)");
+			callableStatement.setString(1, login);
+			callableStatement.setString(2, password);
+			callableStatement.execute();
+			return "";
+		}catch (SQLException e){
+			e.printStackTrace();
+			return "Takie konto już istnieje";
+		}
 	}
 
 	/**

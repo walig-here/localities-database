@@ -15,9 +15,15 @@ public class Application {
 		return current_user;
 	}
 
-	public static void register() {
+	public static void register(String login, String password) {
 		// TODO - implement Logic.register
-		throw new UnsupportedOperationException();
+
+		String errorMessage = DataBaseApi.registerUser(login, password);
+		if(errorMessage.equals("")){
+			Window.showMessageBox("Rejestracja powiodła się");
+		}else{
+			Window.showMessageBox(errorMessage);
+		}
 	}
 
 	public static void logiIn() {
@@ -167,6 +173,8 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
+
+		register("","admin");
 	}
 
 	public static void quit() {

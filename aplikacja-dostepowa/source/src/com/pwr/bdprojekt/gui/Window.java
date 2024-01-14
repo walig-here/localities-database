@@ -142,7 +142,7 @@ public class Window {
 			String.join(",", new String[]{"zerologo.jpg"}),
 			String.join(",", new String[]{"opis obrazka"})
 		};
-		switchToView(ViewType.ATTRACTION_EDITOR, data);
+		switchToView(ViewType.LOGIN, data);
 
 		return true;
 	}

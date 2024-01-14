@@ -16,8 +16,8 @@ import java.util.List;
  * [2] - id edytowanej atrakcji
  * [3] - nazwa edytowanej atrakcji
  * [4] - opis edytowanej atrakcji
- * [5] - lista nazw wszystkich typów atrakcji dostępnych w bazie (porostowanych względem id) oddzielonych przecinkami: "abc","def","ghi"
- * [6] - lista nazw typów atrakcji przypisanych do atrakcji oddzielonych przecinkami: "abc","def","ghi"
+ * [5] - lista nazw wszystkich typów atrakcji dostępnych w bazie (posortowanych względem id) oddzielonych przecinkami: "abc","def","ghi"
+ * [6] - lista identyfikatorów typów atrakcji przypisanych do atrakcji oddzielonych przecinkami: "1","2","3"
  * [7] - lista adresów przypisanych do atrakcji posortowana względem id oddzielonych średnikami: "abc";"def";"ghi"
  * [8] - lista ścieżek do obrazków przypisanych do atrakcji posorotwana względem id oddzielonych przecinkami: "abc","def","ghi"
  * [9] - lista opisów do obrazków przypisanych do atrakcji posortowana względem id oddzielonych średnikami: "abc";"def";"ghi"
@@ -157,6 +157,8 @@ public class AttractionEditorView extends View {
 			event_handler
 		);
 		figures_panel.insertComponent(assign_figure_button);
+
+		redraw();
 	}
 
 	@Override
@@ -191,10 +193,10 @@ public class AttractionEditorView extends View {
 		attraction_id = data[2];
 		name.setDefaultValue(data[3], name.getText().equals(""));
 		description.setDefaultValue(data[4], description.getText().equals(""));
-		attraction_type.setElements(data[5].split(","));
 
 		// typy
-		attraction_type.setSelectedElements(data[6].split(","));
+		attraction_type.setElements(data[5].split(","));
+		attraction_type.setDefaultSelectedElements(data[6].split(","));
 
 		// adresy
 		address_panel.removeAllComponents();

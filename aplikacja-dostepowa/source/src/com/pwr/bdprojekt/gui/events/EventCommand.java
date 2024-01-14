@@ -102,4 +102,14 @@ public interface EventCommand {
 	 * Modyfikacja danych miejscowości
 	 * */
 	String modifyLocalityData = "modify locality";
+
+	/**
+	 * Otworzenie widoku konta użytkownika
+	 * */
+	String openUserAccountView = "user";
+
+	/**
+	 * Otworzenie widoku nadaniwa uprawnienia w regionie
+	 * */
+	String openAssignPermissionToRegionView = "assign permission";
 }

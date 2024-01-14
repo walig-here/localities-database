@@ -173,8 +173,6 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
-
-		register("","admin");
 	}
 
 	public static void quit() {

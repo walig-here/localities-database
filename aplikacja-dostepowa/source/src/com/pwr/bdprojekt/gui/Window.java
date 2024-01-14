@@ -55,6 +55,7 @@ public class Window {
 			case PERMISSION_EDITOR:
 					break;
 			case PERMISSION_TO_REGION_EDITOR:
+					current_view = new PermissionToRegionEditorView(frame, event_handler);
 					break;
 			case LOCALITY_FILTER:
 					break;
@@ -134,18 +135,10 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"1",
-			"Wrocław",
-			"opis",
-			"500123",
-			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5", "typ6"}),
-			"3",
-			String.join(",", new String[]{"gmina1", "gmina2", "gmina3", "gmina4", "gmina5", "gmina6"}),
-			"2",
-			"1.234",
-			"1.567"
+			"janek13",
+			String.join(",", new String[]{"woj1", "woj2", "woj3", "woj4", "woj5", "woj6"}),
 		};
-		switchToView(ViewType.LOCALITY_EDITOR, data);
+		switchToView(ViewType.PERMISSION_TO_REGION_EDITOR, data);
 
 		return true;
 	}

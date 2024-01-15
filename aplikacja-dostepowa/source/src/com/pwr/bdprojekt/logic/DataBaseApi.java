@@ -3,6 +3,8 @@ package com.pwr.bdprojekt.logic;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataBaseApi {
 
@@ -34,7 +36,6 @@ public class DataBaseApi {
 		try {
 			connection_to_establish = DriverManager.getConnection(url);
 		} catch (SQLException e) {
-			e.printStackTrace();
 			System.out.println("Cannot connect to database as " + login);
 			return false;
 		}
@@ -72,7 +73,6 @@ public class DataBaseApi {
 			connection_to_establish.close();
 		} catch (SQLException e) {
 			System.out.println("Cannot close connection to database as " + login);
-			e.printStackTrace();
 			return false;
 		}
 
@@ -95,6 +95,8 @@ public class DataBaseApi {
 	 */
 	public static boolean addNewAttraction(Attraction attraction) {
 		// TODO - implement DataBaseApi.addNewAttraction
+
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -189,7 +191,7 @@ public class DataBaseApi {
 	 * 
 	 * @param locality
 	 */
-	public static Attraction[] getAttractionsFromLocality(Locality locality) {
+	public static Attraction[] getAttractionsInLocality(Locality locality) {
 		// TODO - implement DataBaseApi.getAttractionsFromLocality
 		throw new UnsupportedOperationException();
 	}
@@ -198,9 +200,34 @@ public class DataBaseApi {
 	 * 
 	 * @param voivodship
 	 */
-	public static AdministrativeUnit[] getCountiesFromVoivodship(AdministrativeUnit voivodship) {
+	public static List<AdministrativeUnit> getCountiesFromVoivodship(AdministrativeUnit voivodship) {
 		// TODO - implement DataBaseApi.getCountiesFromVoivodship
-		throw new UnsupportedOperationException();
+		List<AdministrativeUnit> counties = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_counties_from_voivodship(?)");
+			callableStatement.setInt(1, voivodship.getId());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				AdministrativeUnit county = new AdministrativeUnit();
+				county.setId(resultSet.getInt("administrative_unit_id"));
+				county.setName(resultSet.getString("name"));
+				county.setSuperiorAdministrativeUnit(voivodship);
+				// Dodaj obiekt do listy
+				counties.add(county);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+        }catch (SQLException e){
+			counties.clear();
+		}
+		return counties;
 	}
 
 	/**
@@ -234,9 +261,35 @@ public class DataBaseApi {
 	 * 
 	 * @param county
 	 */
-	public static AdministrativeUnit[] getMunicipalitiesFromCounty(AdministrativeUnit county) {
+	public static List<AdministrativeUnit> getMunicipalitiesFromCounty(AdministrativeUnit county) {
 		// TODO - implement DataBaseApi.getMunicipalitiesFromCounty
-		throw new UnsupportedOperationException();
+
+		List<AdministrativeUnit> municipalities = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_municipalities_from_county(?)");
+			callableStatement.setInt(1, county.getId());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				AdministrativeUnit municipality = new AdministrativeUnit();
+				municipality.setId(resultSet.getInt("administrative_unit_id"));
+				municipality.setName(resultSet.getString("name"));
+				municipality.setSuperiorAdministrativeUnit(county);
+				// Dodaj obiekt do listy
+				municipalities.add(municipality);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+		}catch (SQLException e){
+			municipalities.clear();
+		}
+		return municipalities;
 	}
 
 	/**
@@ -282,6 +335,8 @@ public class DataBaseApi {
 	 */
 	public static boolean modifyFigureCaption(String new_caption) {
 		// TODO - implement DataBaseApi.modifyFigureCaption
+
+
 		throw new UnsupportedOperationException();
 	}
 
@@ -320,6 +375,7 @@ public class DataBaseApi {
 			callableStatement.setString(1, login);
 			callableStatement.setString(2, password);
 			callableStatement.execute();
+			callableStatement.close();
 			return "";
 		}catch (SQLException e){
 			e.printStackTrace();

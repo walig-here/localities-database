@@ -26,14 +26,24 @@ public class Application {
 		}
 	}
 
-	public static void logiIn() {
+	public static void logiIn(String login, String password) {
 		// TODO - implement Logic.logiIn
-		throw new UnsupportedOperationException();
+
+		if(!DataBaseApi.connect(login, password)){
+			Window.showMessageBox("Nie udało się zalogować!");
+		}else{
+			Window.showMessageBox("Zalogowano!");
+		}
 	}
 
-	public static void logOut() {
+	public static void logOut(String login) {
 		// TODO - implement Logic.logOut
-		throw new UnsupportedOperationException();
+
+		if(!DataBaseApi.closeConnection(login)){
+			Window.showMessageBox("Nie udało się wylogować!");
+		}else{
+			Window.showMessageBox("Wylogowano!");
+		}
 	}
 
 	public static void browseUsersList() {
@@ -173,6 +183,7 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
+
 	}
 
 	public static void quit() {

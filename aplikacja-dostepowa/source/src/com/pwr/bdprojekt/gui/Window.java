@@ -62,6 +62,7 @@ public class Window {
 					current_view = new LocalityFilteringView(frame, event_handler);
 					break;
 			case USERS_FILTER:
+					current_view = new UserFilteringView(frame, event_handler);
 					break;
 			case LOCALITY_LIST_ADMIN_MERIT:
 					break;
@@ -137,21 +138,11 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"Wrocław",
-			String.join(",", new String[]{"3, 15"}),
-			String.join(",", new String[]{"1000, 15000"}),
-			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5"}),
-			String.join(",", new String[]{"1", "2", "4"}),
-			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5"}),
-			String.join(",", new String[]{"0", "2"}),
-			String.join(",", new String[]{"woj1", "woj2", "woj3", "woj4", "woj5"}),
-			String.join(",", new String[]{"0", "1", "2"}),
-			String.join(",", new String[]{"pow1", "pow2", "pow3", "pow4", "pow5"}),
-			String.join(",", new String[]{"0"}),
-			String.join(",", new String[]{"gm1", "gm2", "gm3", "gm4", "gm5"}),
-			String.join(",", new String[]{"1", "2"}),
+			"adaś45",
+			String.join(",", new String[]{"rola 1", "rola 2", "rola 3"}),
+			String.join(",", new String[]{"1"})
 		};
-		switchToView(ViewType.LOCALITY_FILTER, data);
+		switchToView(ViewType.USERS_FILTER, data);
 
 		return true;
 	}

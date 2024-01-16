@@ -124,6 +124,11 @@ public interface EventCommand {
 	String applyFiltersForLocalities = "filter localities";
 
 	/**
+	 * Zastosowanie filtrowania użytkowników
+	 * */
+	String applyFiltersForUsers = "filter users";
+
+	/**
 	 * Zmiana filtra województw
 	 * */
 	String localityVoivodshipFilterChanged = "voivodship filter change";

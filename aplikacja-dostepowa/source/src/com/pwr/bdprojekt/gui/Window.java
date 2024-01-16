@@ -59,6 +59,7 @@ public class Window {
 					current_view = new PermissionToRegionEditorView(frame, event_handler);
 					break;
 			case LOCALITY_FILTER:
+					current_view = new LocalityFilteringView(frame, event_handler);
 					break;
 			case USERS_FILTER:
 					break;
@@ -136,13 +137,21 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"janek13",
-			"1",
-			"Dolnośląskie",
-			String.join(",", new String[]{"upr1", "upr2", "upr3", "upr4", "upr5", "upr6"}),
-			String.join(";", new String[]{"opis 1", "opis 2", "opis 3", "opis 4", "opis 5", "opis 6"})
+			"Wrocław",
+			String.join(",", new String[]{"3, 15"}),
+			String.join(",", new String[]{"1000, 15000"}),
+			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5"}),
+			String.join(",", new String[]{"1", "2", "4"}),
+			String.join(",", new String[]{"typ1", "typ2", "typ3", "typ4", "typ5"}),
+			String.join(",", new String[]{"0", "2"}),
+			String.join(",", new String[]{"woj1", "woj2", "woj3", "woj4", "woj5"}),
+			String.join(",", new String[]{"0", "1", "2"}),
+			String.join(",", new String[]{"pow1", "pow2", "pow3", "pow4", "pow5"}),
+			String.join(",", new String[]{"0"}),
+			String.join(",", new String[]{"gm1", "gm2", "gm3", "gm4", "gm5"}),
+			String.join(",", new String[]{"1", "2"}),
 		};
-		switchToView(ViewType.PERMISSION_EDITOR, data);
+		switchToView(ViewType.LOCALITY_FILTER, data);
 
 		return true;
 	}

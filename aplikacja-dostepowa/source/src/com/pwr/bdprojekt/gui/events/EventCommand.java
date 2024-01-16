@@ -117,4 +117,19 @@ public interface EventCommand {
 	 * Przypisanie użytkownikowi uprawnienia w regionie
 	 * */
 	String assignPermissionInRegionToUser = "assign permission";
+
+	/**
+	 * Zastosowanie filtrowania miejscowości
+	 * */
+	String applyFiltersForLocalities = "filter localities";
+
+	/**
+	 * Zmiana filtra województw
+	 * */
+	String localityVoivodshipFilterChanged = "voivodship filter change";
+
+	/**
+	 * Zmiana filtra powiatów
+	 * */
+	String localityCountyFilterChanged = "county filter change";
 }

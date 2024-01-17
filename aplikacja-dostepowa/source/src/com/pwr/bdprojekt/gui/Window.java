@@ -71,6 +71,7 @@ public class Window {
 					current_view = new LocalitiesListView(frame, event_handler, false);
 					break;
 			case USERS_LIST:
+					current_view = new UsersListView(frame, event_handler);
 					break;
 			case LOGIN:
 					current_view = new LoginView(frame, event_handler);
@@ -141,24 +142,12 @@ public class Window {
 			"user 1",
 			"rola użytkownika",
 			"adaś45",
-			String.join(",", new String[]{"1", "5"}),
-			String.join(",", new String[]{"1", "5"}),
-			String.join(",", new String[]{"typ 1", "typ 2", "typ 3"}),
+			String.join(",", new String[]{"rola 1", "rola 2", "rola 3"}),
 			String.join(",", new String[]{"1"}),
-			String.join(",", new String[]{"typ 1", "typ 2", "typ 3"}),
-			String.join(",", new String[]{"1"}),
-			String.join(",", new String[]{"woj 1", "woj 2", "woj 3"}),
-			String.join(",", new String[]{"1"}),
-			String.join(",", new String[]{"pow 1", "pow 2", "pow 3"}),
-			String.join(",", new String[]{"1"}),
-			String.join(",", new String[]{"gm 1", "gm 2", "gm 3"}),
-			String.join(",", new String[]{"1"}),
-			String.join(";", new String[]{"Wrocław", "Miasto", "Dolnośląskie, Wrocław (miasto), Wrocław (miasto)", "800000", "4", "true"}),
-			String.join(";", new String[]{"Bielany Wrocławskie", "wieś", "Dolnośląskie, Wrocławski, Kobierzyce", "1000", "4", "false"}),
-			String.join(";", new String[]{"Wilkszyn", "wieś", "Dolnośląskie, Średzki, Miękinia", "1000", "4", "false"}),
-			String.join(";", new String[]{"Gdańsk", "miasto", "Pomorskie, Gdańsk (miasto), Gdańsk (miasto)", "1000", "4", "true"})
+			String.join(";", new String[]{"skarbuszek", "administrator techniczny"}),
+			String.join(";", new String[]{"dawid", "przeglądający"})
 		};
-		switchToView(ViewType.LOCALITY_LIST, data);
+		switchToView(ViewType.USERS_LIST, data);
 
 		return true;
 	}

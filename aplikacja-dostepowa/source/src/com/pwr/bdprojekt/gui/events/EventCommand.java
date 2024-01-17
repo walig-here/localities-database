@@ -162,4 +162,14 @@ public interface EventCommand {
 	 * Usunięcie miejscowości
 	 * */
 	String deleteLocality = "delete locality ";
+
+	/**
+	 * Włączenie widoku sortowania użytkowników
+	 * */
+	String openSortUsersView = "user sorting";
+
+	/**
+	 * Włączenie widoku filtrowania użytkowników
+	 * */
+	String openFilterUsersView = "user filters";
 }

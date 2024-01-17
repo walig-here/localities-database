@@ -42,11 +42,25 @@ public class Picture extends GuiComponent{
             figure = new JLabel();
             System.out.println("Cannot load image from file: " + path);
         }
-        setBorder(BorderFactory.createLineBorder(Color.BLACK));
-        setBackground(Color.BLUE);
+        setBackground(Color.WHITE);
 
         // Rozkład elementów
         setLayout(null);
+        redraw();
+    }
+
+    /**
+     * Wczytanie obrazka
+     * */
+    public void loadImage(String path){
+        BufferedImage loaded_file = null;
+        try {
+            loaded_file = ImageIO.read(new File("resources/"+path));
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("Cannot load image from file: " + path);
+        }
+        figure.setIcon(new ImageIcon(loaded_file));
         redraw();
     }
 

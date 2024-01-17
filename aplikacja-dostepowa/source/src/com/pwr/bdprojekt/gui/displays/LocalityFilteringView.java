@@ -5,9 +5,7 @@ import com.pwr.bdprojekt.gui.events.EventCommand;
 import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Widok pozwalający na ustalenie kryteriów filtrowania. Dane dla metody refresh():

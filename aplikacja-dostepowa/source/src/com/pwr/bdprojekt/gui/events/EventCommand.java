@@ -96,7 +96,7 @@ public interface EventCommand {
 	/**
 	 * Otworzenie widoku danych miejscowości
 	 * */
-	String openLocalityView = "locality";
+	String openLocalityView = "locality ";
 
 	/**
 	 * Modyfikacja danych miejscowości
@@ -137,4 +137,29 @@ public interface EventCommand {
 	 * Zmiana filtra powiatów
 	 * */
 	String localityCountyFilterChanged = "county filter change";
+
+	/**
+	 * Włączenie widoku filtrowania miejscowości
+	 * */
+	String openFilterLocalityView = "locality filters";
+
+	/**
+	 * Włączenie widoku sortowania miejscowości
+	 * */
+	String openSortLocalityView = "locality sorting";
+
+	/**
+	 * Dodanie nowej miejscowości
+	 * */
+	String addNewLocality = "new locality";
+
+	/**
+	 * Otworzenie eytora miejscowości
+	 * */
+	String openLocalityEditor = "edit locality ";
+
+	/**
+	 * Usunięcie miejscowości
+	 * */
+	String deleteLocality = "delete locality ";
 }

@@ -134,6 +134,16 @@ public class PanelWithHeader extends GuiComponent {
 		header.setText(text);
 	}
 
+	/**
+	 * Ustalenie widoczności granicy panelu
+	 * */
+	public void setBorderVisibility(boolean visible){
+		if(visible)
+			setBorder(BorderFactory.createLineBorder(Color.BLACK));
+		else
+			setBorder(null);
+	}
+
 	@Override
 	protected void redraw() {
 		// Ustalenie wymiarów nagłówka

@@ -172,4 +172,19 @@ public interface EventCommand {
 	 * Włączenie widoku filtrowania użytkowników
 	 * */
 	String openFilterUsersView = "user filters";
+
+	/**
+	 * Otworzenie widoku edytora atakcji
+	 * */
+	String openAttractionEditor = "edit attraction";
+
+	/**
+	 * Otworzenie widoku edytora adresów
+	 * */
+	String openAddressEditorView = "edit address";
+
+	/**
+	 * Przypisanie adresu do atrakcji
+	 * */
+	String assignAddressToAttraction = "assign address ";
 }

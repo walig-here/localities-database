@@ -79,6 +79,7 @@ public class Window {
 			case ASSIGN_ATTRACTION:
 					break;
 			case ASSIGN_ADDRESS:
+					current_view = new AssignAddressView(frame, event_handler);
 					break;
 			case ASSIGN_FIGURE:
 					break;
@@ -141,13 +142,13 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"adaś45",
-			String.join(",", new String[]{"rola 1", "rola 2", "rola 3"}),
-			String.join(",", new String[]{"1"}),
-			String.join(";", new String[]{"skarbuszek", "administrator techniczny"}),
-			String.join(";", new String[]{"dawid", "przeglądający"})
+			"3",
+			"Wrocław",
+			"1",
+			"ZOO",
+			String.join(";", new String[]{"adres 1", "adres 2", "adres 3"}),
 		};
-		switchToView(ViewType.USERS_LIST, data);
+		switchToView(ViewType.ASSIGN_ADDRESS, data);
 
 		return true;
 	}

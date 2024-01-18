@@ -85,6 +85,7 @@ public class Window {
 			case ASSIGN_FIGURE:
 					break;
 			case LOCALITY_SORT:
+					current_view = new LocalitySortingView(frame, event_handler);
 					break;
 			case USERS_SORT:
 					break;
@@ -143,12 +144,11 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"3",
-			"Wrocław",
-			String.join(";", new String[]{"atrakcja 1", "atrakcja 2", "atrakcja 3", "atrakcja 4"}),
-			String.join(";", new String[]{"opis 1", "opis 2", "opis 3", "opis 4"})
+			"1",
+			"1",
+			"1"
 		};
-		switchToView(ViewType.ASSIGN_ATTRACTION, data);
+		switchToView(ViewType.LOCALITY_SORT, data);
 
 		return true;
 	}

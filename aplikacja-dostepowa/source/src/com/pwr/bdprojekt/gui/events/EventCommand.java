@@ -192,4 +192,9 @@ public interface EventCommand {
 	 * Przypisanie atrakcji do miejscowości
 	 * */
 	String assignAttractionToLocality = "assign attraction ";
+
+	/**
+	 * Zastosowanie sortowania miejscowości
+	 * */
+	String applySortingForLocalities = "sort localities";
 }

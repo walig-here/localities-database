@@ -144,4 +144,18 @@ public class AssignAddressView extends View {
 			elements_panel.insertComponent(address_data_panel);
 		}
 	}
+
+	/**
+	 * Pobranie identyfikatora miejscowości
+	 * */
+	public int getLocalityId(){
+		return Integer.parseInt(locality_id);
+	}
+
+	/**
+	 * Pobranie identyfikatora atrakcji
+	 * */
+	public int getAttractionId(){
+		return Integer.parseInt(attraction_id);
+	}
 }

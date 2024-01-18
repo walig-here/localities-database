@@ -77,6 +77,7 @@ public class Window {
 					current_view = new LoginView(frame, event_handler);
 					break;
 			case ASSIGN_ATTRACTION:
+					current_view = new AssignAttractionView(frame, event_handler);
 					break;
 			case ASSIGN_ADDRESS:
 					current_view = new AssignAddressView(frame, event_handler);
@@ -144,11 +145,10 @@ public class Window {
 			"rola użytkownika",
 			"3",
 			"Wrocław",
-			"1",
-			"ZOO",
-			String.join(";", new String[]{"adres 1", "adres 2", "adres 3"}),
+			String.join(";", new String[]{"atrakcja 1", "atrakcja 2", "atrakcja 3", "atrakcja 4"}),
+			String.join(";", new String[]{"opis 1", "opis 2", "opis 3", "opis 4"})
 		};
-		switchToView(ViewType.ASSIGN_ADDRESS, data);
+		switchToView(ViewType.ASSIGN_ATTRACTION, data);
 
 		return true;
 	}

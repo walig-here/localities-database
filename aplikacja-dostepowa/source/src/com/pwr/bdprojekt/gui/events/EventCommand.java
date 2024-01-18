@@ -187,4 +187,9 @@ public interface EventCommand {
 	 * Przypisanie adresu do atrakcji
 	 * */
 	String assignAddressToAttraction = "assign address ";
+
+	/**
+	 * Przypisanie atrakcji do miejscowości
+	 * */
+	String assignAttractionToLocality = "assign attraction ";
 }

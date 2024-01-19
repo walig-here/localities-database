@@ -310,8 +310,6 @@ public class DataBaseApi {
 	 * @param password
 	 */
 	public static String registerUser(String login, String password) {
-		// TODO - implement DataBaseApi.registerUser
-
 		if(login.equals("")){
 			return "Login nie może być pusty";
 		}
@@ -322,7 +320,6 @@ public class DataBaseApi {
 			callableStatement.execute();
 			return "";
 		}catch (SQLException e){
-			e.printStackTrace();
 			return "Takie konto już istnieje";
 		}
 	}

@@ -81,8 +81,7 @@ public class LoginView extends View {
 	}
 
 	public String[] getLoginData() {
-		// TODO - implement LoginView.getLoginData
-		throw new UnsupportedOperationException();
+		return new String[]{login.getText(), password.getText()};
 	}
 
 	@Override

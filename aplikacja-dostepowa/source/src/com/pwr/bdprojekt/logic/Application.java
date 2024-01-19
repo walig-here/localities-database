@@ -1,6 +1,7 @@
 package com.pwr.bdprojekt.logic;
 
 import com.pwr.bdprojekt.gui.Window;
+import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
 /**

@@ -24,8 +24,7 @@ public class Window {
 	 * Pobranie typu aktualnego widoku.
 	 */
 	public static ViewType getCurrentViewType() {
-		// TODO - implement Window.getCurrentViewType
-		throw new UnsupportedOperationException();
+		return current_view_type;
 	}
 
 	/**
@@ -143,10 +142,14 @@ public class Window {
 			}
 		});
 
-		event_handler = new EventHandler(current_view);
+		event_handler = new EventHandler();
 		switchToView(ViewType.LOGIN, new String[0]);
 
 		return true;
+	}
+
+	public static View getCurrentView(){
+		return current_view;
 	}
 
 	/**

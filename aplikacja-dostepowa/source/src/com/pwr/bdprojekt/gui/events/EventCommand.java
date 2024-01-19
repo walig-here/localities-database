@@ -197,4 +197,24 @@ public interface EventCommand {
 	 * Zastosowanie sortowania miejscowości
 	 * */
 	String applySortingForLocalities = "sort localities";
+
+	/**
+	 * Otworzenie widoku z wszystkimi dostępnymi w bazie atrakcjami
+	 * */
+	String openAvailableAttractionsView = "attcations";
+
+	/**
+	 * Dodanie miejscowości do ulubionych
+	 * */
+	String addLocalityToFavourites = "add favourite";
+
+	/**
+	 * Usunięcie miejscowości z ulubionych
+	 * */
+	String removeLocalityFromFavourites = "remove favourite";
+
+	/**
+	 * Usunięcie atrakcji z miejscowości
+	 * */
+	String unassignAttractionFromLocality = "unassign attraction ";
 }

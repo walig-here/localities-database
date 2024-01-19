@@ -34,7 +34,7 @@ public class Application {
 		}
 		current_user = DataBaseApi.getCurrentUser(login);
 
-		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMIN))
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
 			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
 		else
 			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
@@ -181,7 +181,6 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
-
 	}
 
 	public static void quit() {

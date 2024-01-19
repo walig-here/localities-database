@@ -1,5 +1,6 @@
 package com.pwr.bdprojekt.logic;
 
+import com.pwr.bdprojekt.gui.Window;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.sql.*;
@@ -198,14 +199,14 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param voivodship
+	 * @param voivodeship
 	 */
-	public static List<AdministrativeUnit> getCountiesFromVoivodship(AdministrativeUnit voivodship) {
+	public static List<AdministrativeUnit> getCountiesFromVoivodship(AdministrativeUnit voivodeship) {
 		// TODO - implement DataBaseApi.getCountiesFromVoivodship
 		List<AdministrativeUnit> counties = new ArrayList<>();
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call get_counties_from_voivodship(?)");
-			callableStatement.setInt(1, voivodship.getId());
+			callableStatement.setInt(1, voivodeship.getId());
 			callableStatement.execute();
 			callableStatement.close();
 
@@ -216,7 +217,7 @@ public class DataBaseApi {
 				AdministrativeUnit county = new AdministrativeUnit();
 				county.setId(resultSet.getInt("administrative_unit_id"));
 				county.setName(resultSet.getString("name"));
-				county.setSuperiorAdministrativeUnit(voivodship);
+				county.setSuperiorAdministrativeUnit(voivodeship);
 				// Dodaj obiekt do listy
 				counties.add(county);
 			}
@@ -440,7 +441,23 @@ public class DataBaseApi {
 	}
 
 	public static User getCurrentUser(String login) {
-		return new User("skarbuszek", UserRole.TECHNICAL_ADMIN);
-	}
+		try{
+			PreparedStatement preparedStatement = root_connection.prepareStatement("SELECT role FROM users WHERE login = ?");
+			preparedStatement.setString(1, login);
+			ResultSet resultSet = preparedStatement.executeQuery();
 
+			if (resultSet.next()) {
+				// Jeżeli resultSet zawiera wiersz, to pobierz wartość
+				String roleString = resultSet.getString("role").toUpperCase();
+				return new User(login, UserRole.valueOf(roleString));
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+		}catch (SQLException e){
+			return null;
+		}
+        return null;
+    }
 }

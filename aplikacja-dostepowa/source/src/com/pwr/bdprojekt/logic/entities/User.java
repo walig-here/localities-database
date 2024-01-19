@@ -25,10 +25,10 @@ public class User {
 			case VIEWER -> {
 				return "PRZEGLĄDAJĄCY";
 			}
-			case TECHNICAL_ADMIN -> {
+			case TECHNICAL_ADMINISTRATOR -> {
 				return "ADMINISTRATOR TECHNICZNY";
 			}
-			case MERITORICAL_ADMIN -> {
+			case MERITORICAL_ADMINISTRATOR -> {
 				return "ADMINISTRATOR MERYTORYCZNY";
 			}
 		}

@@ -1,7 +1,12 @@
 package com.pwr.bdprojekt.gui.components;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ItemListener;
 
 public class MultiChoiceList extends GuiComponent {
 
@@ -157,5 +162,31 @@ public class MultiChoiceList extends GuiComponent {
 	 * */
 	public int[] getSelectedIndices(){
 		return list.getSelectedIndices();
+	}
+
+	/**
+	 * Ustalenie elementów oznaczonych jako wybrane
+	 * @param indices indeksy wybranych elementów
+	 * */
+	public void setSelectedElements(String[] indices){
+		int[] selected_indices = new int[indices.length];
+		for(int i = 0; i < indices.length; i++){
+			selected_indices[i] = Integer.parseInt(indices[i]);
+		}
+		list.setSelectedIndices(selected_indices);
+	}
+
+	/**
+	 * Ustalenie komendy systemu zdarzeń i jej odbiorcy wysyłanej po zmianie wybranego elementu
+	 * @param command treść komendy
+	 * @param receiver odbiorca komendy
+	 * */
+	public void setSelectionChangeCommand(String command, ActionListener receiver){
+		list.addListSelectionListener(e -> {
+			if(!e.getValueIsAdjusting()){
+				ActionEvent event = new ActionEvent(list, 0, command);
+				receiver.actionPerformed(event);
+			}
+		});
 	}
 }

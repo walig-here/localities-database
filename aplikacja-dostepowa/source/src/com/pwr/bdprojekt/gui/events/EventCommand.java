@@ -96,7 +96,7 @@ public interface EventCommand {
 	/**
 	 * Otworzenie widoku danych miejscowości
 	 * */
-	String openLocalityView = "locality";
+	String openLocalityView = "locality ";
 
 	/**
 	 * Modyfikacja danych miejscowości
@@ -111,10 +111,135 @@ public interface EventCommand {
 	/**
 	 * Otworzenie widoku nadaniwa uprawnienia w regionie
 	 * */
-	String openAssignPermissionToRegionView = "permissions";
+	String openAssignPermissionInRegionView = "permissions";
 
 	/**
 	 * Przypisanie użytkownikowi uprawnienia w regionie
 	 * */
 	String assignPermissionInRegionToUser = "assign permission";
+
+	/**
+	 * Zastosowanie filtrowania miejscowości
+	 * */
+	String applyFiltersForLocalities = "filter localities";
+
+	/**
+	 * Zastosowanie filtrowania użytkowników
+	 * */
+	String applyFiltersForUsers = "filter users";
+
+	/**
+	 * Zmiana filtra województw
+	 * */
+	String localityVoivodshipFilterChanged = "voivodship filter change";
+
+	/**
+	 * Zmiana filtra powiatów
+	 * */
+	String localityCountyFilterChanged = "county filter change";
+
+	/**
+	 * Włączenie widoku filtrowania miejscowości
+	 * */
+	String openFilterLocalityView = "locality filters";
+
+	/**
+	 * Włączenie widoku sortowania miejscowości
+	 * */
+	String openSortLocalityView = "locality sorting";
+
+	/**
+	 * Dodanie nowej miejscowości
+	 * */
+	String addNewLocality = "new locality";
+
+	/**
+	 * Otworzenie eytora miejscowości
+	 * */
+	String openLocalityEditor = "edit locality ";
+
+	/**
+	 * Usunięcie miejscowości
+	 * */
+	String deleteLocality = "delete locality ";
+
+	/**
+	 * Włączenie widoku sortowania użytkowników
+	 * */
+	String openSortUsersView = "user sorting";
+
+	/**
+	 * Włączenie widoku filtrowania użytkowników
+	 * */
+	String openFilterUsersView = "user filters";
+
+	/**
+	 * Otworzenie widoku edytora atakcji
+	 * */
+	String openAttractionEditor = "edit attraction";
+
+	/**
+	 * Otworzenie widoku edytora adresów
+	 * */
+	String openAddressEditorView = "edit address";
+
+	/**
+	 * Przypisanie adresu do atrakcji
+	 * */
+	String assignAddressToAttraction = "assign address ";
+
+	/**
+	 * Przypisanie atrakcji do miejscowości
+	 * */
+	String assignAttractionToLocality = "assign attraction ";
+
+	/**
+	 * Zastosowanie sortowania miejscowości
+	 * */
+	String applySortingForLocalities = "sort localities";
+
+	/**
+	 * Otworzenie widoku z wszystkimi dostępnymi w bazie atrakcjami
+	 * */
+	String openAvailableAttractionsView = "attcations";
+
+	/**
+	 * Dodanie miejscowości do ulubionych
+	 * */
+	String addLocalityToFavourites = "add favourite";
+
+	/**
+	 * Usunięcie miejscowości z ulubionych
+	 * */
+	String removeLocalityFromFavourites = "remove favourite";
+
+	/**
+	 * Usunięcie atrakcji z miejscowości
+	 * */
+	String unassignAttractionFromLocality = "unassign attraction ";
+
+	/**
+	 * Usunięcie konta użytkownika
+	 * */
+	String deleteUserAccount = "delete user";
+
+	/**
+	 * Zmiana roli użytkownika
+	 * */
+	String modifyUserRole = "modify role";
+
+	/**
+	 * Otworzenie widoku nadawania uprawnienia do regionu
+	 * */
+	String openAssignPermissionToRegionView = "permission to region";
+
+	/**
+	 * Odebranie uprawnienia do regionu
+	 * */
+	String unassignPermissionToRegion = "unassign permission to region";
+
+	/**
+	 * Odebranie uprawnienia w regionie
+	 * */
+	String unassignPermissionInRegion = "unassign permission in region";
 }

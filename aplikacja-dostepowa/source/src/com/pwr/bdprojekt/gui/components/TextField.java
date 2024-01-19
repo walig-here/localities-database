@@ -110,7 +110,7 @@ public class TextField extends GuiComponent {
 		}
     }
 
-    private void reset() {
+    public void reset() {
         content.setText(default_value);
     }
 
@@ -124,7 +124,7 @@ public class TextField extends GuiComponent {
         if (reset_button != null) {
             // Zawartość
             content.setBounds(
-                    parent.getX(),
+                    0,
                     label.getBottomY(),
                     getWidth() - RESET_BUTTON_WIDTH,
                     Text.LETTER_HEIGHT * number_of_lines

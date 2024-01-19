@@ -1,6 +1,7 @@
 package com.pwr.bdprojekt.logic;
 
 import com.pwr.bdprojekt.gui.Window;
+import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
 /**
@@ -27,23 +28,20 @@ public class Application {
 	}
 
 	public static void logiIn(String login, String password) {
-		// TODO - implement Logic.logiIn
-
 		if(!DataBaseApi.connect(login, password)){
-			Window.showMessageBox("Nie udało się zalogować!");
-		}else{
-			Window.showMessageBox("Zalogowano!");
+			Window.showMessageBox("Logowanie nieudane!");
+			return;
 		}
+		current_user = DataBaseApi.getCurrentUser(login);
+
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMIN))
+			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
+		else
+			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}
 
-	public static void logOut(String login) {
-		// TODO - implement Logic.logOut
-
-		if(!DataBaseApi.closeConnection(login)){
-			Window.showMessageBox("Nie udało się wylogować!");
-		}else{
-			Window.showMessageBox("Wylogowano!");
-		}
+	public static void logOut() {
+		DataBaseApi.closeConnection(current_user.getLogin());
 	}
 
 	public static void browseUsersList() {

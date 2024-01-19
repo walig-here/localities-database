@@ -365,8 +365,6 @@ public class DataBaseApi {
 	 * @param password
 	 */
 	public static String registerUser(String login, String password) {
-		// TODO - implement DataBaseApi.registerUser
-
 		if(login.equals("")){
 			return "Login nie może być pusty";
 		}
@@ -378,7 +376,6 @@ public class DataBaseApi {
 			callableStatement.close();
 			return "";
 		}catch (SQLException e){
-			e.printStackTrace();
 			return "Takie konto już istnieje";
 		}
 	}
@@ -442,9 +439,8 @@ public class DataBaseApi {
 		throw new UnsupportedOperationException();
 	}
 
-	public static User getCurrentUser() {
-		// TODO - implement DataBaseApi.getCurrentUser
-		throw new UnsupportedOperationException();
+	public static User getCurrentUser(String login) {
+		return new User("skarbuszek", UserRole.TECHNICAL_ADMIN);
 	}
 
 }

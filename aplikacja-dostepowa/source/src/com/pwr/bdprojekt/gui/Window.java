@@ -144,16 +144,7 @@ public class Window {
 		});
 
 		event_handler = new EventHandler(current_view);
-
-		String[] data = new String[]{
-			"user 1",
-			"rola użytkownika",
-			"marek123",
-			"Przeglądający",
-			String.join(";", new String[]{"1","Dolnośląskie","0","Edytor miejscowości","Może edytować miejscowości"}),
-			String.join(";", new String[]{"45","Pomorskie","0","Edytor miejscowości","Może edytować miejscowości","1","Edytor atrakcji","Może edytować atrakcje"})
-		};
-		switchToView(ViewType.USER_DATA_ADMIN_TECH, data);
+		switchToView(ViewType.LOGIN, new String[0]);
 
 		return true;
 	}

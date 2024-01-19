@@ -96,8 +96,10 @@ public class Window {
 					current_view = new LocalityDataView(frame, event_handler, true);
 					break;
 			case USER_DATA_ADMIN_TECH:
+					current_view = new UserDataView(frame, event_handler, true);
 					break;
 			case USER_DATA:
+					current_view = new UserDataView(frame, event_handler, false);
 					break;
 			case EMPTY:
 					break;
@@ -146,25 +148,12 @@ public class Window {
 		String[] data = new String[]{
 			"user 1",
 			"rola użytkownika",
-			"1",
-			"Wrocław",
-			"opis  Wrocławia",
-			"800000",
-			"miasto",
-			"Dolnośląskie",
-			"Wrocław (miasto)",
-			"Wrocław (miasto)",
-			"60E",
-			"1N",
-			"false",
-			"adnotacja",
-			String.join(",", new String[]{"1", "2", "3"}),
-			String.join(";", new String[]{"atrakcja 1", "atrakcja 2", "atrakcja 3"}),
-			String.join(";", new String[]{"opis 1", "opis 2", "opis 3"}),
-			String.join("'", new String[]{"adres 1;adres 2;adres 3", "adres 1;adres 2", "adres 3"}),
-			String.join(";", new String[]{"typ 1,typ 2,typ 3", "typ 1,typ 2", "typ 3"})
+			"marek123",
+			"Przeglądający",
+			String.join(";", new String[]{"1","Dolnośląskie","0","Edytor miejscowości","Może edytować miejscowości"}),
+			String.join(";", new String[]{"45","Pomorskie","0","Edytor miejscowości","Może edytować miejscowości","1","Edytor atrakcji","Może edytować atrakcje"})
 		};
-		switchToView(ViewType.LOCALITY_DATA, data);
+		switchToView(ViewType.USER_DATA_ADMIN_TECH, data);
 
 		return true;
 	}

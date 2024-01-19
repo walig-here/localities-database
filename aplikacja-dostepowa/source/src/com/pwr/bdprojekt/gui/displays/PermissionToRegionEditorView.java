@@ -70,7 +70,7 @@ public class PermissionToRegionEditorView extends View {
 		give_permission_button = new Button(
 			elements_panel,
 			"Nadaj uprawnienie do regionu",
-			EventCommand.openAssignPermissionToRegionView,
+			EventCommand.openAssignPermissionInRegionView,
 			eventHandler
 		);
 		elements_panel.insertComponent(give_permission_button);

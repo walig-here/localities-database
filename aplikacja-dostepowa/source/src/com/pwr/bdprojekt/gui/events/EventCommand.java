@@ -111,7 +111,7 @@ public interface EventCommand {
 	/**
 	 * Otworzenie widoku nadaniwa uprawnienia w regionie
 	 * */
-	String openAssignPermissionToRegionView = "permissions";
+	String openAssignPermissionInRegionView = "permissions";
 
 	/**
 	 * Przypisanie użytkownikowi uprawnienia w regionie
@@ -217,4 +217,29 @@ public interface EventCommand {
 	 * Usunięcie atrakcji z miejscowości
 	 * */
 	String unassignAttractionFromLocality = "unassign attraction ";
+
+	/**
+	 * Usunięcie konta użytkownika
+	 * */
+	String deleteUserAccount = "delete user";
+
+	/**
+	 * Zmiana roli użytkownika
+	 * */
+	String modifyUserRole = "modify role";
+
+	/**
+	 * Otworzenie widoku nadawania uprawnienia do regionu
+	 * */
+	String openAssignPermissionToRegionView = "permission to region";
+
+	/**
+	 * Odebranie uprawnienia do regionu
+	 * */
+	String unassignPermissionToRegion = "unassign permission to region";
+
+	/**
+	 * Odebranie uprawnienia w regionie
+	 * */
+	String unassignPermissionInRegion = "unassign permission in region";
 }

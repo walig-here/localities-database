@@ -40,6 +40,10 @@ public abstract class View {
 //======================================================================================================================
 // METODY
 
+	public void clear(){
+		main_panel.removeAll();
+	}
+
 	/**
 	 * Stworzenie nowego, pustego widoku.
 	 * @param parent okno, w którym wyświetlony ma zostać widok

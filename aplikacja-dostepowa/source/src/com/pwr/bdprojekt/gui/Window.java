@@ -33,6 +33,8 @@ public class Window {
 	 */
 	public static void switchToView(ViewType new_view_type, String[] data)
 	{
+		if(current_view != null)
+			current_view.clear();
 		current_view_type = new_view_type;
 		switch (current_view_type)
 		{

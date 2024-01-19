@@ -72,7 +72,7 @@ public class EventHandler implements ActionListener {
 		LoginView window = (LoginView) Window.getCurrentView();
 		switch (e.getActionCommand()){
 			case EventCommand.loginUser:
-				Application.logiIn();
+				Application.logiIn(window.getLoginData()[0], window.getLoginData()[1]);
 				break;
 			case EventCommand.registerUser:
 				Application.register(window.getLoginData()[0], window.getLoginData()[1]);

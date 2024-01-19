@@ -27,14 +27,21 @@ public class Application {
 		}
 	}
 
-	public static void logiIn() {
-		// TODO - implement Logic.logiIn
-		throw new UnsupportedOperationException();
+	public static void logiIn(String login, String password) {
+		if(!DataBaseApi.connect(login, password)){
+			Window.showMessageBox("Logowanie nieudane!");
+			return;
+		}
+		current_user = DataBaseApi.getCurrentUser(login);
+
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMIN))
+			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
+		else
+			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}
 
 	public static void logOut() {
-		// TODO - implement Logic.logOut
-		throw new UnsupportedOperationException();
+		DataBaseApi.closeConnection(current_user.getLogin());
 	}
 
 	public static void browseUsersList() {

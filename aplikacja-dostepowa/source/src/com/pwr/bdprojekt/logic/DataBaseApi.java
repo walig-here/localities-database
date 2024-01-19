@@ -383,9 +383,8 @@ public class DataBaseApi {
 		throw new UnsupportedOperationException();
 	}
 
-	public static User getCurrentUser() {
-		// TODO - implement DataBaseApi.getCurrentUser
-		throw new UnsupportedOperationException();
+	public static User getCurrentUser(String login) {
+		return new User("skarbuszek", UserRole.TECHNICAL_ADMIN);
 	}
 
 }

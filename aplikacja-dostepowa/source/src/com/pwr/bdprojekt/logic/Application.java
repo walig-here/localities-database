@@ -181,6 +181,7 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
+
 	}
 
 	public static void quit() {

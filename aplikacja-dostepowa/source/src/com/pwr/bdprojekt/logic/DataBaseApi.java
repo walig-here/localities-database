@@ -151,9 +151,20 @@ public class DataBaseApi {
 	 * @param permission
 	 * @param voivodship
 	 */
-	public static boolean assignPermissionToUser(User user, Permission permission, AdministrativeUnit voivodship) {
+	public static boolean assignPermissionToUser(AdministrativeUnit voivodship, User user, Permission permission) {
 		// TODO - implement DataBaseApi.assignPermissionToUser
-		throw new UnsupportedOperationException();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("assign_permission_to_user(?, ?, ?)");
+			callableStatement.setInt(1, voivodship.getId());
+			callableStatement.setString(2, user.getLogin());
+			callableStatement.setInt(3, permission.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		}catch(SQLException e){
+			return false;
+		}
 	}
 
 	/**

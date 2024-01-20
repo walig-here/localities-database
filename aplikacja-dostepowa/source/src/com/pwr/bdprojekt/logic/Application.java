@@ -114,9 +114,12 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addNewLocality() {
+	public static void addNewLocality(Locality locality) {
 		// TODO - implement Logic.addNewLocality
-		throw new UnsupportedOperationException();
+		if(DataBaseApi.addNewLocality(locality))
+			Window.showMessageBox("Nowa miejscowość została dodana!");
+		else
+			Window.showMessageBox("Dodanie miejscowości nie powiodło się");
 	}
 
 	public static void assignAttractionToLocality() {

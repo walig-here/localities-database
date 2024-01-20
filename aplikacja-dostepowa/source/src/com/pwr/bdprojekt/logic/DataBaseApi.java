@@ -1,6 +1,5 @@
 package com.pwr.bdprojekt.logic;
 
-import com.pwr.bdprojekt.gui.Window;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.sql.*;
@@ -107,7 +106,22 @@ public class DataBaseApi {
 	 */
 	public static boolean addNewLocality(Locality locality) {
 		// TODO - implement DataBaseApi.addNewLocality
-		throw new UnsupportedOperationException();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call add_new_locality(?, ?, ?, ?, ?, ?, ?)");
+			callableStatement.setString(1, locality.getName());
+			callableStatement.setString(2, locality.getDescription());
+			callableStatement.setInt(3, locality.getPopulation());
+			callableStatement.setInt(4, locality.getMunicipality().getId());
+			callableStatement.setDouble(5, locality.getLatitude());
+			callableStatement.setDouble(6, locality.getLongitude());
+			callableStatement.setInt(7, locality.getType().getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		}catch (SQLException e){
+			return false;
+		}
 	}
 
 	/**

@@ -154,7 +154,7 @@ public class DataBaseApi {
 	public static boolean assignPermissionToUser(AdministrativeUnit voivodship, User user, Permission permission) {
 		// TODO - implement DataBaseApi.assignPermissionToUser
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("assign_permission_to_user(?, ?, ?)");
+			CallableStatement callableStatement = user_connection.prepareCall("call assign_permission_to_user(?, ?, ?)");
 			callableStatement.setInt(1, voivodship.getId());
 			callableStatement.setString(2, user.getLogin());
 			callableStatement.setInt(3, permission.getId());
@@ -382,7 +382,16 @@ public class DataBaseApi {
 	 */
 	public static boolean modifyUserRole(User user, UserRole new_role) {
 		// TODO - implement DataBaseApi.modifyUserRole
-		throw new UnsupportedOperationException();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call modify_user_role(?, ?)");
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.setString(2, new_role.name().toLowerCase());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**

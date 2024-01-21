@@ -34,8 +34,11 @@ public class Application {
 		}
 		current_user = DataBaseApi.getCurrentUser(login);
 
-		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR)){
 			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
+			User user = new User("dawid", UserRole.VIEWER);
+			DataBaseApi.modifyUserRole(user, UserRole.MERITORICAL_ADMINISTRATOR);
+		}
 		else
 			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}

@@ -103,6 +103,7 @@ CREATE OR REPLACE PROCEDURE modify_user_role (
 	IN login VARCHAR(30),
 	IN user_role VARCHAR(30)
 ) BEGIN
+	DECLARE prev_role VARCHAR(30);
 	
 	-- Sprawdzenie czy użytkownik jest administratorem merytorycznym lub użytkownikiem root
 	IF SESSION_USER() LIKE 'root@%' THEN
@@ -121,9 +122,20 @@ CREATE OR REPLACE PROCEDURE modify_user_role (
 		SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Podana rola jest niepoprawna!';
 	END IF;
 	
+	-- Pobranie porzedniej roli
+	SELECT u.`role`
+	INTO prev_role
+	FROM users AS u
+	WHERE u.login = login;
+	
+	-- Ustalenie roli w bazie danych
+	UPDATE users AS u
+	SET u.`role` = user_role
+	WHERE u.login = login;
+	
 	-- Ustalenie roli na serwerze bazodanowym i odebranie poprzedniej roli
-	SET @sql = concat("REVOKE ",(SELECT `role` FROM users AS u WHERE u.login = login)," FROM ",`login`);
-	PREPARE stmt2 FROM @sql;
+	SET @sql = concat("REVOKE ",prev_role," FROM ",`login`);
+	PREPARE stmt2 FROM @SQL;
 	EXECUTE stmt2;
 	DEALLOCATE PREPARE stmt2;
 	
@@ -137,11 +149,6 @@ CREATE OR REPLACE PROCEDURE modify_user_role (
 	EXECUTE stmt2;
 	DEALLOCATE PREPARE stmt2;
 	FLUSH PRIVILEGES;
-	
-	-- Ustalenie roli w bazie danych
-	UPDATE users AS u
-	SET u.`role` = user_role
-	WHERE u.login = login;
 	
 END;
 // 

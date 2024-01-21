@@ -34,7 +34,7 @@ public class Application {
 		}
 		current_user = DataBaseApi.getCurrentUser(login);
 
-		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMIN))
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
 			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
 		else
 			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
@@ -114,9 +114,12 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addNewLocality() {
+	public static void addNewLocality(Locality locality) {
 		// TODO - implement Logic.addNewLocality
-		throw new UnsupportedOperationException();
+		if(DataBaseApi.addNewLocality(locality))
+			Window.showMessageBox("Nowa miejscowość została dodana!");
+		else
+			Window.showMessageBox("Dodanie miejscowości nie powiodło się");
 	}
 
 	public static void assignAttractionToLocality() {
@@ -181,7 +184,6 @@ public class Application {
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
 		}
-
 	}
 
 	public static void quit() {

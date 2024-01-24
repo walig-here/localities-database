@@ -194,9 +194,11 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void deleteAttraction() {
-		// TODO - implement Logic.deleteAttraction
-		throw new UnsupportedOperationException();
+	public static void deleteAttraction(Attraction attraction) {
+		if(DataBaseApi.delAttraction(attraction))
+			Window.showMessageBox("Miejscowość została usunięta!");
+		else
+			Window.showMessageBox("Usunięcie miejscowości nie powiodło się");
 	}
 
 	public static void open() {

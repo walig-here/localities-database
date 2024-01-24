@@ -190,8 +190,18 @@ public class DataBaseApi {
 	 * @param attraction
 	 */
 	public static boolean delAttraction(Attraction attraction) {
-		// TODO - implement DataBaseApi.delAttraction
-		throw new UnsupportedOperationException();
+		Connection connection = user_connection;
+		String callProcedureSql = "call del_attraction(?)";
+
+		try {
+			CallableStatement callableStatement = connection.prepareCall(callProcedureSql);
+			callableStatement.setInt(1, attraction.getId());
+			callableStatement.execute();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**

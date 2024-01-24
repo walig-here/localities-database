@@ -7,6 +7,7 @@ import com.pwr.bdprojekt.logic.entities.*;
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
  * Logika aplikacji
  * */

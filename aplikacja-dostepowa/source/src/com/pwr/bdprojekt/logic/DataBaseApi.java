@@ -93,11 +93,21 @@ public class DataBaseApi {
 	 * 
 	 * @param attraction
 	 */
-	public static boolean addNewAttraction(Attraction attraction) {
-		// TODO - implement DataBaseApi.addNewAttraction
-
-
-		throw new UnsupportedOperationException();
+	public static boolean addNewAttraction(Attraction attraction, Address address) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call add_new_attraction(?, ?, ?, ?, ?, ?)");
+			callableStatement.setString(1, attraction.getName());
+			callableStatement.setString(2, attraction.getDescription());
+			callableStatement.setInt(3, address.getLocality().getId());
+			callableStatement.setString(4, address.getStreet());
+			callableStatement.setString(5, address.getBuilding_number());
+			callableStatement.setString(6, address.getFlat_number());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+            return false;
+        }
 	}
 
 	/**
@@ -105,7 +115,6 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean addNewLocality(Locality locality) {
-		// TODO - implement DataBaseApi.addNewLocality
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call add_new_locality(?, ?, ?, ?, ?, ?, ?)");
 			callableStatement.setString(1, locality.getName());
@@ -146,13 +155,12 @@ public class DataBaseApi {
 	}
 
 	/**
-	 * 
+	 *
+	 * @param voivodship
 	 * @param user
 	 * @param permission
-	 * @param voivodship
 	 */
 	public static boolean assignPermissionToUser(AdministrativeUnit voivodship, User user, Permission permission) {
-		// TODO - implement DataBaseApi.assignPermissionToUser
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call assign_permission_to_user(?, ?, ?)");
 			callableStatement.setInt(1, voivodship.getId());
@@ -227,7 +235,6 @@ public class DataBaseApi {
 	 * @param voivodeship
 	 */
 	public static List<AdministrativeUnit> getCountiesFromVoivodship(AdministrativeUnit voivodeship) {
-		// TODO - implement DataBaseApi.getCountiesFromVoivodship
 		List<AdministrativeUnit> counties = new ArrayList<>();
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call get_counties_from_voivodship(?)");
@@ -288,8 +295,6 @@ public class DataBaseApi {
 	 * @param county
 	 */
 	public static List<AdministrativeUnit> getMunicipalitiesFromCounty(AdministrativeUnit county) {
-		// TODO - implement DataBaseApi.getMunicipalitiesFromCounty
-
 		List<AdministrativeUnit> municipalities = new ArrayList<>();
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call get_municipalities_from_county(?)");
@@ -381,7 +386,6 @@ public class DataBaseApi {
 	 * @param new_role
 	 */
 	public static boolean modifyUserRole(User user, UserRole new_role) {
-		// TODO - implement DataBaseApi.modifyUserRole
 		try{
 			CallableStatement callableStatement = user_connection.prepareCall("call modify_user_role(?, ?)");
 			callableStatement.setString(1, user.getLogin());
@@ -391,7 +395,7 @@ public class DataBaseApi {
 			return true;
 		} catch (SQLException e) {
 			return false;
-		}
+        }
 	}
 
 	/**

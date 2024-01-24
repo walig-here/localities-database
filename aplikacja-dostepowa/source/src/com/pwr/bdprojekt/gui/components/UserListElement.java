@@ -41,7 +41,7 @@ public class UserListElement extends GuiComponent {
 //======================================================================================================================
 // METODY
 
-	public UserListElement(JPanel parent, EventHandler eventHandler, int user_index) {
+	public UserListElement(JPanel parent, EventHandler eventHandler, String user_login) {
 		super(parent);
 		this.event_handler = eventHandler;
 
@@ -58,7 +58,7 @@ public class UserListElement extends GuiComponent {
 		open_account_button = new Button(
 				elements_panel,
 				"Zarządzaj kontem",
-				EventCommand.openUserAccountView+" "+user_index,
+				EventCommand.openUserAccountView+" "+user_login,
 				eventHandler
 		);
 		elements_panel.insertComponent(open_account_button);

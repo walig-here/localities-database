@@ -13,54 +13,59 @@ public class EventHandler implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("=> " + e.getActionCommand());
 
-		switch (Window.getCurrentViewType()) {
-			case HOME_ADMIN_TECH -> {
+		try {
+			switch (Window.getCurrentViewType()) {
+				case HOME, HOME_ADMIN_TECH -> {
+					handleHomeViewEvent(e);
+				}
+				case ADDRESS_EDITOR -> {
+				}
+				case ATTRACTION_EDITOR -> {
+				}
+				case LOCALITY_EDITOR -> {
+				}
+				case PERMISSION_EDITOR -> {
+				}
+				case PERMISSION_TO_REGION_EDITOR -> {
+				}
+				case LOCALITY_FILTER -> {
+				}
+				case USERS_FILTER -> {
+				}
+				case LOCALITY_LIST_ADMIN_MERIT -> {
+				}
+				case LOCALITY_LIST -> {
+				}
+				case USERS_LIST -> {
+					handleUserListViewEvent(e);
+				}
+				case LOGIN -> {
+					handleLoginViewEvent(e);
+				}
+				case ASSIGN_ATTRACTION -> {
+				}
+				case ASSIGN_ADDRESS -> {
+				}
+				case ASSIGN_FIGURE -> {
+				}
+				case LOCALITY_SORT -> {
+				}
+				case USERS_SORT -> {
+				}
+				case LOCALITY_DATA -> {
+				}
+				case LOCALITY_DATA_ADMIN_MERIT -> {
+				}
+				case USER_DATA_ADMIN_TECH -> {
+				}
+				case USER_DATA -> {
+				}
+				case EMPTY -> {
+				}
 			}
-			case HOME -> {
-			}
-			case ADDRESS_EDITOR -> {
-			}
-			case ATTRACTION_EDITOR -> {
-			}
-			case LOCALITY_EDITOR -> {
-			}
-			case PERMISSION_EDITOR -> {
-			}
-			case PERMISSION_TO_REGION_EDITOR -> {
-			}
-			case LOCALITY_FILTER -> {
-			}
-			case USERS_FILTER -> {
-			}
-			case LOCALITY_LIST_ADMIN_MERIT -> {
-			}
-			case LOCALITY_LIST -> {
-			}
-			case USERS_LIST -> {
-			}
-			case LOGIN -> {
-				handleLoginViewEvent(e);
-			}
-			case ASSIGN_ATTRACTION -> {
-			}
-			case ASSIGN_ADDRESS -> {
-			}
-			case ASSIGN_FIGURE -> {
-			}
-			case LOCALITY_SORT -> {
-			}
-			case USERS_SORT -> {
-			}
-			case LOCALITY_DATA -> {
-			}
-			case LOCALITY_DATA_ADMIN_MERIT -> {
-			}
-			case USER_DATA_ADMIN_TECH -> {
-			}
-			case USER_DATA -> {
-			}
-			case EMPTY -> {
-			}
+		} catch (UnsupportedOperationException exception){
+			Window.showMessageBox(exception.getMessage());
+			Application.quit();
 		}
 	}
 
@@ -81,5 +86,39 @@ public class EventHandler implements ActionListener {
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
 		}
 
+	}
+
+	/**
+	 * Zdarzenia ekranu domowego
+	 * */
+	private void handleHomeViewEvent(ActionEvent e){
+		HomeView window = (HomeView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openUserList:
+				Application.browseUsersList();
+				break;
+			default:
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu listy użytkowników
+	 * */
+	private void handleUserListViewEvent(ActionEvent e){
+		UsersListView window = (UsersListView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openHomeView, EventCommand.openPreviousView:
+				Application.openHomeDisplay();
+				break;
+			default:
+				if(e.getActionCommand().contains(EventCommand.openUserAccountView))
+				{
+					String[] command = e.getActionCommand().split(" ");
+					Application.openAccountDisplay(command[command.length-1]);
+					break;
+				}
+				else throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+		}
 	}
 }

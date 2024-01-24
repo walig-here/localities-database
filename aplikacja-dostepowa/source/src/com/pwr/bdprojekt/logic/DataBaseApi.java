@@ -337,18 +337,67 @@ public class DataBaseApi {
 	 * @param user
 	 * @param voivodship
 	 */
-	public static Permission[] getUserPermissionsInVoivodship(User user, AdministrativeUnit voivodship) {
-		// TODO - implement DataBaseApi.getUserPermissionsInVoivodship
-		throw new UnsupportedOperationException();
+	public static List<Permission> getUserPermissionsInVoivodship(User user, AdministrativeUnit voivodship) {
+		List<Permission> userPermissionsInVoivodships = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_user_permissions_in_voivodships(?, ?)");
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.setInt(2, voivodship.getId());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Permission permission = new Permission();
+				permission.setId(resultSet.getInt("permission_id"));
+				permission.setName(resultSet.getString("permission_name"));
+				permission.setDesc(resultSet.getString("permission_desc"));
+				// Dodaj obiekt do listy
+				userPermissionsInVoivodships.add(permission);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+		}catch (SQLException e){
+			userPermissionsInVoivodships.clear();
+		}
+		return userPermissionsInVoivodships;
 	}
 
 	/**
 	 * 
 	 * @param user
 	 */
-	public static AdministrativeUnit[] getVoivodshipsManagedByUser(User user) {
-		// TODO - implement DataBaseApi.getVoivodshipsManagedByUser
-		throw new UnsupportedOperationException();
+	public static List<AdministrativeUnit> getVoivodshipsManagedByUser(User user) {
+		List<AdministrativeUnit> voivodshipsManagedByUsers = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_voivodships_managed_by_user(?)");
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				AdministrativeUnit voivodship = new AdministrativeUnit();
+				voivodship.setId(resultSet.getInt("administrative_unit_id"));
+				voivodship.setName(resultSet.getString("name"));
+				voivodship.setSuperiorAdministrativeUnit(null);
+				// Dodaj obiekt do listy
+				voivodshipsManagedByUsers.add(voivodship);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+		}catch (SQLException e){
+			voivodshipsManagedByUsers.clear();
+		}
+		return voivodshipsManagedByUsers;
 	}
 
 	/**
@@ -498,4 +547,64 @@ public class DataBaseApi {
 		}
         return null;
     }
+
+	/**
+	 * Pobranie danych miejscowości z bazy
+	 * */
+	public static List<Locality> getLocalitiesFromDatabase(){
+		List<Locality> localitiesFromDatabase = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM full_localities_data;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+
+			while (resultSet.next()){
+				Locality localityFromDatabase = new Locality();
+				localityFromDatabase.setId(resultSet.getInt("locality_id"));
+				localityFromDatabase.setName(resultSet.getString("locality_name"));
+
+				localitiesFromDatabase.add(localityFromDatabase);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać miejscowości z bazy!");
+			return null;
+		}
+		return localitiesFromDatabase;
+	}
+
+	/**
+	 * Pobranie użytkowników z bazy
+	 * */
+	public static List<User> selectUsers(String whereClause){
+		List<User> usersFromDatabase = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM registered_users" +
+						(whereClause.isEmpty() ? "" : " WHERE " + whereClause) +
+						";"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				User userFromDatabase = new User(
+						resultSet.getString("login"),
+						UserRole.valueOf(resultSet.getString("role").toUpperCase())
+				);
+
+				usersFromDatabase.add(userFromDatabase);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać użytkowników z bazy!");
+			return null;
+		}
+		return usersFromDatabase;
+	}
 }

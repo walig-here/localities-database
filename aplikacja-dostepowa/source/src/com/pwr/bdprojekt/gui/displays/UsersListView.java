@@ -124,7 +124,7 @@ public class UsersListView extends View {
 		user_data_panels.clear();
 		for(int i = 5; i < data.length; i++){
 			String[] user_data = data[i].split(";");
-			UserListElement user_data_panel = new UserListElement(elements_panel, event_handler, i-5);
+			UserListElement user_data_panel = new UserListElement(elements_panel, event_handler, user_data[0]);
 			user_data_panel.setLogin(user_data[0]);
 			user_data_panel.setRole(user_data[1]);
 			elements_panel.insertComponent(user_data_panel);

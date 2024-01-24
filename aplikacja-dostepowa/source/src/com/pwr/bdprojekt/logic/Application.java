@@ -4,6 +4,9 @@ import com.pwr.bdprojekt.gui.Window;
 import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Logika aplikacji
  * */
@@ -34,22 +37,38 @@ public class Application {
 		}
 		current_user = DataBaseApi.getCurrentUser(login);
 
-		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR)){
-			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
-			User user = new User("dawid", UserRole.VIEWER);
-			DataBaseApi.modifyUserRole(user, UserRole.MERITORICAL_ADMINISTRATOR);
-		}
-		else
-			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
+		openHomeDisplay();
 	}
 
 	public static void logOut() {
 		DataBaseApi.closeConnection(current_user.getLogin());
 	}
 
-	public static void browseUsersList() {
-		// TODO - implement Logic.browseUsersList
-		throw new UnsupportedOperationException();
+	/**
+	 * Przeglądanie listy użytkowników
+	 * */
+	public static void browseUsersList()
+	{
+		// pobranie użytkowników z bazy
+		List<String> dataForGui = new ArrayList<>();
+		List<User> usersFromDatabase = DataBaseApi.selectUsers("");
+		if(usersFromDatabase == null){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add("");
+		dataForGui.add(String.join(",", new String[]{}));
+		dataForGui.add(String.join(",", new String[]{}));
+
+		// ustalenie danych użytkowników
+		for (User user : usersFromDatabase) {
+			dataForGui.add(user.getLogin() + ";" + user.getRoleName());
+		}
+
+		// otworzenie widoku listy miejscowości
+		Window.switchToView(ViewType.USERS_LIST, dataForGui.toArray(new String[]{}));
 	}
 
 	public static void browseLocalitiesList() {
@@ -198,13 +217,43 @@ public class Application {
 	}
 
 	public static void openHomeDisplay() {
-		// TODO - implement Logic.openHomeDisplay
-		throw new UnsupportedOperationException();
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
+			Window.switchToView(ViewType.HOME_ADMIN_TECH, new String[]{current_user.getLogin(), current_user.getRoleName()});
+		else
+			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}
 
-	public static void openAccountDisplay() {
-		// TODO - implement Logic.openAccountDisplay
-		throw new UnsupportedOperationException();
+	public static void openAccountDisplay(String login)
+	{
+		List<String> dataForGui = new ArrayList<>();
+		// dane aktualnego użytkownika
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+
+		// pobranie danych użytkownika, którego konto przeglądamy
+		try{
+			User user = DataBaseApi.selectUsers("login = '" + login + "'").get(0);
+			dataForGui.add(user.getLogin());
+			dataForGui.add(user.getRoleName());
+
+			List<AdministrativeUnit> voivodshipsManagedByUser = DataBaseApi.getVoivodshipsManagedByUser(user);
+			for (AdministrativeUnit voivodship : voivodshipsManagedByUser) {
+				String dataForVoivodship = voivodship.getId() + ";" + voivodship.getName();
+
+				List<Permission> permissionsInVoivodship = DataBaseApi.getUserPermissionsInVoivodship(user, voivodship);
+				for (Permission permission : permissionsInVoivodship) {
+					dataForVoivodship += ";" + permission.getId();
+					dataForVoivodship += ";" + permission.getName();
+					dataForVoivodship += ";" + permission.getDesc();
+				}
+			}
+		}
+		catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.USER_DATA_ADMIN_TECH, dataForGui.toArray(new String[0]));
 	}
 
 	public static void openPreviousDisplay() {

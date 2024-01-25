@@ -7,6 +7,8 @@ public class Locality {
 	private String description;
 	private int population;
     private AdministrativeUnit municipality;
+    private AdministrativeUnit county;
+    private AdministrativeUnit voivodship;
 	private double latitude;
 	private double longitude;
 	private LocalityType type;

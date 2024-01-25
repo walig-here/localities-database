@@ -20,6 +20,8 @@ public class Window {
 	private static View current_view = null;						// aktualny widok
 	private static EventHandler event_handler = null;				// obsługa zdarzeń
 
+	private static String[] dataForGui = null;
+
 	/**
 	 * Pobranie typu aktualnego widoku.
 	 */
@@ -33,8 +35,6 @@ public class Window {
 	 */
 	public static void switchToView(ViewType new_view_type, String[] data)
 	{
-		if(current_view != null)
-			current_view.clear();
 		current_view_type = new_view_type;
 		switch (current_view_type)
 		{
@@ -105,6 +105,8 @@ public class Window {
 			case EMPTY:
 					break;
 		}
+
+		dataForGui = data;
 		current_view.refresh(data);
 	}
 
@@ -112,8 +114,7 @@ public class Window {
 	 * Od�wie�enie aktualnego widoku
 	 */
 	public static void refresh() {
-		// TODO - implement Window.refresh
-		throw new UnsupportedOperationException();
+		switchToView(current_view_type, dataForGui);
 	}
 
 	/**

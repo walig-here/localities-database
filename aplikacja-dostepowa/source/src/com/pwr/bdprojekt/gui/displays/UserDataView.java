@@ -84,6 +84,11 @@ public class UserDataView extends View {
      */
     private EventHandler eventHandler;
 
+    /**
+     * Login
+     * */
+    private String userLogin;
+
 //======================================================================================================================
 // METODY
 
@@ -118,7 +123,7 @@ public class UserDataView extends View {
             // lista ról
             roles_list = new SingleChoiceList(management_panel, "Zmiana przypisanej roli", 0);
             roles_list.setResetable(true);
-            roles_list.setElements(new String[]{"Przeglądający", "Administrator Techniczny", "Administrator merytoryczny"});
+            roles_list.setElements(new String[]{"Przeglądający", "Administrator merytoryczny", "Administrator Techniczny"});
             management_panel.insertComponent(roles_list);
 
             // przycisk zmiany roli
@@ -193,6 +198,7 @@ public class UserDataView extends View {
 
         // login rozważanego użytkownika
         login.setText(LOGIN_HEADER+data[2]);
+        userLogin = data[2];
 
         // rola rozważanego użytkownika
         role.setText(ROLE_HEADER+data[3]);
@@ -216,5 +222,19 @@ public class UserDataView extends View {
             permission_panel.insertComponent(permissionToRegionDataPanel);
             permission_to_region_panels.add(permissionToRegionDataPanel);
         }
+    }
+
+    /**
+     * Pobranie loginu użytkownika, którego profil jest przeglądany
+     * */
+    public String getUserLogin(){
+        return userLogin;
+    }
+
+    /**
+     * Pobranie indeksu roli
+     * */
+    public int getRoleIndex(){
+        return roles_list.getSelectedIndex();
     }
 }

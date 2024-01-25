@@ -96,5 +96,4 @@ public abstract class GuiComponent extends JPanel {
 	 * @param data zbiór zaktualizowanych danych, których skład różni się w zależności od implementacji elementu GUI
 	 * */
 	protected abstract void updateData(String[] data);
-
 }

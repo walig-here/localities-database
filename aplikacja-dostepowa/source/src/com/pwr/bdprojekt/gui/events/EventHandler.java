@@ -56,9 +56,8 @@ public class EventHandler implements ActionListener {
 				}
 				case LOCALITY_DATA_ADMIN_MERIT -> {
 				}
-				case USER_DATA_ADMIN_TECH -> {
-				}
-				case USER_DATA -> {
+				case USER_DATA, USER_DATA_ADMIN_TECH -> {
+					handleUserDataViewEvent(e);
 				}
 				case EMPTY -> {
 				}
@@ -97,6 +96,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openUserList:
 				Application.browseUsersList();
 				break;
+			case EventCommand.openLocalityList:
+				Application.browseLocalitiesList();
+				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
 		}
@@ -119,6 +121,29 @@ public class EventHandler implements ActionListener {
 					break;
 				}
 				else throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu danych użytkownika
+	 * */
+	private void handleUserDataViewEvent(ActionEvent e){
+		UserDataView window = (UserDataView) Window.getCurrentView();
+		switch(e.getActionCommand()){
+			case EventCommand.modifyUserRole:
+				Application.changeUserRole(window.getUserLogin(), window.getRoleIndex());
+				break;
+			case EventCommand.openHomeView:
+				Application.openHomeDisplay();
+				break;
+			case EventCommand.openPreviousView:
+				Application.browseUsersList();
+				break;
+			case EventCommand.openAssignPermissionToRegionView:
+				Application.givePermissionToRegion(window.getUserLogin());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
 		}
 	}
 }

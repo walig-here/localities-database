@@ -1,5 +1,6 @@
 package com.pwr.bdprojekt.logic;
 
+import com.pwr.bdprojekt.gui.Window;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.sql.*;
@@ -415,8 +416,18 @@ public class DataBaseApi {
 	 * @param attraction
 	 */
 	public static boolean modifyAttraction(Attraction attraction) {
-		// TODO - implement DataBaseApi.modifyAttraction
-		throw new UnsupportedOperationException();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call modify_attraction(?, ?, ?)");
+			callableStatement.setInt(1, attraction.getId());
+			callableStatement.setString(2, attraction.getName());
+			callableStatement.setString(3, attraction.getDescription());
+
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -435,8 +446,37 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean modifyLocality(Locality locality) {
-		// TODO - implement DataBaseApi.modifyLocality
-		throw new UnsupportedOperationException();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call modify_locality(?, ?, ?, ?, ?, ?, ?, ?)");
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.setString(2, locality.getName());
+			callableStatement.setString(3, locality.getDescription());
+
+			if(locality.getPopulation() < 0){
+				Window.showMessageBox("Populacja nie może być liczbą ujemną!");
+				return false;
+			} else callableStatement.setInt(4, locality.getPopulation());
+
+			callableStatement.setInt(5, locality.getType().getId());
+			callableStatement.setInt(6, locality.getMunicipality().getId());
+
+			if(locality.getLatitude() > 90){
+				Window.showMessageBox("Nieprawidłowa wartość szerokości geograficznej!");
+				return false;
+			} else callableStatement.setDouble(7, locality.getLatitude());
+
+			if(locality.getLongitude() > 180){
+				Window.showMessageBox("Nieprawidłowa wartość długości geograficznej!");
+				return false;
+			} else callableStatement.setDouble(8, locality.getLongitude());
+
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		}catch (SQLException e){
+			return false;
+		}
 	}
 
 	/**

@@ -43,7 +43,7 @@ public class PermissionInRegionEditorView extends View {
 	/**
 	 * Identyfikator województwa, w którym nadawane jest uprawnienie
 	 * */
-	private String voivodship_index;
+	private String voivodship_id;
 
 	/**
 	 * Lista z uprawnieniami
@@ -131,7 +131,7 @@ public class PermissionInRegionEditorView extends View {
 		user_login = data[2];
 
 		// dane wojdwództwa, w którym nadawane są uprawnienia
-		voivodship_index = data[3];
+		voivodship_id = data[3];
 		elements_panel.setHeaderText(
 				"Uprawnienia do przypisania użytkownikowi \"" + user_login + "\" w województwie \"" + data[4] + "\""
 		);
@@ -161,8 +161,8 @@ public class PermissionInRegionEditorView extends View {
 	/**
 	 * Pobranie identyfikatora województwa, w którym nadawane jest uprawnienie
 	 * */
-	public int getVoivodshipIndex(){
-		return Integer.parseInt(voivodship_index);
+	public int getVoivodshipId(){
+		return Integer.parseInt(voivodship_id);
 	}
 
 	/**

@@ -86,7 +86,7 @@ public class EventHandler implements ActionListener {
 		switch (e.getActionCommand())
 		{
 			case EventCommand.assignPermissionInRegionToUser:
-				Application.givePermissionInRegion(window.getVoivodshipIndex(), window.getUserLogin(), window.getPermissionId());
+				Application.givePermissionInRegion(window.getVoivodshipId(), window.getUserLogin(), window.getPermissionId());
 				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);

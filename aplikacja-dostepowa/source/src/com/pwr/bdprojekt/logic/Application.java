@@ -182,9 +182,10 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addLocalityToFavourites() {
-		// TODO - implement Logic.addLocalityToFavourites
-		throw new UnsupportedOperationException();
+	public static void addLocalityToFavourites(Locality locality, String adnotation) {
+		if(DataBaseApi.addLocalityToFavList(locality, adnotation))
+			Window.showMessageBox("Dodano do ulubionych!");
+		else Window.showMessageBox("Dodanie do ulubionych nie powiodło się!");
 	}
 
 	public static void removeLocalityFromFavourites() {

@@ -66,9 +66,9 @@ public abstract class View {
 			topbar = null;
 
 		// Rozłożenie elementów
-		parent_window.add(main_panel);
 		parent_window.setLayout(null);
 		redrawBaseView();
+		parent_window.setContentPane(main_panel);
 	}
 
 	/**

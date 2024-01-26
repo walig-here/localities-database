@@ -5,6 +5,7 @@ import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -73,8 +74,45 @@ public class Application {
 	}
 
 	public static void browseLocalitiesList() {
-		// TODO - implement Logic.browseLocalitiesList
-		throw new UnsupportedOperationException();
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add("1,1");
+		dataForGui.add("1,1");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+
+		List<Locality> localities = DataBaseApi.selectLocalities();
+		if(localities == null){
+			Window.showMessageBox("Błąd pobierania danych miejscowości");
+			return;
+		}
+		for (Locality locality : localities) {
+			String localityData = "";
+			localityData += locality.getName() + ";";
+			localityData += locality.getType().getName() + ";";
+			localityData += locality.getMunicipality().getName() + ", " +
+							locality.getMunicipality().getSuperiorAdministrativeUnit().getName() + ", " +
+							locality.getMunicipality().getSuperiorAdministrativeUnit().getSuperiorAdministrativeUnit().getName() + ", ";
+			localityData += locality.getPopulation();
+			localityData += "0";
+			localityData += "false";
+
+			dataForGui.add(localityData);
+		}
+
+		if(current_user.getRole().equals(UserRole.MERITORICAL_ADMINISTRATOR))
+			Window.switchToView(ViewType.LOCALITY_LIST_ADMIN_MERIT, dataForGui.toArray(new String[0]));
+		else
+			Window.switchToView(ViewType.LOCALITY_LIST, dataForGui.toArray(new String[0]));
 	}
 
 	public static void browseFavouriteList() {
@@ -87,9 +125,25 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void changeUserRole() {
-		// TODO - implement Logic.changeUserRole
-		throw new UnsupportedOperationException();
+	public static void changeUserRole(String login, int roleIndex) {
+		UserRole role;
+		switch (roleIndex){
+			case 0: role = UserRole.VIEWER; break;
+			case 1: role = UserRole.MERITORICAL_ADMINISTRATOR; break;
+			case 2: role = UserRole.TECHNICAL_ADMINISTRATOR; break;
+			default:
+				Window.showMessageBox("Wybrana rola nie jest poprawna!");
+				return;
+		}
+		User user = new User(login, role);
+
+		if(DataBaseApi.modifyUserRole(user, user.getRole())){
+			Window.showMessageBox("Zmieniono rolę użytkownika!");
+			Application.openAccountDisplay(user.getLogin());
+		}
+		else{
+			Window.showMessageBox("Nie udało się zmienić roli!");
+		}
 	}
 
 	public static void deleteUserAccount() {
@@ -97,9 +151,20 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void givePermissionToRegion() {
-		// TODO - implement Logic.givePermissionToRegion
-		throw new UnsupportedOperationException();
+	public static void givePermissionToRegion(String userLogin) {
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add(userLogin);
+
+		List<AdministrativeUnit> voivodships = DataBaseApi.selectVoivodships();
+		String voivodshipList = "";
+		for (AdministrativeUnit voivodship : voivodships) {
+			voivodshipList += voivodship.getName() + ",";
+		}
+		dataForGui.add(voivodshipList);
+
+		Window.switchToView(ViewType.PERMISSION_TO_REGION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
 	public static void takeAwayPermissionToRegion() {
@@ -252,6 +317,7 @@ public class Application {
 					dataForVoivodship += ";" + permission.getName();
 					dataForVoivodship += ";" + permission.getDesc();
 				}
+				dataForGui.add(dataForVoivodship);
 			}
 		}
 		catch (NullPointerException e){
@@ -268,8 +334,7 @@ public class Application {
 	}
 
 	public static void refreshDisplay() {
-		// TODO - implement Logic.refreshDisplay
-		throw new UnsupportedOperationException();
+		Window.refresh();
 	}
 
 	/**

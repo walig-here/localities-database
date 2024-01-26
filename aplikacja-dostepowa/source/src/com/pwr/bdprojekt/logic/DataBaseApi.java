@@ -601,7 +601,7 @@ public class DataBaseApi {
 	/**
 	 * Pobranie danych miejscowości z bazy
 	 * */
-	public static List<Locality> getLocalitiesFromDatabase(){
+	public static List<Locality> selectLocalities(){
 		List<Locality> localitiesFromDatabase = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
@@ -614,6 +614,28 @@ public class DataBaseApi {
 				Locality localityFromDatabase = new Locality();
 				localityFromDatabase.setId(resultSet.getInt("locality_id"));
 				localityFromDatabase.setName(resultSet.getString("locality_name"));
+				localityFromDatabase.setDescription(resultSet.getString("locality_desc"));
+				localityFromDatabase.setLatitude(resultSet.getDouble("locality_latitude"));
+				localityFromDatabase.setLongitude(resultSet.getDouble("locality_longitude"));
+
+				AdministrativeUnit municipality = new AdministrativeUnit();
+				municipality.setId(resultSet.getInt("municipality_id"));
+				municipality.setName(resultSet.getString("municipality_name"));
+
+				AdministrativeUnit county = new AdministrativeUnit();
+				county.setId(resultSet.getInt("county_id"));
+				county.setName(resultSet.getString("county_id"));
+
+				AdministrativeUnit voivodship = new AdministrativeUnit();
+				voivodship.setName(resultSet.getString("voivodship_name"));
+				voivodship.setId(resultSet.getInt("voivodship_id"));
+
+				municipality.setSuperiorAdministrativeUnit(county);
+				county.setSuperiorAdministrativeUnit(voivodship);
+				voivodship.setSuperiorAdministrativeUnit(null);
+
+				LocalityType type = new LocalityType();
+				type.setName(resultSet.getString("locality_type"));
 
 				localitiesFromDatabase.add(localityFromDatabase);
 			}
@@ -656,5 +678,33 @@ public class DataBaseApi {
 			return null;
 		}
 		return usersFromDatabase;
+	}
+
+	/**
+	 * Pobranie województw z bazy
+	 * */
+	public static List<AdministrativeUnit> selectVoivodships(){
+		List<AdministrativeUnit> voivodships = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM administrative_units WHERE type = 'województwo';"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				AdministrativeUnit voivodship = new AdministrativeUnit();
+				voivodship.setId(resultSet.getInt("administrative_unit_id"));
+				voivodship.setName(resultSet.getString("name"));
+				voivodship.setSuperiorAdministrativeUnit(null);
+				voivodships.add(voivodship);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać województw z bazy!");
+			return null;
+		}
+		return voivodships;
 	}
 }

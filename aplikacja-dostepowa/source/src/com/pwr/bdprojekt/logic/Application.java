@@ -5,7 +5,6 @@ import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -152,12 +151,23 @@ public class Application {
 	}
 
 	public static void givePermissionToRegion(String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			if(!user.getRole().equals(UserRole.MERITORICAL_ADMINISTRATOR)){
+				Window.showMessageBox("Nie można nadać uprawnień\nużytkownikowi!");
+				return;
+			}
+		} catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania użytkownika");
+			return;
+		}
+
 		List<String> dataForGui = new ArrayList<>();
 		dataForGui.add(current_user.getLogin());
 		dataForGui.add(current_user.getRoleName());
 		dataForGui.add(userLogin);
 
-		List<AdministrativeUnit> voivodships = DataBaseApi.selectVoivodships();
+		List<AdministrativeUnit> voivodships = DataBaseApi.selectVoivodships("");
 		String voivodshipList = "";
 		for (AdministrativeUnit voivodship : voivodships) {
 			voivodshipList += voivodship.getName() + ",";
@@ -172,9 +182,52 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void givePermissionInRegion() {
-		// TODO - implement Logic.givePermissionInRegion
-		throw new UnsupportedOperationException();
+	public static void givePermissionInRegion(int voivodship_id, String user_login, int permission_id){
+		try{
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("administrative_unit_id = "+voivodship_id).get(0);
+			User user = DataBaseApi.selectUsers("login = '"+user_login+"'").get(0);
+			Permission permission = DataBaseApi.selectPermissions().get(permission_id);
+
+			boolean success = DataBaseApi.assignPermissionToUser(voivodship, user, permission);
+			if(!success){
+				Window.showMessageBox("Nie udało się nadać\n uprawnienia!");
+				return;
+			}
+
+			Application.openAccountDisplay(user_login);
+		} catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+		}
+	}
+
+	public static void openPermissionInRegionView(int voivodship_index, String user_login) {
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add(user_login);
+
+		// województwo, w którym nadawane jest uprawnienie
+		try{
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("").get(voivodship_index);
+			dataForGui.add(Integer.toString(voivodship.getId()));
+			dataForGui.add(voivodship.getName());
+
+			List<Permission> permissions = DataBaseApi.selectPermissions();
+			String permission_names = "";
+			String permission_descs = "";
+			for (Permission permission : permissions) {
+				permission_names += permission.getName() + ",";
+				permission_descs += permission.getDesc() + ";";
+			}
+			dataForGui.add(permission_names);
+			dataForGui.add(permission_descs);
+		}
+		catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobieranie województwa z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.PERMISSION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
 	public static void takeAwayPermissionInRegion() {
@@ -272,7 +325,7 @@ public class Application {
 
 	public static void open() {
 		is_running = true;
-		Window.open("Baza danych miejscowości", 975, 800);
+		Window.open("Baza danych miejscowości", 975, 600);
 		if(!DataBaseApi.connect("root", "admin")){
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();

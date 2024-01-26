@@ -13,6 +13,16 @@ public class EventHandler implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		System.out.println("=> " + e.getActionCommand());
 
+		switch (e.getActionCommand())
+		{
+			case EventCommand.openCurrentUserAccount:
+				Application.openAccountDisplay(Application.getCurrentUser().getLogin());
+				return;
+			case EventCommand.openHomeView:
+				Application.openHomeDisplay();
+				return;
+		}
+
 		try {
 			switch (Window.getCurrentViewType()) {
 				case HOME, HOME_ADMIN_TECH -> {
@@ -25,8 +35,10 @@ public class EventHandler implements ActionListener {
 				case LOCALITY_EDITOR -> {
 				}
 				case PERMISSION_EDITOR -> {
+					handleAssignPermissionInRegionView(e);
 				}
 				case PERMISSION_TO_REGION_EDITOR -> {
+					handleAssignPermissionToRegionView(e);
 				}
 				case LOCALITY_FILTER -> {
 				}
@@ -59,12 +71,39 @@ public class EventHandler implements ActionListener {
 				case USER_DATA, USER_DATA_ADMIN_TECH -> {
 					handleUserDataViewEvent(e);
 				}
-				case EMPTY -> {
-				}
 			}
 		} catch (UnsupportedOperationException exception){
 			Window.showMessageBox(exception.getMessage());
 			Application.quit();
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu przypisania uprawnienia w regionie
+	 * */
+	private void handleAssignPermissionInRegionView(ActionEvent e){
+		PermissionInRegionEditorView window = (PermissionInRegionEditorView) Window.getCurrentView();
+		switch (e.getActionCommand())
+		{
+			case EventCommand.assignPermissionInRegionToUser:
+				Application.givePermissionInRegion(window.getVoivodshipIndex(), window.getUserLogin(), window.getPermissionId());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu przypisania uprawnienia do regionu
+	 * */
+	private void handleAssignPermissionToRegionView(ActionEvent e){
+		PermissionToRegionEditorView window = (PermissionToRegionEditorView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openAssignPermissionInRegionView:
+				Application.openPermissionInRegionView(window.getVoivodshipIndex(), window.getUserLogin());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
 		}
 	}
 
@@ -110,9 +149,6 @@ public class EventHandler implements ActionListener {
 	private void handleUserListViewEvent(ActionEvent e){
 		UsersListView window = (UsersListView) Window.getCurrentView();
 		switch (e.getActionCommand()){
-			case EventCommand.openHomeView, EventCommand.openPreviousView:
-				Application.openHomeDisplay();
-				break;
 			default:
 				if(e.getActionCommand().contains(EventCommand.openUserAccountView))
 				{
@@ -132,9 +168,6 @@ public class EventHandler implements ActionListener {
 		switch(e.getActionCommand()){
 			case EventCommand.modifyUserRole:
 				Application.changeUserRole(window.getUserLogin(), window.getRoleIndex());
-				break;
-			case EventCommand.openHomeView:
-				Application.openHomeDisplay();
 				break;
 			case EventCommand.openPreviousView:
 				Application.browseUsersList();

@@ -351,7 +351,7 @@ public class DataBaseApi {
 	public static List<Permission> getUserPermissionsInVoivodship(User user, AdministrativeUnit voivodship) {
 		List<Permission> userPermissionsInVoivodships = new ArrayList<>();
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("call get_user_permissions_in_voivodships(?, ?)");
+			CallableStatement callableStatement = user_connection.prepareCall("call get_user_permissions_in_voivodship(?, ?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.setInt(2, voivodship.getId());
 			callableStatement.execute();
@@ -395,8 +395,8 @@ public class DataBaseApi {
 
 			while (resultSet.next()) {
 				AdministrativeUnit voivodship = new AdministrativeUnit();
-				voivodship.setId(resultSet.getInt("administrative_unit_id"));
-				voivodship.setName(resultSet.getString("name"));
+				voivodship.setId(resultSet.getInt("voivodship_id"));
+				voivodship.setName(resultSet.getString("voivodship_name"));
 				voivodship.setSuperiorAdministrativeUnit(null);
 				// Dodaj obiekt do listy
 				voivodshipsManagedByUsers.add(voivodship);
@@ -683,11 +683,13 @@ public class DataBaseApi {
 	/**
 	 * Pobranie województw z bazy
 	 * */
-	public static List<AdministrativeUnit> selectVoivodships(){
+	public static List<AdministrativeUnit> selectVoivodships(String whereClause){
 		List<AdministrativeUnit> voivodships = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM administrative_units WHERE type = 'województwo';"
+					"SELECT * FROM administrative_units WHERE type = 'województwo'" +
+					(whereClause.isEmpty() ? "" : " and " + whereClause) +
+					";"
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -706,5 +708,33 @@ public class DataBaseApi {
 			return null;
 		}
 		return voivodships;
+	}
+
+	/**
+	 * Pobranie typów uprawnień z bazy danych
+	 * */
+	public static List<Permission> selectPermissions(){
+		List<Permission> permissions = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM permissions;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				Permission permission = new Permission();
+				permission.setId(resultSet.getInt("permission_id"));
+				permission.setName(resultSet.getString("name"));
+				permission.setDesc(resultSet.getString("description"));
+				permissions.add(permission);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać uprawnień z bazy!");
+			return null;
+		}
+		return permissions;
 	}
 }

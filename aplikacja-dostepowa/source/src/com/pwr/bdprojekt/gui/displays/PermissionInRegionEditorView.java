@@ -6,7 +6,6 @@ import com.pwr.bdprojekt.gui.events.EventHandler;
 
 import javax.swing.*;
 import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -44,7 +43,7 @@ public class PermissionInRegionEditorView extends View {
 	/**
 	 * Identyfikator województwa, w którym nadawane jest uprawnienie
 	 * */
-	private String voivodship_id;
+	private String voivodship_index;
 
 	/**
 	 * Lista z uprawnieniami
@@ -132,7 +131,7 @@ public class PermissionInRegionEditorView extends View {
 		user_login = data[2];
 
 		// dane wojdwództwa, w którym nadawane są uprawnienia
-		voivodship_id = data[3];
+		voivodship_index = data[3];
 		elements_panel.setHeaderText(
 				"Uprawnienia do przypisania użytkownikowi \"" + user_login + "\" w województwie \"" + data[4] + "\""
 		);
@@ -162,8 +161,8 @@ public class PermissionInRegionEditorView extends View {
 	/**
 	 * Pobranie identyfikatora województwa, w którym nadawane jest uprawnienie
 	 * */
-	public int getVoivodshipId(){
-		return Integer.parseInt(voivodship_id);
+	public int getVoivodshipIndex(){
+		return Integer.parseInt(voivodship_index);
 	}
 
 	/**

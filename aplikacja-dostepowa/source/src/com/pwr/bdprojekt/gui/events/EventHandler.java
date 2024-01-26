@@ -149,6 +149,9 @@ public class EventHandler implements ActionListener {
 	private void handleUserListViewEvent(ActionEvent e){
 		UsersListView window = (UsersListView) Window.getCurrentView();
 		switch (e.getActionCommand()){
+			case EventCommand.openPreviousView:
+				Application.openHomeDisplay();
+				break;
 			default:
 				if(e.getActionCommand().contains(EventCommand.openUserAccountView))
 				{

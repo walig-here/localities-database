@@ -85,9 +85,18 @@ public class DataBaseApi {
 	 * 
 	 * @param locality
 	 */
-	public static boolean addLocalityToFavList(Locality locality) {
-		// TODO - implement DataBaseApi.addLocalityToFavList
-		throw new UnsupportedOperationException();
+	public static boolean addLocalityToFavList(Locality locality, String adnotation) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call add_locality_to_fav_list(?, ?)");
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.setString(2, adnotation);
+
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -198,6 +207,7 @@ public class DataBaseApi {
 			CallableStatement callableStatement = connection.prepareCall(callProcedureSql);
 			callableStatement.setInt(1, attraction.getId());
 			callableStatement.execute();
+			callableStatement.close();
 			return true;
 
 		} catch (SQLException e) {

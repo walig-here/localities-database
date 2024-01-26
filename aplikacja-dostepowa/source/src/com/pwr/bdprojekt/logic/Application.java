@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+
 /**
  * Logika aplikacji
  * */
@@ -214,9 +215,10 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void editAttraction() {
-		// TODO - implement Logic.editAttraction
-		throw new UnsupportedOperationException();
+	public static void modifyAttraction(Attraction attraction) {
+		if(DataBaseApi.modifyAttraction(attraction))
+			Window.showMessageBox("Poprawnie zmodyfikowano!");
+		else Window.showMessageBox("Zmiana nie powiodła się!");
 	}
 
 	public static void deleteAttractionFromLocality() {
@@ -229,14 +231,16 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addNewAttraction() {
-		// TODO - implement Logic.addNewAttraction
-		throw new UnsupportedOperationException();
+	public static void addNewAttraction(Attraction attraction, Address address) {
+		if(DataBaseApi.addNewAttraction(attraction, address))
+			Window.showMessageBox("Nowa atrakcja została poprawnie dodana!");
+		else Window.showMessageBox("Nie udało się dodać atrakcji!");
 	}
 
-	public static void editLocality() {
-		// TODO - implement Logic.editLocality
-		throw new UnsupportedOperationException();
+	public static void modifyLocality(Locality locality) {
+		if(DataBaseApi.modifyLocality(locality))
+			Window.showMessageBox("Poprawnie zmodyfikowano!");
+		else Window.showMessageBox("Zmiana nie powiodła się!");
 	}
 
 	public static void assignAddressToAttraction() {
@@ -339,7 +343,7 @@ public class Application {
 	 * @param figure_id
 	 * @param caption
 	 */
-	public static void editCaption(String attraction_id, String figure_id, String caption) {
+	public static void modifyCaption(String attraction_id, String figure_id, String caption) {
 		// TODO - implement Logic.editCaption
 		throw new UnsupportedOperationException();
 	}

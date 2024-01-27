@@ -16,7 +16,7 @@ public class EventHandler implements ActionListener {
 		switch (e.getActionCommand())
 		{
 			case EventCommand.openCurrentUserAccount:
-				Application.openAccountDisplay(Application.getCurrentUser().getLogin());
+				Application.openAccountDisplay(Application.getCurrentUser().getLogin(), true);
 				return;
 			case EventCommand.openHomeView:
 				Application.openHomeDisplay();
@@ -156,7 +156,7 @@ public class EventHandler implements ActionListener {
 				if(e.getActionCommand().contains(EventCommand.openUserAccountView))
 				{
 					String[] command = e.getActionCommand().split(" ");
-					Application.openAccountDisplay(command[command.length-1]);
+					Application.openAccountDisplay(command[command.length-1], false);
 					break;
 				}
 				else throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
@@ -168,6 +168,20 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleUserDataViewEvent(ActionEvent e){
 		UserDataView window = (UserDataView) Window.getCurrentView();
+
+		if(e.getActionCommand().contains(EventCommand.openAssignPermissionInRegionView)){
+			String[] command = e.getActionCommand().split(" ");
+			int voivodshipId = Integer.parseInt(command[1]);
+			Application.openPermissionInRegionView(voivodshipId, window.getUserLogin());
+			return;
+		}
+		else if (e.getActionCommand().contains(EventCommand.unassignPermissionToRegion)){
+			String[] command = e.getActionCommand().split(" ");
+			int voivodshipId = Integer.parseInt(command[4]);
+			Application.takeAwayPermissionToRegion(voivodshipId, window.getUserLogin());
+			return;
+		}
+
 		switch(e.getActionCommand()){
 			case EventCommand.modifyUserRole:
 				Application.changeUserRole(window.getUserLogin(), window.getRoleIndex());
@@ -177,6 +191,9 @@ public class EventHandler implements ActionListener {
 				break;
 			case EventCommand.openAssignPermissionToRegionView:
 				Application.givePermissionToRegion(window.getUserLogin());
+				break;
+			case EventCommand.deleteUserAccount:
+				Application.deleteUserAccount(window.getUserLogin());
 				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);

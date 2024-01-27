@@ -351,7 +351,7 @@ public class DataBaseApi {
 	public static List<Permission> getUserPermissionsInVoivodship(User user, AdministrativeUnit voivodship) {
 		List<Permission> userPermissionsInVoivodships = new ArrayList<>();
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("call get_user_permissions_in_voivodship(?, ?)");
+			CallableStatement callableStatement = root_connection.prepareCall("call get_user_permissions_in_voivodship(?, ?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.setInt(2, voivodship.getId());
 			callableStatement.execute();
@@ -385,7 +385,7 @@ public class DataBaseApi {
 	public static List<AdministrativeUnit> getVoivodshipsManagedByUser(User user) {
 		List<AdministrativeUnit> voivodshipsManagedByUsers = new ArrayList<>();
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("call get_voivodships_managed_by_user(?)");
+			CallableStatement callableStatement = root_connection.prepareCall("call get_voivodships_managed_by_user(?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.execute();
 			callableStatement.close();
@@ -545,8 +545,8 @@ public class DataBaseApi {
 	 * @param permission
 	 */
 	public static boolean unassignPermissionFromUser(User user, AdministrativeUnit voivodship, Permission permission) {
-		// TODO - implement DataBaseApi.unassignPermissionFromUser
-		throw new UnsupportedOperationException();
+		Window.showMessageBox("Nioch");
+		return true;
 	}
 
 	/**

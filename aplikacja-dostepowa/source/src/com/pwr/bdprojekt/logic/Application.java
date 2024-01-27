@@ -138,16 +138,27 @@ public class Application {
 
 		if(DataBaseApi.modifyUserRole(user, user.getRole())){
 			Window.showMessageBox("Zmieniono rolę użytkownika!");
-			Application.openAccountDisplay(user.getLogin());
+			Application.openAccountDisplay(user.getLogin(), false);
 		}
 		else{
 			Window.showMessageBox("Nie udało się zmienić roli!");
 		}
 	}
 
-	public static void deleteUserAccount() {
-		// TODO - implement Logic.deleteUserAccount
-		throw new UnsupportedOperationException();
+	public static void deleteUserAccount(String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			boolean success = DataBaseApi.delUser(user);
+			if(success){
+				Window.showMessageBox("Konto zostało usunięte");
+				Application.browseUsersList();
+			}
+			else{
+				Window.showMessageBox("Nie udało się usunąć konta!");
+			}
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+		}
 	}
 
 	public static void givePermissionToRegion(String userLogin) {
@@ -177,9 +188,15 @@ public class Application {
 		Window.switchToView(ViewType.PERMISSION_TO_REGION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
-	public static void takeAwayPermissionToRegion() {
-		// TODO - implement Logic.takeAwayPermissionToRegion
-		throw new UnsupportedOperationException();
+	public static void takeAwayPermissionToRegion(int voivodshipIndex, String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			AdministrativeUnit administrativeUnit = DataBaseApi.selectVoivodships("").get(voivodshipIndex);
+			DataBaseApi.unassignPermissionFromUser(user, administrativeUnit, null);
+		}
+		catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania dnaych z bazy");
+		}
 	}
 
 	public static void givePermissionInRegion(int voivodship_id, String user_login, int permission_id){
@@ -194,7 +211,7 @@ public class Application {
 				return;
 			}
 
-			Application.openAccountDisplay(user_login);
+			Application.openAccountDisplay(user_login, false);
 		} catch (NullPointerException e){
 			Window.showMessageBox("Błąd pobierania danych z bazy!");
 		}
@@ -347,7 +364,7 @@ public class Application {
 			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}
 
-	public static void openAccountDisplay(String login)
+	public static void openAccountDisplay(String login, boolean openMyAccount)
 	{
 		List<String> dataForGui = new ArrayList<>();
 		// dane aktualnego użytkownika
@@ -356,13 +373,19 @@ public class Application {
 
 		// pobranie danych użytkownika, którego konto przeglądamy
 		try{
-			User user = DataBaseApi.selectUsers("login = '" + login + "'").get(0);
+			User user;
+			if(openMyAccount)
+				user = current_user;
+			else
+				user = DataBaseApi.selectUsers("login = '" + login + "'").get(0);
 			dataForGui.add(user.getLogin());
 			dataForGui.add(user.getRoleName());
 
 			List<AdministrativeUnit> voivodshipsManagedByUser = DataBaseApi.getVoivodshipsManagedByUser(user);
+			int i = 0;
 			for (AdministrativeUnit voivodship : voivodshipsManagedByUser) {
-				String dataForVoivodship = voivodship.getId() + ";" + voivodship.getName();
+				String dataForVoivodship = i + ";" + voivodship.getName();
+				i++;
 
 				List<Permission> permissionsInVoivodship = DataBaseApi.getUserPermissionsInVoivodship(user, voivodship);
 				for (Permission permission : permissionsInVoivodship) {

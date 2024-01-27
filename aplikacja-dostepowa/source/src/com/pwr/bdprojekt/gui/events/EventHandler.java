@@ -3,6 +3,10 @@ package com.pwr.bdprojekt.gui.events;
 import com.pwr.bdprojekt.gui.displays.*;
 import com.pwr.bdprojekt.gui.*;
 import com.pwr.bdprojekt.logic.Application;
+import com.pwr.bdprojekt.logic.entities.AdministrativeUnit;
+import com.pwr.bdprojekt.logic.entities.Locality;
+import com.pwr.bdprojekt.logic.entities.User;
+import com.pwr.bdprojekt.logic.entities.UserRole;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +25,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openHomeView:
 				Application.openHomeDisplay();
 				return;
+			case EventCommand.logOutCurrentUser:
+				Application.logOut();
+				return;
 		}
 
 		try {
@@ -33,6 +40,7 @@ public class EventHandler implements ActionListener {
 				case ATTRACTION_EDITOR -> {
 				}
 				case LOCALITY_EDITOR -> {
+					handleLocalityEditorEvents(e);
 				}
 				case PERMISSION_EDITOR -> {
 					handleAssignPermissionInRegionView(e);
@@ -44,9 +52,8 @@ public class EventHandler implements ActionListener {
 				}
 				case USERS_FILTER -> {
 				}
-				case LOCALITY_LIST_ADMIN_MERIT -> {
-				}
-				case LOCALITY_LIST -> {
+				case LOCALITY_LIST_ADMIN_MERIT, LOCALITY_LIST -> {
+					handleLocalityListEvents(e);
 				}
 				case USERS_LIST -> {
 					handleUserListViewEvent(e);
@@ -75,6 +82,30 @@ public class EventHandler implements ActionListener {
 		} catch (UnsupportedOperationException exception){
 			Window.showMessageBox(exception.getMessage());
 			Application.quit();
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu edytora miejscowości
+	 * */
+	private void handleLocalityEditorEvents(ActionEvent e){
+		LocalityEditorView window = (LocalityEditorView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.modifyLocalityData:
+				int locality_id = window.getLocalityId();
+				Locality locality = new Locality();
+				locality.setName(window.gerLocalityName());
+				locality.setId(window.getLocalityId());
+				locality.setDescription(window.getLocalityDesc());
+				locality.setLatitude(window.getLatitude());
+				locality.setLongitude(window.getLongitude());
+				if(locality_id == -1)
+					Application.addNewLocality(locality, window.getLocalityMuniciaplityIndex(), window.getLocalityTypeId());
+				else
+					Application.modifyLocality(locality, window.getLocalityMuniciaplityIndex(), window.getLocalityTypeId());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wykryto nieobdługiwane zdarzenie"+e.getActionCommand());
 		}
 	}
 
@@ -121,9 +152,23 @@ public class EventHandler implements ActionListener {
 				Application.register(window.getLoginData()[0], window.getLoginData()[1]);
 				break;
 			default:
-				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}
 
+	}
+
+	/**
+	 * Zdarzenia listy miejscowości
+	 * */
+	private void handleLocalityListEvents(ActionEvent e){
+		LocalitiesListView window = (LocalitiesListView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.addNewLocality:
+				Application.openNewLocalityEditor();
+				break;
+			default:
+				throw new UnsupportedOperationException("Wystąpiło nieobsługiwane zdarzenia: "+e.getActionCommand());
+		}
 	}
 
 	/**
@@ -137,6 +182,8 @@ public class EventHandler implements ActionListener {
 				break;
 			case EventCommand.openLocalityList:
 				Application.browseLocalitiesList();
+				break;
+			case EventCommand.openPreviousView:
 				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
@@ -187,7 +234,10 @@ public class EventHandler implements ActionListener {
 				Application.changeUserRole(window.getUserLogin(), window.getRoleIndex());
 				break;
 			case EventCommand.openPreviousView:
-				Application.browseUsersList();
+				if(Application.getCurrentUser().getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
+					Application.browseUsersList();
+				else
+					Application.openHomeDisplay();
 				break;
 			case EventCommand.openAssignPermissionToRegionView:
 				Application.givePermissionToRegion(window.getUserLogin());

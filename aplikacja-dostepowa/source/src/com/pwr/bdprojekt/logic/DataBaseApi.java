@@ -605,7 +605,7 @@ public class DataBaseApi {
 		List<Locality> localitiesFromDatabase = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM full_localities_data;"
+					"SELECT * FROM full_localities_data"
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -624,7 +624,7 @@ public class DataBaseApi {
 
 				AdministrativeUnit county = new AdministrativeUnit();
 				county.setId(resultSet.getInt("county_id"));
-				county.setName(resultSet.getString("county_id"));
+				county.setName(resultSet.getString("county_name"));
 
 				AdministrativeUnit voivodship = new AdministrativeUnit();
 				voivodship.setName(resultSet.getString("voivodship_name"));
@@ -633,9 +633,11 @@ public class DataBaseApi {
 				municipality.setSuperiorAdministrativeUnit(county);
 				county.setSuperiorAdministrativeUnit(voivodship);
 				voivodship.setSuperiorAdministrativeUnit(null);
+				localityFromDatabase.setMunicipality(municipality);
 
 				LocalityType type = new LocalityType();
 				type.setName(resultSet.getString("locality_type"));
+				localityFromDatabase.setType(type);
 
 				localitiesFromDatabase.add(localityFromDatabase);
 			}
@@ -689,7 +691,7 @@ public class DataBaseApi {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
 					"SELECT * FROM administrative_units WHERE type = 'województwo'" +
 					(whereClause.isEmpty() ? "" : " and " + whereClause) +
-					";"
+					"ORDER BY name;"
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -708,6 +710,33 @@ public class DataBaseApi {
 			return null;
 		}
 		return voivodships;
+	}
+
+	public static List<AdministrativeUnit> selectMunicipalities(String whereClause){
+		List<AdministrativeUnit> municipalities = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM administrative_units WHERE type = 'gmina'" +
+							(whereClause.isEmpty() ? "" : " and " + whereClause) +
+							"ORDER BY name;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				AdministrativeUnit municipality = new AdministrativeUnit();
+				municipality.setId(resultSet.getInt("administrative_unit_id"));
+				municipality.setName(resultSet.getString("name"));
+				municipality.setSuperiorAdministrativeUnit(null);
+				municipalities.add(municipality);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać gmin z bazy!");
+			return null;
+		}
+		return municipalities;
 	}
 
 	/**
@@ -736,5 +765,29 @@ public class DataBaseApi {
 			return null;
 		}
 		return permissions;
+	}
+
+	public static List<LocalityType> selectLocalityType(){
+		List<LocalityType> localityTypes = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM locality_types;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				LocalityType localityType = new LocalityType();
+				localityType.setId(resultSet.getInt("locality_type_id"));
+				localityType.setName(resultSet.getString("name"));
+				localityTypes.add(localityType);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać typów miejscowości z bazy!");
+			return null;
+		}
+		return localityTypes;
 	}
 }

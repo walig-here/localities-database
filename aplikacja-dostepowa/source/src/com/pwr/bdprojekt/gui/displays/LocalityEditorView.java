@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Widok pozwalający na edytowanie danych miejscowości. Dane dla funkcji refresh:
  * [0] - login aktualnego użytkownika
  * [1] - rola aktualnego użytkownika
- * [2] - id edytowanej miejscowości
+ * [2] - id edytowanej miejscowości (-1, gdy nowa)
  * [3] - nazwa edytowanej miejscowości
  * [4] - opis edytowanej miejscowości
  * [5] - populacja edytowanej miejscowości

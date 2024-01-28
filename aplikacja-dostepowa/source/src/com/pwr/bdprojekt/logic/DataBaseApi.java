@@ -465,8 +465,6 @@ public class DataBaseApi {
 	 */
 	public static boolean modifyFigureCaption(String new_caption) {
 		// TODO - implement DataBaseApi.modifyFigureCaption
-
-
 		throw new UnsupportedOperationException();
 	}
 
@@ -549,13 +547,21 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param attraction
+	 * @param attraction_id
 	 * @param locality
 	 */
-	public static boolean unassignAttractionFromLocality(Attraction attraction, Locality locality) {
-		// TODO - implement DataBaseApi.unassignAttractionFromLocality
-		throw new UnsupportedOperationException();
-	}
+	public static boolean unassignAttractionFromLocality(int attraction_id, Locality locality) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call unassign_attraction_from_locality(?, ?)");
+			callableStatement.setInt(1, attraction_id);
+			callableStatement.setInt(2, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+            return false;
+        }
+    }
 
 	/**
 	 * 

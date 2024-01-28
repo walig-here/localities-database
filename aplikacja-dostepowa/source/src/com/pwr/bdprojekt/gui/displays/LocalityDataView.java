@@ -265,6 +265,9 @@ public class LocalityDataView extends View{
         String[] attractions_addresses = data[17].split("'");
         String[] attractions_types = data[18].split(";");
 
+        if(attractions_ids.length == 0 || attractions_ids[0].equals(""))
+            return;
+
         elements_panel.removeAllComponents();
         elements_panel.insertComponent(management_panel);
         elements_panel.insertComponent(name);
@@ -289,5 +292,12 @@ public class LocalityDataView extends View{
             attraction_data_panels.add(attraction);
             elements_panel.insertComponent(attraction);
         }
+    }
+
+    /**
+     * Pobranie ID miejscowości
+     * */
+    public int getLocalityId(){
+        return Integer.parseInt(locality_id);
     }
 }

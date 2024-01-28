@@ -101,7 +101,7 @@ public class LocalityEditorView extends View {
 		back_button = new Button(
 			main_panel,
 			"Powrót",
-			EventCommand.openLocalityView,
+			EventCommand.openPreviousView,
 			eventHandler
 		);
 

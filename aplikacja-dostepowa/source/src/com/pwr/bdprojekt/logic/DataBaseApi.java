@@ -289,8 +289,6 @@ public class DataBaseApi {
 				address.setFlat_number(resultSet.getString("flat_number"));
 				attraction.setAddress(address);
 
-				AttractionType attractionType = new AttractionType();
-
 				attratcionsInLocality.add(attraction);
 			}
 
@@ -400,9 +398,8 @@ public class DataBaseApi {
 	 * 
 	 * @param attraction
 	 */
-	public static AttractionType[] getTypesAssignedToAttraction(Attraction attraction) {
-		// TODO - implement DataBaseApi.getTypesAssignedToAttraction
-		throw new UnsupportedOperationException();
+	public static List<AttractionType> getTypesAssignedToAttraction(Attraction attraction) {
+		return null;
 	}
 
 	/**
@@ -675,6 +672,36 @@ public class DataBaseApi {
     }
 
 	/**
+	 * Pobranie typów atrakcji
+	 * */
+	public static List<AttractionType> selectAttractionTypes(String whereClause){
+		List<AttractionType> attractionTypes = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM attraction_types" +
+							(whereClause.isEmpty() ? "" : " WHERE " + whereClause) +
+							";"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				AttractionType attractionType = new AttractionType();
+				attractionType.setId(resultSet.getInt("attraction_type_id"));
+				attractionType.setName(resultSet.getString("name"));
+
+				attractionTypes.add(attractionType);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać typów atrakcji z bazy!");
+			return null;
+		}
+		return attractionTypes;
+	}
+
+	/**
 	 * Pobranie ulubionych miejscowości z bazy
 	 * */
 	public static List<Locality> selectFavouriteLocalities(String whereClause){
@@ -712,7 +739,7 @@ public class DataBaseApi {
 				LocalityType type = DataBaseApi.selectLocalityType("name = '"+resultSet.getString("locality_type")+"'").get(0);
 				localityFromDatabase.setType(type);
 
-				localityFromDatabase.setAddnotation(resultSet.getString("addnotation"));
+				localityFromDatabase.setAddnotation(resultSet.getString("adnotation"));
 
 				localitiesFromDatabase.add(localityFromDatabase);
 			}

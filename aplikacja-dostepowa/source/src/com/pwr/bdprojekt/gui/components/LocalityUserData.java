@@ -116,4 +116,8 @@ public class LocalityUserData extends GuiComponent{
     public void setAddnotation(String addnotation){
         this.addnotation.setText(addnotation);
     }
+
+    public String getAddnotation() {
+        return addnotation.getText();
+    }
 }

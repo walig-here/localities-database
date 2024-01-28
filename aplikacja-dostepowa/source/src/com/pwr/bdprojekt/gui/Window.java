@@ -102,6 +102,12 @@ public class Window {
 			case USER_DATA:
 					current_view = new UserDataView(frame, event_handler, false);
 					break;
+			case FAVOURITE_LOCALITY_LIST:
+					current_view = new LocalitiesListView(frame, event_handler, false);
+					break;
+			case FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN:
+					current_view = new LocalitiesListView(frame, event_handler, true);
+					break;
 			case EMPTY:
 					break;
 		}
@@ -121,8 +127,7 @@ public class Window {
 	 * Pobranie typu uprzednio otwartego widoku
 	 */
 	public static ViewType getPreviousDisplayType() {
-		// TODO - implement Window.getPreviousDisplayType
-		throw new UnsupportedOperationException();
+		return previous_view_type;
 	}
 
 	/**

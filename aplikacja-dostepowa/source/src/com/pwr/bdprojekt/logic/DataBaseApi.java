@@ -302,6 +302,44 @@ public class DataBaseApi {
 	}
 
 	/**
+	 * Pobranie atrakcji  z bazy
+	 * */
+	public static List<Attraction> selectAttractions(String whereClause){
+		List<Attraction> attractions = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM locations_of_attractions" +
+							(whereClause.isEmpty() ? "" : " WHERE " + whereClause) +
+							";"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				Attraction attraction = new Attraction();
+				attraction.setId(resultSet.getInt("attraction_id"));
+				attraction.setName(resultSet.getString("attraction_name"));
+				attraction.setDescription(resultSet.getString("attraction_desc"));
+
+				Address address = new Address();
+				address.setId(resultSet.getInt("location_id"));
+				address.setStreet(resultSet.getString("street"));
+				address.setBuilding_number(resultSet.getString("building_number"));
+				address.setFlat_number(resultSet.getString("flat_number"));
+				attraction.setAddress(address);
+
+				attractions.add(attraction);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać atrakcji z bazy!");
+			return null;
+		}
+		return attractions;
+	}
+
+	/**
 	 * 
 	 * @param voivodeship
 	 */

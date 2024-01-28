@@ -117,5 +117,15 @@ public enum ViewType {
 	/**
 	 * Pusty widok (aplikacja nieaktywna)
 	 * */
-	EMPTY
+	EMPTY,
+
+	/**
+	 * Lista ulubionych miejscowości administratora merytoycznego
+	 * */
+	FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN,
+
+	/**
+	 * Lista ulubionych miejscowości
+	 * */
+	FAVOURITE_LOCALITY_LIST
 }

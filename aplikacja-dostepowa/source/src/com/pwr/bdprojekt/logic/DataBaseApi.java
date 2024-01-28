@@ -396,6 +396,7 @@ public class DataBaseApi {
 				numberOfAttractions = set.getInt(1);
 			}
 			callableStatement.close();
+			set.close();
 
 		}catch (SQLException e){
 			numberOfAttractions = -1;
@@ -476,8 +477,30 @@ public class DataBaseApi {
 	 * @param attraction
 	 */
 	public static List<AttractionType> getTypesAssignedToAttraction(Attraction attraction) {
-		return null;
-	}
+		List<AttractionType> attractionTypes = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_types_assigned_to_attraction(?)");
+			callableStatement.setInt(1, attraction.getId());
+			callableStatement.execute();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				AttractionType type = new AttractionType();
+				type.setId(resultSet.getInt("attraction_type_id"));
+				type.setName(resultSet.getString("name"));
+				attractionTypes.add(type);
+			}
+			callableStatement.close();
+			preparedStatement.close();
+			resultSet.close();
+
+		} catch (SQLException e) {
+            attractionTypes.clear();
+        }
+		return attractionTypes;
+    }
 
 	/**
 	 * 

@@ -85,9 +85,18 @@ public class DataBaseApi {
 	 * 
 	 * @param locality
 	 */
-	public static boolean addLocalityToFavList(Locality locality) {
-		// TODO - implement DataBaseApi.addLocalityToFavList
-		throw new UnsupportedOperationException();
+	public static boolean addLocalityToFavList(Locality locality, String adnotation) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call add_locality_to_fav_list(?, ?)");
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.setString(2, adnotation);
+
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -139,9 +148,20 @@ public class DataBaseApi {
 	 * @param attraction_id
 	 * @param address
 	 */
-	public static boolean assignAttractionToLocality(String attraction_id, String address) {
-		// TODO - implement DataBaseApi.assignAttractionToLocality
-		throw new UnsupportedOperationException();
+	public static boolean assignAttractionToLocality(int attraction_id, Address address) {
+		try{
+			CallableStatement callableStatement =  user_connection.prepareCall("call assign_attraction_to_locality(?, ?, ?, ?, ?)");
+			callableStatement.setInt(1, attraction_id);
+			callableStatement.setInt(2, address.getLocality().getId());
+			callableStatement.setString(3, address.getStreet());
+			callableStatement.setString(4, address.getBuilding_number());
+			callableStatement.setString(5, address.getFlat_number());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		}catch(SQLException e){
+			return false;
+		}
 	}
 
 	/**
@@ -178,13 +198,21 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param attraction
+	 * @param attraction_id
 	 * @param type
 	 */
-	public static boolean assignTypeToAttraction(Attraction attraction, AttractionType type) {
-		// TODO - implement DataBaseApi.assignTypeToAttraction
-		throw new UnsupportedOperationException();
-	}
+	public static boolean assignTypeToAttraction(int attraction_id, AttractionType type) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call assign_type_to_attraction(?, ?)");
+			callableStatement.setInt(1, type.getId());
+			callableStatement.setInt(2, attraction_id);
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		}catch (SQLException e) {
+            return false;
+        }
+    }
 
 	/**
 	 * 
@@ -198,6 +226,7 @@ public class DataBaseApi {
 			CallableStatement callableStatement = connection.prepareCall(callProcedureSql);
 			callableStatement.setInt(1, attraction.getId());
 			callableStatement.execute();
+			callableStatement.close();
 			return true;
 
 		} catch (SQLException e) {
@@ -469,8 +498,6 @@ public class DataBaseApi {
 	 */
 	public static boolean modifyFigureCaption(String new_caption) {
 		// TODO - implement DataBaseApi.modifyFigureCaption
-
-
 		throw new UnsupportedOperationException();
 	}
 
@@ -553,13 +580,21 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param attraction
+	 * @param attraction_id
 	 * @param locality
 	 */
-	public static boolean unassignAttractionFromLocality(Attraction attraction, Locality locality) {
-		// TODO - implement DataBaseApi.unassignAttractionFromLocality
-		throw new UnsupportedOperationException();
-	}
+	public static boolean unassignAttractionFromLocality(int attraction_id, Locality locality) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call unassign_attraction_from_locality(?, ?)");
+			callableStatement.setInt(1, attraction_id);
+			callableStatement.setInt(2, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+            return false;
+        }
+    }
 
 	/**
 	 * 
@@ -584,13 +619,21 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param attraction
+	 * @param attraction_id
 	 * @param type
 	 */
-	public static boolean unassignTypeFromAttraction(Attraction attraction, AttractionType type) {
-		// TODO - implement DataBaseApi.unassignTypeFromAttraction
-		throw new UnsupportedOperationException();
-	}
+	public static boolean unassignTypeFromAttraction(int attraction_id, AttractionType type) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call unassign_type_from_attraction(?, ?)");
+			callableStatement.setInt(1, type.getId());
+			callableStatement.setInt(2, attraction_id);
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		} catch (SQLException e) {
+            return false;
+        }
+    }
 
 	/**
 	 * 

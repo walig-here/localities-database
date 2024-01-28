@@ -265,9 +265,10 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addLocalityToFavourites() {
-		// TODO - implement Logic.addLocalityToFavourites
-		throw new UnsupportedOperationException();
+	public static void addLocalityToFavourites(Locality locality, String adnotation) {
+		if(DataBaseApi.addLocalityToFavList(locality, adnotation))
+			Window.showMessageBox("Dodano do ulubionych!");
+		else Window.showMessageBox("Dodanie do ulubionych nie powiodło się!");
 	}
 
 	public static void removeLocalityFromFavourites() {
@@ -449,9 +450,10 @@ public class Application {
 			Window.showMessageBox("Dodanie miejscowości nie powiodło się");
 	}
 
-	public static void assignAttractionToLocality() {
-		// TODO - implement Logic.assignAttractionToLocality
-		throw new UnsupportedOperationException();
+	public static void assignAttractionToLocality(int attraction_id, Address address) {
+		if(DataBaseApi.assignAttractionToLocality(attraction_id, address))
+			Window.showMessageBox("Przypisanie powiodło się!");
+		else Window.showMessageBox("Przypisanie nie powiodło się!");
 	}
 
 	public static void modifyAttraction(Attraction attraction) {

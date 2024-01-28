@@ -128,8 +128,51 @@ public class Application {
 	}
 
 	public static void browseFavouriteList() {
-		// TODO - implement Logic.browseFavouriteList
-		throw new UnsupportedOperationException();
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add("1,1");
+		dataForGui.add("1,1");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+
+		List<Locality> localities = DataBaseApi.selectFavouriteLocalities("");
+		if(localities == null){
+			Window.showMessageBox("Błąd pobierania danych miejscowości");
+			return;
+		}
+		for (Locality locality : localities) {
+			String localityData = locality.getId()+";";
+			localityData += locality.getName() + ";";
+			localityData += locality.getType().getName() + ";";
+			localityData += locality.getMunicipality().getName() + ", " +
+					locality.getMunicipality().getSuperiorAdministrativeUnit().getName() + ", " +
+					locality.getMunicipality().getSuperiorAdministrativeUnit().getSuperiorAdministrativeUnit().getName() + ";";
+			localityData += locality.getPopulation() + ";";
+			localityData += "0" + ";";
+
+			if(DataBaseApi.selectFavouriteLocalities("locality_id="+locality.getId()).size()>0){
+				localityData += "true";
+			}
+			else{
+				localityData += "false";
+			}
+
+			dataForGui.add(localityData);
+		}
+
+		if(current_user.getRole().equals(UserRole.MERITORICAL_ADMINISTRATOR))
+			Window.switchToView(ViewType.LOCALITY_LIST_ADMIN_MERIT, dataForGui.toArray(new String[0]));
+		else
+			Window.switchToView(ViewType.LOCALITY_LIST, dataForGui.toArray(new String[0]));
 	}
 
 	public static void examineUserData() {
@@ -266,8 +309,10 @@ public class Application {
 	}
 
 	public static void addLocalityToFavourites(Locality locality, String adnotation) {
-		if(DataBaseApi.addLocalityToFavList(locality, adnotation))
+		if(DataBaseApi.addLocalityToFavList(locality, adnotation)){
 			Window.showMessageBox("Dodano do ulubionych!");
+			Application.examineLocalityData(locality.getId());
+		}
 		else Window.showMessageBox("Dodanie do ulubionych nie powiodło się!");
 	}
 
@@ -319,6 +364,12 @@ public class Application {
 						attraction.getAddress().getStreet()+", "+
 						attraction.getAddress().getBuilding_number()+", "+
 						attraction.getAddress().getFlat_number()+"'";
+
+				List<AttractionType> attractionsTypes = DataBaseApi.getTypesAssignedToAttraction(attraction);
+				for (AttractionType attractionsType : attractionsTypes) {
+					attractionTypes += attractionsType.getName() +",";
+				}
+				attractionTypes += ";";
 			}
 
 			dataForGui.add(attractionIds);

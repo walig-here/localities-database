@@ -96,6 +96,11 @@ public class EventHandler implements ActionListener {
 			case EventCommand.deleteLocality:
 				Application.deleteLocality(window.getLocalityId());
 				break;
+			case EventCommand.addLocalityToFavourites:
+				Locality locality = new Locality();
+				locality.setId(window.getLocalityId());
+				Application.addLocalityToFavourites(locality, window.getAddnotation());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wkryto nieobsługiwane zdarzenie: "+e.getActionCommand());
 		}
@@ -221,6 +226,9 @@ public class EventHandler implements ActionListener {
 				break;
 			case EventCommand.openLocalityList:
 				Application.browseLocalitiesList();
+				break;
+			case EventCommand.openFavouriteList:
+				Application.browseFavouriteList();
 				break;
 			case EventCommand.openPreviousView:
 				break;

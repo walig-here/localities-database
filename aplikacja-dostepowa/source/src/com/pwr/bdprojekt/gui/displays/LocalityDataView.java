@@ -300,4 +300,11 @@ public class LocalityDataView extends View{
     public int getLocalityId(){
         return Integer.parseInt(locality_id);
     }
+
+    /**
+     * Pobranie adnotacji
+     * */
+    public String getAddnotation(){
+        return user_data.getAddnotation();
+    }
 }

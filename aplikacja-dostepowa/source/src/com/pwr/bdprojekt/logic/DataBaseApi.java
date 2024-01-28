@@ -198,13 +198,21 @@ public class DataBaseApi {
 
 	/**
 	 * 
-	 * @param attraction
+	 * @param attraction_id
 	 * @param type
 	 */
-	public static boolean assignTypeToAttraction(Attraction attraction, AttractionType type) {
-		// TODO - implement DataBaseApi.assignTypeToAttraction
-		throw new UnsupportedOperationException();
-	}
+	public static boolean assignTypeToAttraction(int attraction_id, AttractionType type) {
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call assign_type_to_attraction(?, ?)");
+			callableStatement.setInt(1, type.getId());
+			callableStatement.setInt(2, attraction_id);
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		}catch (SQLException e) {
+            return false;
+        }
+    }
 
 	/**
 	 * 

@@ -1,11 +1,11 @@
 package com.pwr.bdprojekt.logic;
 
 import com.pwr.bdprojekt.gui.Window;
+import com.pwr.bdprojekt.gui.components.DataTable;
 import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -43,7 +43,12 @@ public class Application {
 	}
 
 	public static void logOut() {
-		DataBaseApi.closeConnection(current_user.getLogin());
+		boolean success = DataBaseApi.closeConnection(current_user.getLogin());
+		if(!success){
+			Window.showMessageBox("Nie udało się wylogować!");
+			return;
+		}
+		Window.switchToView(ViewType.LOGIN, new String[]{});
 	}
 
 	/**
@@ -101,9 +106,9 @@ public class Application {
 			localityData += locality.getType().getName() + ";";
 			localityData += locality.getMunicipality().getName() + ", " +
 							locality.getMunicipality().getSuperiorAdministrativeUnit().getName() + ", " +
-							locality.getMunicipality().getSuperiorAdministrativeUnit().getSuperiorAdministrativeUnit().getName() + ", ";
-			localityData += locality.getPopulation();
-			localityData += "0";
+							locality.getMunicipality().getSuperiorAdministrativeUnit().getSuperiorAdministrativeUnit().getName() + ";";
+			localityData += locality.getPopulation() + ";";
+			localityData += "0" + ";";
 			localityData += "false";
 
 			dataForGui.add(localityData);
@@ -139,25 +144,47 @@ public class Application {
 
 		if(DataBaseApi.modifyUserRole(user, user.getRole())){
 			Window.showMessageBox("Zmieniono rolę użytkownika!");
-			Application.openAccountDisplay(user.getLogin());
+			Application.openAccountDisplay(user.getLogin(), false);
 		}
 		else{
 			Window.showMessageBox("Nie udało się zmienić roli!");
 		}
 	}
 
-	public static void deleteUserAccount() {
-		// TODO - implement Logic.deleteUserAccount
-		throw new UnsupportedOperationException();
+	public static void deleteUserAccount(String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			boolean success = DataBaseApi.delUser(user);
+			if(success){
+				Window.showMessageBox("Konto zostało usunięte");
+				Application.browseUsersList();
+			}
+			else{
+				Window.showMessageBox("Nie udało się usunąć konta!");
+			}
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+		}
 	}
 
 	public static void givePermissionToRegion(String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			if(!user.getRole().equals(UserRole.MERITORICAL_ADMINISTRATOR)){
+				Window.showMessageBox("Nie można nadać uprawnień\nużytkownikowi!");
+				return;
+			}
+		} catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania użytkownika");
+			return;
+		}
+
 		List<String> dataForGui = new ArrayList<>();
 		dataForGui.add(current_user.getLogin());
 		dataForGui.add(current_user.getRoleName());
 		dataForGui.add(userLogin);
 
-		List<AdministrativeUnit> voivodships = DataBaseApi.selectVoivodships();
+		List<AdministrativeUnit> voivodships = DataBaseApi.selectVoivodships("");
 		String voivodshipList = "";
 		for (AdministrativeUnit voivodship : voivodships) {
 			voivodshipList += voivodship.getName() + ",";
@@ -167,14 +194,63 @@ public class Application {
 		Window.switchToView(ViewType.PERMISSION_TO_REGION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
-	public static void takeAwayPermissionToRegion() {
-		// TODO - implement Logic.takeAwayPermissionToRegion
-		throw new UnsupportedOperationException();
+	public static void takeAwayPermissionToRegion(int voivodshipIndex, String userLogin) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			AdministrativeUnit administrativeUnit = DataBaseApi.selectVoivodships("").get(voivodshipIndex);
+			DataBaseApi.unassignPermissionFromUser(user, administrativeUnit, null);
+		}
+		catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania dnaych z bazy");
+		}
 	}
 
-	public static void givePermissionInRegion() {
-		// TODO - implement Logic.givePermissionInRegion
-		throw new UnsupportedOperationException();
+	public static void givePermissionInRegion(int voivodship_id, String user_login, int permission_id){
+		try{
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("administrative_unit_id = "+voivodship_id).get(0);
+			User user = DataBaseApi.selectUsers("login = '"+user_login+"'").get(0);
+			Permission permission = DataBaseApi.selectPermissions().get(permission_id);
+
+			boolean success = DataBaseApi.assignPermissionToUser(voivodship, user, permission);
+			if(!success){
+				Window.showMessageBox("Nie udało się nadać\n uprawnienia!");
+				return;
+			}
+
+			Application.openAccountDisplay(user_login, false);
+		} catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+		}
+	}
+
+	public static void openPermissionInRegionView(int voivodship_index, String user_login) {
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add(user_login);
+
+		// województwo, w którym nadawane jest uprawnienie
+		try{
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("").get(voivodship_index);
+			dataForGui.add(Integer.toString(voivodship.getId()));
+			dataForGui.add(voivodship.getName());
+
+			List<Permission> permissions = DataBaseApi.selectPermissions();
+			String permission_names = "";
+			String permission_descs = "";
+			for (Permission permission : permissions) {
+				permission_names += permission.getName() + ",";
+				permission_descs += permission.getDesc() + ";";
+			}
+			dataForGui.add(permission_names);
+			dataForGui.add(permission_descs);
+		}
+		catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobieranie województwa z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.PERMISSION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
 	public static void takeAwayPermissionInRegion() {
@@ -203,10 +279,60 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void addNewLocality(Locality locality) {
-		// TODO - implement Logic.addNewLocality
-		if(DataBaseApi.addNewLocality(locality))
+	public static void openNewLocalityEditor(){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add("-1");
+		dataForGui.add("");
+		dataForGui.add("");
+		dataForGui.add("");
+
+		// typy miejscowości
+		List<LocalityType> localityTypes = DataBaseApi.selectLocalityType();
+		if(localityTypes == null){
+			Window.showMessageBox("Błąd pobierania typów miejscowości z bazy!");
+			return;
+		}
+		String localityTypesNames = "";
+		for (LocalityType localityType : localityTypes) {
+			localityTypesNames += localityType.getName() + ",";
+		}
+		dataForGui.add(localityTypesNames);
+		dataForGui.add("0");
+
+		// gminy
+		List<AdministrativeUnit> municipalities = DataBaseApi.selectMunicipalities("");
+		if(municipalities == null){
+			Window.showMessageBox("Błąd pobierania gmin z bazy!");
+			return;
+		}
+		String municipalitiesNames = "";
+		for (AdministrativeUnit municipality : municipalities) {
+			municipalitiesNames += municipality.getName() + ",";
+		}
+		dataForGui.add(municipalitiesNames);
+		dataForGui.add("0");
+
+		dataForGui.add("0");
+		dataForGui.add("0");
+
+		Window.switchToView(ViewType.LOCALITY_EDITOR, dataForGui.toArray(new String[0]));
+	}
+
+	public static void addNewLocality(Locality locality, int municipality_index, int type_index) {
+		// pobranie gminy
+		AdministrativeUnit municipality = DataBaseApi.selectMunicipalities("").get(municipality_index);
+		locality.setMunicipality(municipality);
+
+		// typ
+		LocalityType localityType = DataBaseApi.selectLocalityType().get(type_index);
+		locality.setType(localityType);
+
+		if(DataBaseApi.addNewLocality(locality)){
 			Window.showMessageBox("Nowa miejscowość została dodana!");
+			Application.browseLocalitiesList();
+		}
 		else
 			Window.showMessageBox("Dodanie miejscowości nie powiodło się");
 	}
@@ -238,7 +364,7 @@ public class Application {
 		else Window.showMessageBox("Nie udało się dodać atrakcji!");
 	}
 
-	public static void modifyLocality(Locality locality) {
+	public static void modifyLocality(Locality locality, int municiplaity_index, int type_index) {
 		if(DataBaseApi.modifyLocality(locality))
 			Window.showMessageBox("Poprawnie zmodyfikowano!");
 		else Window.showMessageBox("Zmiana nie powiodła się!");
@@ -273,7 +399,7 @@ public class Application {
 
 	public static void open() {
 		is_running = true;
-		Window.open("Baza danych miejscowości", 975, 800);
+		Window.open("Baza danych miejscowości", 975, 600);
 		if(!DataBaseApi.connect("root", "admin")){
 			Window.showMessageBox("Nie udało się połączyć z bazą danych!\nZamykanie aplikacji...");
 			quit();
@@ -295,7 +421,7 @@ public class Application {
 			Window.switchToView(ViewType.HOME, new String[]{current_user.getLogin(), current_user.getRoleName()});
 	}
 
-	public static void openAccountDisplay(String login)
+	public static void openAccountDisplay(String login, boolean openMyAccount)
 	{
 		List<String> dataForGui = new ArrayList<>();
 		// dane aktualnego użytkownika
@@ -304,13 +430,19 @@ public class Application {
 
 		// pobranie danych użytkownika, którego konto przeglądamy
 		try{
-			User user = DataBaseApi.selectUsers("login = '" + login + "'").get(0);
+			User user;
+			if(openMyAccount)
+				user = current_user;
+			else
+				user = DataBaseApi.selectUsers("login = '" + login + "'").get(0);
 			dataForGui.add(user.getLogin());
 			dataForGui.add(user.getRoleName());
 
 			List<AdministrativeUnit> voivodshipsManagedByUser = DataBaseApi.getVoivodshipsManagedByUser(user);
+			int i = 0;
 			for (AdministrativeUnit voivodship : voivodshipsManagedByUser) {
-				String dataForVoivodship = voivodship.getId() + ";" + voivodship.getName();
+				String dataForVoivodship = i + ";" + voivodship.getName();
+				i++;
 
 				List<Permission> permissionsInVoivodship = DataBaseApi.getUserPermissionsInVoivodship(user, voivodship);
 				for (Permission permission : permissionsInVoivodship) {

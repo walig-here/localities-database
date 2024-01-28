@@ -85,7 +85,7 @@ CREATE OR REPLACE PROCEDURE get_voivodships_managed_by_user (
 	-- Pobranie województw zarządzanych przez użytkownika
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
-		SELECT 	
+		SELECT DISTINCT
 			gp.voivodship_id,
 			gp.voivodship_name
 		FROM granted_permissions AS gp
@@ -126,6 +126,7 @@ CREATE OR REPLACE PROCEDURE get_user_permissions_in_voivodship (
 	DROP TABLE IF EXISTS return_table;
 	CREATE TABLE return_table AS
 		SELECT 	
+			gp.permission_id,
 			gp.permission_name,
 			gp.permission_desc
 		FROM granted_permissions AS gp

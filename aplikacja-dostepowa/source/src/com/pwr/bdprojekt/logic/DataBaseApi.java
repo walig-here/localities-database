@@ -361,7 +361,7 @@ public class DataBaseApi {
 	public static List<Permission> getUserPermissionsInVoivodship(User user, AdministrativeUnit voivodship) {
 		List<Permission> userPermissionsInVoivodships = new ArrayList<>();
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("call get_user_permissions_in_voivodships(?, ?)");
+			CallableStatement callableStatement = root_connection.prepareCall("call get_user_permissions_in_voivodship(?, ?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.setInt(2, voivodship.getId());
 			callableStatement.execute();
@@ -395,7 +395,7 @@ public class DataBaseApi {
 	public static List<AdministrativeUnit> getVoivodshipsManagedByUser(User user) {
 		List<AdministrativeUnit> voivodshipsManagedByUsers = new ArrayList<>();
 		try{
-			CallableStatement callableStatement = user_connection.prepareCall("call get_voivodships_managed_by_user(?)");
+			CallableStatement callableStatement = root_connection.prepareCall("call get_voivodships_managed_by_user(?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.execute();
 			callableStatement.close();
@@ -405,8 +405,8 @@ public class DataBaseApi {
 
 			while (resultSet.next()) {
 				AdministrativeUnit voivodship = new AdministrativeUnit();
-				voivodship.setId(resultSet.getInt("administrative_unit_id"));
-				voivodship.setName(resultSet.getString("name"));
+				voivodship.setId(resultSet.getInt("voivodship_id"));
+				voivodship.setName(resultSet.getString("voivodship_name"));
 				voivodship.setSuperiorAdministrativeUnit(null);
 				// Dodaj obiekt do listy
 				voivodshipsManagedByUsers.add(voivodship);
@@ -555,8 +555,8 @@ public class DataBaseApi {
 	 * @param permission
 	 */
 	public static boolean unassignPermissionFromUser(User user, AdministrativeUnit voivodship, Permission permission) {
-		// TODO - implement DataBaseApi.unassignPermissionFromUser
-		throw new UnsupportedOperationException();
+		Window.showMessageBox("Nioch");
+		return true;
 	}
 
 	/**
@@ -615,7 +615,7 @@ public class DataBaseApi {
 		List<Locality> localitiesFromDatabase = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM full_localities_data;"
+					"SELECT * FROM full_localities_data"
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -634,7 +634,7 @@ public class DataBaseApi {
 
 				AdministrativeUnit county = new AdministrativeUnit();
 				county.setId(resultSet.getInt("county_id"));
-				county.setName(resultSet.getString("county_id"));
+				county.setName(resultSet.getString("county_name"));
 
 				AdministrativeUnit voivodship = new AdministrativeUnit();
 				voivodship.setName(resultSet.getString("voivodship_name"));
@@ -643,9 +643,11 @@ public class DataBaseApi {
 				municipality.setSuperiorAdministrativeUnit(county);
 				county.setSuperiorAdministrativeUnit(voivodship);
 				voivodship.setSuperiorAdministrativeUnit(null);
+				localityFromDatabase.setMunicipality(municipality);
 
 				LocalityType type = new LocalityType();
 				type.setName(resultSet.getString("locality_type"));
+				localityFromDatabase.setType(type);
 
 				localitiesFromDatabase.add(localityFromDatabase);
 			}
@@ -693,11 +695,13 @@ public class DataBaseApi {
 	/**
 	 * Pobranie województw z bazy
 	 * */
-	public static List<AdministrativeUnit> selectVoivodships(){
+	public static List<AdministrativeUnit> selectVoivodships(String whereClause){
 		List<AdministrativeUnit> voivodships = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM administrative_units WHERE type = 'województwo';"
+					"SELECT * FROM administrative_units WHERE type = 'województwo'" +
+					(whereClause.isEmpty() ? "" : " and " + whereClause) +
+					"ORDER BY name;"
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -716,5 +720,84 @@ public class DataBaseApi {
 			return null;
 		}
 		return voivodships;
+	}
+
+	public static List<AdministrativeUnit> selectMunicipalities(String whereClause){
+		List<AdministrativeUnit> municipalities = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM administrative_units WHERE type = 'gmina'" +
+							(whereClause.isEmpty() ? "" : " and " + whereClause) +
+							"ORDER BY name;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				AdministrativeUnit municipality = new AdministrativeUnit();
+				municipality.setId(resultSet.getInt("administrative_unit_id"));
+				municipality.setName(resultSet.getString("name"));
+				municipality.setSuperiorAdministrativeUnit(null);
+				municipalities.add(municipality);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać gmin z bazy!");
+			return null;
+		}
+		return municipalities;
+	}
+
+	/**
+	 * Pobranie typów uprawnień z bazy danych
+	 * */
+	public static List<Permission> selectPermissions(){
+		List<Permission> permissions = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM permissions;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				Permission permission = new Permission();
+				permission.setId(resultSet.getInt("permission_id"));
+				permission.setName(resultSet.getString("name"));
+				permission.setDesc(resultSet.getString("description"));
+				permissions.add(permission);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać uprawnień z bazy!");
+			return null;
+		}
+		return permissions;
+	}
+
+	public static List<LocalityType> selectLocalityType(){
+		List<LocalityType> localityTypes = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM locality_types;"
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()){
+				LocalityType localityType = new LocalityType();
+				localityType.setId(resultSet.getInt("locality_type_id"));
+				localityType.setName(resultSet.getString("name"));
+				localityTypes.add(localityType);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (SQLException e) {
+			System.out.println("Nie udało się pobrać typów miejscowości z bazy!");
+			return null;
+		}
+		return localityTypes;
 	}
 }

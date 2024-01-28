@@ -154,7 +154,7 @@ public class LocalitiesListView extends View {
 		// dane nt miejscowości
 		locality_data_panels.clear();
 		elements_panel.removeAllComponents();
-		for(int i = 15; i < data.length; i++){
+		for(int i = 14; i < data.length; i++){
 			String[] locality_data = data[i].split(";");
 			LocalityListElement locality_panel = new LocalityListElement(elements_panel, administrative_mode, i-15, event_handler);
 

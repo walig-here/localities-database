@@ -101,6 +101,7 @@ public class PermissionToRegionEditorView extends View {
 		topbar.refresh(Arrays.copyOfRange(data, 0, 2));
 
 		// login użytkownika, któremu nadawane jest uprawnienie
+		user_login = data[2];
 		elements_panel.setHeaderText("Nadawanie uprawnień w rejonie użytkownikowi \"" + data[2] + "\"");
 
 		// lista województw

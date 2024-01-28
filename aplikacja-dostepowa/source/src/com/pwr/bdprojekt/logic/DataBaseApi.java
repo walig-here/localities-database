@@ -386,8 +386,21 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static int getLocalitiesNumberOfAttraction(Locality locality) {
-		// TODO - implement DataBaseApi.getLocalitiesNumberOfAttraction
-		throw new UnsupportedOperationException();
+		int numberOfAttractions = -1;
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_localities_number_of_attractions(?)");
+			callableStatement.setInt(1, locality.getId());
+			ResultSet set = callableStatement.executeQuery();
+
+			if (set.next()) {
+				numberOfAttractions = set.getInt(1);
+			}
+			callableStatement.close();
+
+		}catch (SQLException e){
+			numberOfAttractions = -1;
+		}
+		return numberOfAttractions;
 	}
 
 	/**

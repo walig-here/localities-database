@@ -283,7 +283,7 @@ public class DataBaseApi {
 				attraction.setDescription(resultSet.getString("attraction_desc"));
 
 				Address address = new Address();
-				address.setId(resultSet.getInt("location_id"));
+				address.setLocality(locality);
 				address.setStreet(resultSet.getString("street"));
 				address.setBuilding_number(resultSet.getString("building_number"));
 				address.setFlat_number(resultSet.getString("flat_number"));

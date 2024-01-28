@@ -3,9 +3,9 @@ package com.pwr.bdprojekt.gui.events;
 import com.pwr.bdprojekt.gui.displays.*;
 import com.pwr.bdprojekt.gui.*;
 import com.pwr.bdprojekt.logic.Application;
-import com.pwr.bdprojekt.logic.entities.AdministrativeUnit;
+import com.pwr.bdprojekt.logic.entities.Address;
+import com.pwr.bdprojekt.logic.entities.Attraction;
 import com.pwr.bdprojekt.logic.entities.Locality;
-import com.pwr.bdprojekt.logic.entities.User;
 import com.pwr.bdprojekt.logic.entities.UserRole;
 
 import java.awt.event.ActionEvent;
@@ -36,8 +36,10 @@ public class EventHandler implements ActionListener {
 					handleHomeViewEvent(e);
 				}
 				case ADDRESS_EDITOR -> {
+					handleAddressEditorEvents(e);
 				}
 				case ATTRACTION_EDITOR -> {
+					handelAttractionEditorEvents(e);
 				}
 				case LOCALITY_EDITOR -> {
 					handleLocalityEditorEvents(e);
@@ -65,6 +67,7 @@ public class EventHandler implements ActionListener {
 					handleAssignAttractionToLocalityViewEvents(e);
 				}
 				case ASSIGN_ADDRESS -> {
+					handleAssignAddressViewEvents(e);
 				}
 				case ASSIGN_FIGURE -> {
 				}
@@ -86,6 +89,67 @@ public class EventHandler implements ActionListener {
 	}
 
 	/**
+	 * Zdarzenia ekranu edytora atrakcji
+	 * */
+	private void handelAttractionEditorEvents(ActionEvent e){
+		AttractionEditorView window = (AttractionEditorView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.modifyBaseAttractionData:
+				if(window.getAttractionId()==-1)
+				{
+					Attraction attraction = new Attraction();
+					attraction.setName(window.getAttractionName());
+					attraction.setDescription(window.getAttractionDesc());
+					Application.setCurrentlyAddedAttraction(attraction);
+					Application.showAvailableAddresses(window.getLocalityId());
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu edyora adresu
+	 * */
+	private void handleAddressEditorEvents(ActionEvent e){
+		AddressEditorView window = (AddressEditorView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.addAddressToLocalityAndAssignAttractionToIt:
+				Locality locality = new Locality();
+				locality.setId(window.getLocalityId());
+
+				Address address = new Address();
+				address.setLocality(locality);
+				address.setStreet(window.getStreetName());
+				address.setBuilding_number(window.getBuildingNumber());
+				address.setFlat_number(window.getFlatNumber());
+
+				if(window.getAttractionId()==-1)
+				{
+					Application.addNewAttraction(address);
+				}
+				break;
+			default:
+				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
+		}
+	}
+
+	/**
+	 * Zdarzenia ekranu przypisania adresu
+	 * */
+	private void handleAssignAddressViewEvents(ActionEvent e){
+		AssignAddressView window = (AssignAddressView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openAddressEditorView:
+				Application.openNewAddressEditor(window.getLocalityId(), window.getAttractionId());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
+		}
+	}
+
+	/**
 	 * Zdarzenia ekranu przypisywania atrakcji
 	 * */
 	private void handleAssignAttractionToLocalityViewEvents(ActionEvent e){
@@ -95,6 +159,7 @@ public class EventHandler implements ActionListener {
 				Application.examineLocalityData(window.getLocalityId());
 				break;
 			case EventCommand.assignAttractionToLocality:
+				Application.openNewAttractionEditor(window.getLocalityId());
 				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobsługiwany wyjątek: "+e.getActionCommand());

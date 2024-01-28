@@ -73,7 +73,7 @@ public class AssignAttractionView extends View {
 		back_button = new Button(
 				main_panel,
 				"Wróć",
-				EventCommand.openLocalityView,
+				EventCommand.openPreviousView,
 				eventHandler
 		);
 
@@ -123,6 +123,8 @@ public class AssignAttractionView extends View {
 		elements_panel.insertComponent(add_attraction_button);
 		attraction_data_panels.clear();
 		String[] attraction_names = data[4].split(";");
+		if(attraction_names[0].isEmpty())
+			return;
 		String[] attraction_descs = data[5].split(";");
 		for(int i = 0; i < attraction_names.length; i++){
 			AttractionDataPanel attraction_panel = new AttractionDataPanel(elements_panel, event_handler, i);

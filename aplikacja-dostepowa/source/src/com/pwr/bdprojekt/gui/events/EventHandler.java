@@ -52,7 +52,7 @@ public class EventHandler implements ActionListener {
 				}
 				case USERS_FILTER -> {
 				}
-				case LOCALITY_LIST_ADMIN_MERIT, LOCALITY_LIST -> {
+				case LOCALITY_LIST_ADMIN_MERIT, LOCALITY_LIST, FAVOURITE_LOCALITY_LIST, FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN -> {
 					handleLocalityListEvents(e);
 				}
 				case USERS_LIST -> {
@@ -62,6 +62,7 @@ public class EventHandler implements ActionListener {
 					handleLoginViewEvent(e);
 				}
 				case ASSIGN_ATTRACTION -> {
+					handleAssignAttractionToLocalityViewEvents(e);
 				}
 				case ASSIGN_ADDRESS -> {
 				}
@@ -85,6 +86,22 @@ public class EventHandler implements ActionListener {
 	}
 
 	/**
+	 * Zdarzenia ekranu przypisywania atrakcji
+	 * */
+	private void handleAssignAttractionToLocalityViewEvents(ActionEvent e){
+		AssignAttractionView window = (AssignAttractionView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openPreviousView:
+				Application.examineLocalityData(window.getLocalityId());
+				break;
+			case EventCommand.assignAttractionToLocality:
+				break;
+			default:
+				throw new UnsupportedOperationException("Wykryto nieobsługiwany wyjątek: "+e.getActionCommand());
+		}
+	}
+
+	/**
 	 * Zdarzenia ekranu danych miejscowości
 	 * */
 	private void handleLocalityDataViewEvents(ActionEvent e){
@@ -96,10 +113,19 @@ public class EventHandler implements ActionListener {
 			case EventCommand.deleteLocality:
 				Application.deleteLocality(window.getLocalityId());
 				break;
+			case EventCommand.openPreviousView:
+				if(Window.getPreviousDisplayType().equals(ViewType.LOCALITY_LIST) || Window.getPreviousDisplayType().equals(ViewType.LOCALITY_LIST_ADMIN_MERIT))
+					Application.browseLocalitiesList();
+				else
+					Application.browseFavouriteList();
+				break;
 			case EventCommand.addLocalityToFavourites:
 				Locality locality = new Locality();
 				locality.setId(window.getLocalityId());
 				Application.addLocalityToFavourites(locality, window.getAddnotation());
+				break;
+			case EventCommand.openAvailableAttractionsView:
+				Application.showAvailableAttractions(window.getLocalityId());
 				break;
 			default:
 				throw new UnsupportedOperationException("Wkryto nieobsługiwane zdarzenie: "+e.getActionCommand());
@@ -209,6 +235,9 @@ public class EventHandler implements ActionListener {
 		switch (e.getActionCommand()){
 			case EventCommand.addNewLocality:
 				Application.openNewLocalityEditor();
+				break;
+			case EventCommand.openPreviousView:
+				Application.openHomeDisplay();
 				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsługiwane zdarzenia: "+e.getActionCommand());

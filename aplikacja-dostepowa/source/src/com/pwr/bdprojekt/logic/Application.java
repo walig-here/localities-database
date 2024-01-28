@@ -170,9 +170,9 @@ public class Application {
 		}
 
 		if(current_user.getRole().equals(UserRole.MERITORICAL_ADMINISTRATOR))
-			Window.switchToView(ViewType.LOCALITY_LIST_ADMIN_MERIT, dataForGui.toArray(new String[0]));
+			Window.switchToView(ViewType.FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN, dataForGui.toArray(new String[0]));
 		else
-			Window.switchToView(ViewType.LOCALITY_LIST, dataForGui.toArray(new String[0]));
+			Window.switchToView(ViewType.FAVOURITE_LOCALITY_LIST, dataForGui.toArray(new String[0]));
 	}
 
 	public static void examineUserData() {
@@ -518,6 +518,62 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
+	public static void openNewAttractionEditor(Address address){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+
+		dataForGui.add("-1");
+		dataForGui.add("");
+		dataForGui.add("");
+
+		try{
+			List<AttractionType> attractionTypes = DataBaseApi.selectAttractionTypes("");
+			String availableAttractionTypes = "";
+			dataForGui.add("0");
+			for (AttractionType attractionType : attractionTypes) {
+				availableAttractionTypes += attractionType.getName()+",";
+			}
+			dataForGui.add(availableAttractionTypes);
+
+			dataForGui.add(address.getStreet()+", "+address.getBuilding_number()+", "+address.getFlat_number());
+			dataForGui.add("");
+			dataForGui.add("");
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.ATTRACTION_EDITOR, dataForGui.toArray(new String[0]));
+	}
+
+	public static void showAvailableAttractions(int localityId){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add(Integer.toString(localityId));
+
+		try{
+			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
+			dataForGui.add(locality.getName());
+
+			List<Attraction> attractions = DataBaseApi.selectAttractions("");
+			String attractionsNames = "";
+			String attractionsDescs = "";
+			for (Attraction attraction : attractions) {
+				attractionsNames += attraction.getName()+";";
+				attractionsDescs += attraction.getName()+";";
+			}
+			dataForGui.add(attractionsNames);
+			dataForGui.add(attractionsDescs);
+		} catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.ASSIGN_ATTRACTION, dataForGui.toArray(new String[0]));
+	}
+
 	public static void deleteLocality(int localityId) {
 		try{
 			Locality locality = DataBaseApi.selectLocalities("locality_id="+localityId).get(0);
@@ -553,6 +609,29 @@ public class Application {
 			Application.browseLocalitiesList();
 		}
 		else Window.showMessageBox("Zmiana nie powiodła się!");
+	}
+
+	public static void openNewAddressEditor(int localityId){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+
+		dataForGui.add(Integer.toString(localityId));
+		try{
+			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
+			dataForGui.add(locality.getName());
+
+			dataForGui.add("-1");
+			dataForGui.add("");
+
+			//List<Address> addresses = DataBaseApi.getLocationsFromLocality(locality);
+
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.ASSIGN_ADDRESS, dataForGui.toArray(new String[0]));
 	}
 
 	public static void assignAddressToAttraction() {

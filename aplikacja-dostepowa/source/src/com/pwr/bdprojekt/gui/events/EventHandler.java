@@ -127,6 +127,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openAvailableAttractionsView:
 				Application.showAvailableAttractions(window.getLocalityId());
 				break;
+			case EventCommand.removeLocalityFromFavourites:
+				Application.deleteLocalityFromFavourites(window.getLocalityId());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wkryto nieobsługiwane zdarzenie: "+e.getActionCommand());
 		}

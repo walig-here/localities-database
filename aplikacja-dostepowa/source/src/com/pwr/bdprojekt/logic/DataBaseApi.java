@@ -239,7 +239,19 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean delLocality(Locality locality) {
-		return true;
+		Connection connection = user_connection;
+		String sql = "call del_locality(?)";
+
+		try  {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -247,8 +259,19 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean delLocalityFromFavList(Locality locality) {
-		// TODO - implement DataBaseApi.delLocalityFromFavList
-		throw new UnsupportedOperationException();
+		Connection connection = user_connection;
+		String sql = "call del_locality_from_fav_list(?)";
+
+		try {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**

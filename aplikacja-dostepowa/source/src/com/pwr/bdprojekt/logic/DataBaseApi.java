@@ -148,9 +148,20 @@ public class DataBaseApi {
 	 * @param attraction_id
 	 * @param address
 	 */
-	public static boolean assignAttractionToLocality(String attraction_id, String address) {
-		// TODO - implement DataBaseApi.assignAttractionToLocality
-		throw new UnsupportedOperationException();
+	public static boolean assignAttractionToLocality(int attraction_id, Address address) {
+		try{
+			CallableStatement callableStatement =  user_connection.prepareCall("call assign_attraction_to_locality(?, ?, ?, ?, ?)");
+			callableStatement.setInt(1, attraction_id);
+			callableStatement.setInt(2, address.getLocality().getId());
+			callableStatement.setString(3, address.getStreet());
+			callableStatement.setString(4, address.getBuilding_number());
+			callableStatement.setString(5, address.getFlat_number());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+		}catch(SQLException e){
+			return false;
+		}
 	}
 
 	/**

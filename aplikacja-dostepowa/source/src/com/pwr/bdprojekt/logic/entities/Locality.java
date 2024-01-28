@@ -13,6 +13,16 @@ public class Locality {
 	private double longitude;
 	private LocalityType type;
 
+	private String addnotation;
+
+	public String getAddnotation() {
+		return addnotation;
+	}
+
+	public void setAddnotation(String addnotation) {
+		this.addnotation = addnotation;
+	}
+
 	public String getName() {
 		return name;
 	}

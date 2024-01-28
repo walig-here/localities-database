@@ -71,9 +71,8 @@ public class EventHandler implements ActionListener {
 				}
 				case USERS_SORT -> {
 				}
-				case LOCALITY_DATA -> {
-				}
-				case LOCALITY_DATA_ADMIN_MERIT -> {
+				case LOCALITY_DATA, LOCALITY_DATA_ADMIN_MERIT -> {
+					handleLocalityDataViewEvents(e);
 				}
 				case USER_DATA, USER_DATA_ADMIN_TECH -> {
 					handleUserDataViewEvent(e);
@@ -86,11 +85,34 @@ public class EventHandler implements ActionListener {
 	}
 
 	/**
+	 * Zdarzenia ekranu danych miejscowości
+	 * */
+	private void handleLocalityDataViewEvents(ActionEvent e){
+		LocalityDataView window = (LocalityDataView) Window.getCurrentView();
+		switch (e.getActionCommand()){
+			case EventCommand.openLocalityEditor:
+				Application.openLocalityEditor(window.getLocalityId());
+				break;
+			case EventCommand.deleteLocality:
+				Application.deleteLocality(window.getLocalityId());
+				break;
+			default:
+				throw new UnsupportedOperationException("Wkryto nieobsługiwane zdarzenie: "+e.getActionCommand());
+		}
+	}
+
+	/**
 	 * Zdarzenia ekranu edytora miejscowości
 	 * */
 	private void handleLocalityEditorEvents(ActionEvent e){
 		LocalityEditorView window = (LocalityEditorView) Window.getCurrentView();
 		switch (e.getActionCommand()){
+			case EventCommand.openPreviousView:
+				if(window.getLocalityId() == -1)
+					Application.browseLocalitiesList();
+				else
+					Application.examineLocalityData(window.getLocalityId());
+				break;
 			case EventCommand.modifyLocalityData:
 				int locality_id = window.getLocalityId();
 				Locality locality = new Locality();
@@ -162,6 +184,23 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleLocalityListEvents(ActionEvent e){
 		LocalitiesListView window = (LocalitiesListView) Window.getCurrentView();
+
+		if(e.getActionCommand().contains(EventCommand.openLocalityEditor)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.openLocalityEditor(Integer.parseInt(command[2]));
+			return;
+		}
+		else if (e.getActionCommand().contains(EventCommand.deleteLocality)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.deleteLocality(Integer.parseInt(command[2]));
+			return;
+		}
+		else if (e.getActionCommand().contains(EventCommand.openLocalityView)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.examineLocalityData(Integer.parseInt(command[1]));
+			return;
+		}
+
 		switch (e.getActionCommand()){
 			case EventCommand.addNewLocality:
 				Application.openNewLocalityEditor();

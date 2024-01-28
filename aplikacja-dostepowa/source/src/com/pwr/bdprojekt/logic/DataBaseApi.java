@@ -239,8 +239,7 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean delLocality(Locality locality) {
-		// TODO - implement DataBaseApi.delLocality
-		throw new UnsupportedOperationException();
+		return true;
 	}
 
 	/**
@@ -265,9 +264,43 @@ public class DataBaseApi {
 	 * 
 	 * @param locality
 	 */
-	public static Attraction[] getAttractionsInLocality(Locality locality) {
-		// TODO - implement DataBaseApi.getAttractionsFromLocality
-		throw new UnsupportedOperationException();
+	public static List<Attraction> getAttractionsInLocality(Locality locality) {
+		List<Attraction> attratcionsInLocality = new ArrayList<>();
+
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_attractions_in_locality(?)");
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Attraction attraction = new Attraction();
+				attraction.setId(resultSet.getInt("attraction_id"));
+				attraction.setName(resultSet.getString("attraction_name"));
+				attraction.setDescription(resultSet.getString("attraction_desc"));
+
+				Address address = new Address();
+				address.setId(resultSet.getInt("location_id"));
+				address.setStreet(resultSet.getString("street"));
+				address.setBuilding_number(resultSet.getString("building_number"));
+				address.setFlat_number(resultSet.getString("flat_number"));
+				attraction.setAddress(address);
+
+				AttractionType attractionType = new AttractionType();
+
+				attratcionsInLocality.add(attraction);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+		} catch (SQLException e){
+			attratcionsInLocality = null;
+		}
+
+		return attratcionsInLocality;
 	}
 
 	/**
@@ -642,13 +675,66 @@ public class DataBaseApi {
     }
 
 	/**
-	 * Pobranie danych miejscowości z bazy
+	 * Pobranie ulubionych miejscowości z bazy
 	 * */
-	public static List<Locality> selectLocalities(){
+	public static List<Locality> selectFavouriteLocalities(String whereClause){
 		List<Locality> localitiesFromDatabase = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM full_localities_data"
+					"SELECT * FROM user_favourite_localities" +
+							(whereClause.isEmpty() ? "" : " WHERE "+whereClause)
+			);
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+
+			while (resultSet.next()){
+				Locality localityFromDatabase = new Locality();
+				localityFromDatabase.setId(resultSet.getInt("locality_id"));
+				localityFromDatabase.setName(resultSet.getString("locality_name"));
+				localityFromDatabase.setDescription(resultSet.getString("locality_desc"));
+				localityFromDatabase.setLatitude(resultSet.getDouble("locality_latitude"));
+				localityFromDatabase.setLongitude(resultSet.getDouble("locality_longitude"));
+
+				AdministrativeUnit municipality = new AdministrativeUnit();
+				municipality.setName(resultSet.getString("municipality_name"));
+
+				AdministrativeUnit county = new AdministrativeUnit();
+				county.setName(resultSet.getString("county_name"));
+
+				AdministrativeUnit voivodship = new AdministrativeUnit();
+				voivodship.setName(resultSet.getString("voivodship_name"));
+
+				municipality.setSuperiorAdministrativeUnit(county);
+				county.setSuperiorAdministrativeUnit(voivodship);
+				voivodship.setSuperiorAdministrativeUnit(null);
+				localityFromDatabase.setMunicipality(municipality);
+
+				LocalityType type = DataBaseApi.selectLocalityType("name = '"+resultSet.getString("locality_type")+"'").get(0);
+				localityFromDatabase.setType(type);
+
+				localityFromDatabase.setAddnotation(resultSet.getString("addnotation"));
+
+				localitiesFromDatabase.add(localityFromDatabase);
+			}
+
+			resultSet.close();
+			preparedStatement.close();
+		} catch (Exception e) {
+			System.out.println("Nie udało się pobrać miejscowości z bazy!");
+			return null;
+		}
+		return localitiesFromDatabase;
+	}
+
+	/**
+	 * Pobranie danych miejscowości z bazy
+	 * */
+	public static List<Locality> selectLocalities(String whereClause){
+		List<Locality> localitiesFromDatabase = new ArrayList<>();
+		try {
+			PreparedStatement preparedStatement = user_connection.prepareStatement(
+					"SELECT * FROM full_localities_data" +
+					(whereClause.isEmpty() ? "" : " WHERE "+whereClause)
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -678,8 +764,7 @@ public class DataBaseApi {
 				voivodship.setSuperiorAdministrativeUnit(null);
 				localityFromDatabase.setMunicipality(municipality);
 
-				LocalityType type = new LocalityType();
-				type.setName(resultSet.getString("locality_type"));
+				LocalityType type = DataBaseApi.selectLocalityType("name = '"+resultSet.getString("locality_type")+"'").get(0);
 				localityFromDatabase.setType(type);
 
 				localitiesFromDatabase.add(localityFromDatabase);
@@ -687,7 +772,7 @@ public class DataBaseApi {
 
 			resultSet.close();
 			preparedStatement.close();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println("Nie udało się pobrać miejscowości z bazy!");
 			return null;
 		}
@@ -810,11 +895,12 @@ public class DataBaseApi {
 		return permissions;
 	}
 
-	public static List<LocalityType> selectLocalityType(){
+	public static List<LocalityType> selectLocalityType(String whereClause){
 		List<LocalityType> localityTypes = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM locality_types;"
+					"SELECT * FROM locality_types" +
+					(whereClause.isEmpty() ? "" : " WHERE "+whereClause)
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 

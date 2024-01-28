@@ -356,9 +356,35 @@ public class DataBaseApi {
 	 * 
 	 * @param locality
 	 */
-	public static Address[] getLocationsFromLocality(Locality locality) {
-		// TODO - implement DataBaseApi.getLocationsFromLocality
-		throw new UnsupportedOperationException();
+	public static List<Address> getLocationsFromLocality(Locality locality) {
+		List<Address> addresses = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_locations_from_locality(?)");
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				Address address = new Address();
+				address.setId(resultSet.getInt("location_id"));
+				address.setLocality(locality);
+				address.setStreet(resultSet.getString("street"));
+				address.setBuilding_number(resultSet.getString("building_number"));
+				address.setFlat_number(resultSet.getString("flat_number"));
+				// Dodaj obiekt do listy
+				addresses.add(address);
+			}
+
+			preparedStatement.close();
+			resultSet.close();
+
+		}catch (SQLException e){
+			addresses.clear();
+		}
+		return addresses;
 	}
 
 	/**

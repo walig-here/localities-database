@@ -610,8 +610,18 @@ public class DataBaseApi {
 	 * @param permission
 	 */
 	public static boolean unassignPermissionFromUser(User user, AdministrativeUnit voivodship, Permission permission) {
-		Window.showMessageBox("Nioch");
-		return true;
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call unassign_permission_from_user(?, ?, ?)");
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.setInt(2, voivodship.getId());
+			callableStatement.setInt(3, permission.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		}catch(SQLException e){
+			return false;
+		}
 	}
 
 	/**

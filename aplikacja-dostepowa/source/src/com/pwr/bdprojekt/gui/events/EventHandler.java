@@ -162,6 +162,13 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleLocalityListEvents(ActionEvent e){
 		LocalitiesListView window = (LocalitiesListView) Window.getCurrentView();
+
+		if(e.getActionCommand().contains(EventCommand.openLocalityEditor)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.openLocalityEditor(Integer.parseInt(command[2]));
+			return;
+		}
+
 		switch (e.getActionCommand()){
 			case EventCommand.addNewLocality:
 				Application.openNewLocalityEditor();

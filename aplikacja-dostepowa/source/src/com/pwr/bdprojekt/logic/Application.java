@@ -5,6 +5,7 @@ import com.pwr.bdprojekt.gui.components.DataTable;
 import com.pwr.bdprojekt.gui.displays.ViewType;
 import com.pwr.bdprojekt.logic.entities.*;
 
+import javax.print.attribute.standard.ReferenceUriSchemesSupported;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -95,13 +96,13 @@ public class Application {
 		dataForGui.add("");
 		dataForGui.add("");
 
-		List<Locality> localities = DataBaseApi.selectLocalities();
+		List<Locality> localities = DataBaseApi.selectLocalities("");
 		if(localities == null){
 			Window.showMessageBox("Błąd pobierania danych miejscowości");
 			return;
 		}
 		for (Locality locality : localities) {
-			String localityData = "";
+			String localityData = locality.getId()+";";
 			localityData += locality.getName() + ";";
 			localityData += locality.getType().getName() + ";";
 			localityData += locality.getMunicipality().getName() + ", " +
@@ -288,7 +289,7 @@ public class Application {
 		dataForGui.add("");
 
 		// typy miejscowości
-		List<LocalityType> localityTypes = DataBaseApi.selectLocalityType();
+		List<LocalityType> localityTypes = DataBaseApi.selectLocalityType("");
 		if(localityTypes == null){
 			Window.showMessageBox("Błąd pobierania typów miejscowości z bazy!");
 			return;
@@ -319,13 +320,63 @@ public class Application {
 		Window.switchToView(ViewType.LOCALITY_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
+	public static void openLocalityEditor(int localityId){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+		dataForGui.add(Integer.toString(localityId));
+
+		try{
+			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
+			dataForGui.add(locality.getName());
+			dataForGui.add(locality.getDescription());
+			dataForGui.add(Integer.toString(locality.getPopulation()));
+			
+			List<LocalityType> localityTypes = DataBaseApi.selectLocalityType("");
+			String localityTypesNames = "";
+			String assinedTypeIndex = "";
+			int i = 0;
+			for (LocalityType localityType : localityTypes) {
+				localityTypesNames += localityType.getName()+",";
+				if(localityType.getId() == locality.getType().getId()){
+					assinedTypeIndex = Integer.toString(i);
+				}
+				i++;
+			}
+			dataForGui.add(localityTypesNames);
+			dataForGui.add(assinedTypeIndex);
+
+			List<AdministrativeUnit> municipalities = DataBaseApi.selectMunicipalities("");
+			i = 0;
+			String municipalitiesNames = "";
+			String assignedMunicipalityIndex = "";
+			for (AdministrativeUnit municipality : municipalities) {
+				municipalitiesNames += municipality.getName() + ",";
+				if(municipality.getId() == locality.getMunicipality().getId()){
+					assignedMunicipalityIndex = Integer.toString(i);
+				}
+				i++;
+			}
+			dataForGui.add(municipalitiesNames);
+			dataForGui.add(assignedMunicipalityIndex);
+
+			dataForGui.add(Double.toString(locality.getLatitude()));
+			dataForGui.add(Double.toString(locality.getLongitude()));
+		} catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.LOCALITY_EDITOR, dataForGui.toArray(new String[0]));
+	}
+
 	public static void addNewLocality(Locality locality, int municipality_index, int type_index) {
 		// pobranie gminy
 		AdministrativeUnit municipality = DataBaseApi.selectMunicipalities("").get(municipality_index);
 		locality.setMunicipality(municipality);
 
 		// typ
-		LocalityType localityType = DataBaseApi.selectLocalityType().get(type_index);
+		LocalityType localityType = DataBaseApi.selectLocalityType("").get(type_index);
 		locality.setType(localityType);
 
 		if(DataBaseApi.addNewLocality(locality)){
@@ -364,8 +415,18 @@ public class Application {
 	}
 
 	public static void modifyLocality(Locality locality, int municiplaity_index, int type_index) {
-		if(DataBaseApi.modifyLocality(locality))
+		// pobranie gminy
+		AdministrativeUnit municipality = DataBaseApi.selectMunicipalities("").get(municiplaity_index);
+		locality.setMunicipality(municipality);
+
+		// typ
+		LocalityType localityType = DataBaseApi.selectLocalityType("").get(type_index);
+		locality.setType(localityType);
+
+		if(DataBaseApi.modifyLocality(locality)){
 			Window.showMessageBox("Poprawnie zmodyfikowano!");
+			Application.browseLocalitiesList();
+		}
 		else Window.showMessageBox("Zmiana nie powiodła się!");
 	}
 
@@ -457,7 +518,10 @@ public class Application {
 			return;
 		}
 
-		Window.switchToView(ViewType.USER_DATA_ADMIN_TECH, dataForGui.toArray(new String[0]));
+		if(current_user.getRole().equals(UserRole.TECHNICAL_ADMINISTRATOR))
+			Window.switchToView(ViewType.USER_DATA_ADMIN_TECH, dataForGui.toArray(new String[0]));
+		else
+			Window.switchToView(ViewType.USER_DATA, dataForGui.toArray(new String[0]));
 	}
 
 	public static void openPreviousDisplay() {

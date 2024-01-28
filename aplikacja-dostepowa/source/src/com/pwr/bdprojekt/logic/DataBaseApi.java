@@ -601,11 +601,12 @@ public class DataBaseApi {
 	/**
 	 * Pobranie danych miejscowości z bazy
 	 * */
-	public static List<Locality> selectLocalities(){
+	public static List<Locality> selectLocalities(String whereClause){
 		List<Locality> localitiesFromDatabase = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM full_localities_data"
+					"SELECT * FROM full_localities_data" +
+					(whereClause.isEmpty() ? "" : " WHERE "+whereClause)
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 
@@ -635,8 +636,7 @@ public class DataBaseApi {
 				voivodship.setSuperiorAdministrativeUnit(null);
 				localityFromDatabase.setMunicipality(municipality);
 
-				LocalityType type = new LocalityType();
-				type.setName(resultSet.getString("locality_type"));
+				LocalityType type = DataBaseApi.selectLocalityType("name = '"+resultSet.getString("locality_type")+"'").get(0);
 				localityFromDatabase.setType(type);
 
 				localitiesFromDatabase.add(localityFromDatabase);
@@ -644,7 +644,7 @@ public class DataBaseApi {
 
 			resultSet.close();
 			preparedStatement.close();
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			System.out.println("Nie udało się pobrać miejscowości z bazy!");
 			return null;
 		}
@@ -767,11 +767,12 @@ public class DataBaseApi {
 		return permissions;
 	}
 
-	public static List<LocalityType> selectLocalityType(){
+	public static List<LocalityType> selectLocalityType(String whereClause){
 		List<LocalityType> localityTypes = new ArrayList<>();
 		try {
 			PreparedStatement preparedStatement = user_connection.prepareStatement(
-					"SELECT * FROM locality_types;"
+					"SELECT * FROM locality_types" +
+					(whereClause.isEmpty() ? "" : " WHERE "+whereClause)
 			);
 			ResultSet resultSet = preparedStatement.executeQuery();
 

@@ -28,7 +28,7 @@ import java.util.List;
  * [13] 	lista numerów porządkowych gmin, po których odbywa się filtrowanie, oddzielana przecinkami
  *
  * [14..n] 	lista danych miejscowości, które mają być wypisane na liście. Układ pól danych miejscowości to:
- * 			[nazwa];[typ];[województwo, powiat, gmina];[liczba ludności];[liczba atrakcji];[czy ulubiona]
+ * 			[id];[nazwa];[typ];[województwo, powiat, gmina];[liczba ludności];[liczba atrakcji];[czy ulubiona]
  * */
 public class LocalitiesListView extends View {
 
@@ -156,14 +156,14 @@ public class LocalitiesListView extends View {
 		elements_panel.removeAllComponents();
 		for(int i = 14; i < data.length; i++){
 			String[] locality_data = data[i].split(";");
-			LocalityListElement locality_panel = new LocalityListElement(elements_panel, administrative_mode, i-15, event_handler);
+			LocalityListElement locality_panel = new LocalityListElement(elements_panel, administrative_mode, Integer.parseInt(locality_data[0]), event_handler);
 
-			locality_panel.setLocalityName(locality_data[0]);
-			locality_panel.setLocalityType(locality_data[1]);
-			locality_panel.setAdministrativeData(locality_data[2]);
-			locality_panel.setPopulationData(locality_data[3]);
-			locality_panel.setNumberOfAttractions(locality_data[4]);
-			locality_panel.setFavouriteIcon(Boolean.parseBoolean(locality_data[5]));
+			locality_panel.setLocalityName(locality_data[1]);
+			locality_panel.setLocalityType(locality_data[2]);
+			locality_panel.setAdministrativeData(locality_data[3]);
+			locality_panel.setPopulationData(locality_data[4]);
+			locality_panel.setNumberOfAttractions(locality_data[5]);
+			locality_panel.setFavouriteIcon(Boolean.parseBoolean(locality_data[6]));
 
 			locality_data_panels.add(locality_panel);
 			elements_panel.insertComponent(locality_panel);

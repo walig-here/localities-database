@@ -133,6 +133,8 @@ public class AssignAddressView extends View {
 		elements_panel.insertComponent(new_address_button);
 		address_data_panels.clear();
 		String[] addresses = data[6].split(";");
+		if(addresses[0].isEmpty())
+			return;
 		for(int i = 0; i < addresses.length; i++){
 			AddressBar address_data_panel = new AddressBar(
 					elements_panel,

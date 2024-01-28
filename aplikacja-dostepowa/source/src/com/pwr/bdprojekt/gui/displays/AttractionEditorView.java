@@ -21,6 +21,7 @@ import java.util.List;
  * [7] - lista adresów przypisanych do atrakcji posortowana względem id oddzielonych średnikami: "abc";"def";"ghi"
  * [8] - lista ścieżek do obrazków przypisanych do atrakcji posorotwana względem id oddzielonych przecinkami: "abc","def","ghi"
  * [9] - lista opisów do obrazków przypisanych do atrakcji posortowana względem id oddzielonych średnikami: "abc";"def";"ghi"
+ * [10] - identyfikator miejscowości, z której danych dotarto do tej atrakcji
  * */
 public class AttractionEditorView extends View {
 
@@ -31,6 +32,11 @@ public class AttractionEditorView extends View {
 	 * Identyfikatora edytowanej w widoku atrakcji
 	 * */
 	private String attraction_id;
+
+	/**
+	 * Identyfikator miejscowości, z której dotarto do tej atrackji
+	 * */
+	private String locality_id;
 
 	/**
 	 * Panel zawierający elementy edytora
@@ -202,16 +208,18 @@ public class AttractionEditorView extends View {
 		address_panel.removeAllComponents();
 		addresses.clear();
 		String[] new_addresses = data[7].split(";");
-		for (int i = 0; i < new_addresses.length; i++) {
-			AddressBar addressBar = new AddressBar(
-					address_panel,
-					eventHandler,
-					"Usuń przypisanie",
-					EventCommand.unassignAddressFromAttraction + i
-			);
-			addressBar.setAddressData(new_addresses[i]);
-			address_panel.insertComponent(addressBar);
-			addresses.add(addressBar);
+		if(!new_addresses[0].isEmpty()){
+			for (int i = 0; i < new_addresses.length; i++) {
+				AddressBar addressBar = new AddressBar(
+						address_panel,
+						eventHandler,
+						"Usuń przypisanie",
+						EventCommand.unassignAddressFromAttraction + i
+				);
+				addressBar.setAddressData(new_addresses[i]);
+				address_panel.insertComponent(addressBar);
+				addresses.add(addressBar);
+			}
 		}
 
 		// obrazki
@@ -232,6 +240,12 @@ public class AttractionEditorView extends View {
 			figures_panel.insertComponent(figurePanel);
 			pictures.add(figurePanel);
 		}
+
+		locality_id = data[10];
+	}
+
+	public int getLocalityId(){
+		return Integer.parseInt(locality_id);
 	}
 
 	/**

@@ -81,7 +81,7 @@ public class AssignAttractionView extends View {
 		add_attraction_button = new Button(
 				elements_panel,
 				"Przypisz nową atrakcje",
-				EventCommand.openAttractionEditor,
+				EventCommand.assignAttractionToLocality,
 				eventHandler
 		);
 		elements_panel.insertComponent(add_attraction_button);

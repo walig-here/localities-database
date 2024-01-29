@@ -248,6 +248,7 @@ public class LocalityDataView extends View{
 
         // ulubiona miejscowość
         boolean is_favourite = Boolean.parseBoolean(data[12]);
+        user_data.setFavourite(is_favourite);
         if(is_favourite){
             favourite_icon.loadImage("fav.png");
         }

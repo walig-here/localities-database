@@ -120,4 +120,10 @@ public class LocalityUserData extends GuiComponent{
     public String getAddnotation() {
         return addnotation.getText();
     }
+
+    public void setFavourite(boolean isFavourite){
+        addnotation.setEditable(!isFavourite);
+        add_to_favourite_button.setEnable(!isFavourite);
+        remove_from_favourite_button.setEnable(isFavourite);
+    }
 }

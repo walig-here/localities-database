@@ -99,6 +99,12 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openAttractionView, EventCommand.openPreviousView:
 				Application.examineLocalityData(window.getLocalityId());
 				break;
+			case EventCommand.refreshView:
+				if(window.getAttractionId() == -1)
+					Application.openNewAttractionEditor(window.getLocalityId());
+				else
+					Application.openAttractionEditor(window.getAttractionId(), window.getLocalityId());
+				break;
 			case EventCommand.modifyBaseAttractionData:
 				Attraction attraction = new Attraction();
 				attraction.setName(window.getAttractionName());
@@ -147,6 +153,9 @@ public class EventHandler implements ActionListener {
 					Application.assignAttractionToLocality(window.getAttractionId(), address);
 				}
 				break;
+			case EventCommand.refreshView:
+				Application.openNewAddressEditor(window.getLocalityId(), window.getAttractionId());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
 		}
@@ -168,6 +177,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openAddressEditorView:
 				Application.openNewAddressEditor(window.getLocalityId(), window.getAttractionId());
 				break;
+			case EventCommand.refreshView:
+				Application.showAvailableAddresses(window.getLocalityId(), window.getAttractionId());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
 		}
@@ -185,6 +197,9 @@ public class EventHandler implements ActionListener {
 				break;
 			case EventCommand.assignAttractionToLocality:
 				Application.openNewAttractionEditor(window.getLocalityId());
+				break;
+			case EventCommand.refreshView:
+				Application.showAvailableAttractions(window.getLocalityId());
 				break;
 			default:
 				if(e.getActionCommand().contains(EventCommand.assignAttractionToLocality)){
@@ -237,6 +252,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.removeLocalityFromFavourites:
 				Application.deleteLocalityFromFavourites(window.getLocalityId());
 				break;
+			case EventCommand.refreshView:
+				Application.examineLocalityData(window.getLocalityId());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wkryto nieobsługiwane zdarzenie: "+e.getActionCommand());
 		}
@@ -268,6 +286,12 @@ public class EventHandler implements ActionListener {
 				else
 					Application.modifyLocality(locality, window.getLocalityMuniciaplityIndex(), window.getLocalityTypeId());
 				break;
+			case EventCommand.refreshView:
+				if(window.getLocalityId() == -1)
+					Application.openNewLocalityEditor();
+				else
+					Application.openLocalityEditor(window.getLocalityId());
+				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobdługiwane zdarzenie"+e.getActionCommand());
 		}
@@ -283,8 +307,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.assignPermissionInRegionToUser:
 				Application.givePermissionInRegion(window.getVoivodshipId(), window.getUserLogin(), window.getPermissionId());
 				break;
+			case EventCommand.refreshView:
 			default:
-				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}
 	}
 
@@ -297,8 +322,11 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openAssignPermissionInRegionView:
 				Application.openPermissionInRegionView(window.getVoivodshipIndex(), window.getUserLogin());
 				break;
+			case EventCommand.refreshView:
+				Application.givePermissionToRegion(window.getUserLogin());
+				break;
 			default:
-				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}
 	}
 
@@ -350,6 +378,12 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openPreviousView:
 				Application.openHomeDisplay();
 				break;
+			case EventCommand.refreshView:
+				if(Window.getCurrentViewType().equals(ViewType.FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN) || Window.getCurrentViewType().equals(ViewType.FAVOURITE_LOCALITY_LIST))
+					Application.browseFavouriteList();
+				else
+					Application.browseLocalitiesList();
+				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsługiwane zdarzenia: "+e.getActionCommand());
 		}
@@ -389,6 +423,9 @@ public class EventHandler implements ActionListener {
 			case EventCommand.openPreviousView:
 				Application.openHomeDisplay();
 				break;
+			case EventCommand.refreshView:
+				Application.browseUsersList();
+				break;
 			default:
 				if(e.getActionCommand().contains(EventCommand.openUserAccountView))
 				{
@@ -396,7 +433,7 @@ public class EventHandler implements ActionListener {
 					Application.openAccountDisplay(command[command.length-1], false);
 					break;
 				}
-				else throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+				else throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}
 	}
 
@@ -448,8 +485,11 @@ public class EventHandler implements ActionListener {
 			case EventCommand.deleteUserAccount:
 				Application.deleteUserAccount(window.getUserLogin());
 				break;
+			case EventCommand.refreshView:
+				Application.openAccountDisplay(window.getUserLogin(), Application.getCurrentUser().getLogin().equals(window.getUserLogin()));
+				break;
 			default:
-				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);
+				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}
 	}
 }

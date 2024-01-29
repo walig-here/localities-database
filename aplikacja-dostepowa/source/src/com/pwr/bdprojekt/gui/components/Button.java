@@ -60,4 +60,8 @@ public class Button extends GuiComponent{
     protected void updateData(String[] data) {
         // NIC - brak danych do aktualizacji
     }
+
+    public void setEnable(boolean enable){
+        button.setEnabled(enable);
+    }
 }

@@ -53,12 +53,15 @@ public class PermissionToRegionDataPanel extends GuiComponent {
      * */
     private EventHandler eventHandler;
 
+    int voivodship_id;
+
 //======================================================================================================================
 // METODY
 
     public PermissionToRegionDataPanel(JPanel parent, EventHandler eventHandler, int voivodship_id, boolean admin_view) {
         super(parent);
         this.eventHandler = eventHandler;
+        this.voivodship_id = voivodship_id;
 
         // panel elementów
         elements_panel = new VerticalComponentsStrip(this);
@@ -156,7 +159,8 @@ public class PermissionToRegionDataPanel extends GuiComponent {
                     permissions_in_region_panel,
                     eventHandler,
                     unassign_region_button != null,
-                    Integer.parseInt(data[i-2])
+                    Integer.parseInt(data[i-2]),
+                    voivodship_id
             );
             permissionInRegionDataPanel.setPermissionName(data[i-1]);
             permissionInRegionDataPanel.setPermissionDescription(data[i]);

@@ -27,7 +27,7 @@ public class PermissionInRegionDataPanel extends GuiComponent{
 
 //======================================================================================================================
 // METODY
-    public PermissionInRegionDataPanel(JPanel parent, EventHandler eventHandler, boolean administrative_view, int permission_id) {
+    public PermissionInRegionDataPanel(JPanel parent, EventHandler eventHandler, boolean administrative_view, int permission_id, int voivodship_id) {
         super(parent);
 
         // panel elementów
@@ -44,7 +44,7 @@ public class PermissionInRegionDataPanel extends GuiComponent{
             unassign_permission_button = new Button(
                     elements_panel,
                     "Odbierz uprawnienie",
-                    EventCommand.unassignPermissionInRegion+" "+permission_id,
+                    EventCommand.unassignPermissionInRegion+" "+voivodship_id+" "+permission_id,
                     eventHandler
             );
             elements_panel.insertComponent(unassign_permission_button);

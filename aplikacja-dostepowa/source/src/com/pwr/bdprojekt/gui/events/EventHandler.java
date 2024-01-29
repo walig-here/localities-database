@@ -411,6 +411,11 @@ public class EventHandler implements ActionListener {
 			Application.takeAwayPermissionToRegion(voivodshipId, window.getUserLogin());
 			return;
 		}
+		else if(e.getActionCommand().contains(EventCommand.unassignPermissionInRegion)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.takeAwayPermissionInRegion(window.getUserLogin(), Integer.parseInt(command[4]), Integer.parseInt(command[5]));
+			return;
+		}
 
 		switch(e.getActionCommand()){
 			case EventCommand.modifyUserRole:

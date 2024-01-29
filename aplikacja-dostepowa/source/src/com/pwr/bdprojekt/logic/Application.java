@@ -259,8 +259,13 @@ public class Application {
 	public static void takeAwayPermissionToRegion(int voivodshipIndex, String userLogin) {
 		try{
 			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
-			AdministrativeUnit administrativeUnit = DataBaseApi.selectVoivodships("").get(voivodshipIndex);
-			DataBaseApi.unassignPermissionFromUser(user, administrativeUnit, null);
+			AdministrativeUnit administrativeUnit = DataBaseApi.selectVoivodships("administrative_unit_id="+voivodshipIndex).get(0);
+			if(DataBaseApi.unassignPermissionFromUser(user, administrativeUnit, null)){
+				Application.openAccountDisplay(userLogin, false);
+			}
+			else {
+				Window.showMessageBox("Nie udało się usunąć uprawnienia!");
+			}
 		}
 		catch(NullPointerException e){
 			Window.showMessageBox("Błąd pobierania dnaych z bazy");
@@ -315,9 +320,21 @@ public class Application {
 		Window.switchToView(ViewType.PERMISSION_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
-	public static void takeAwayPermissionInRegion() {
-		// TODO - implement Logic.takeAwayPermissionInRegion
-		throw new UnsupportedOperationException();
+	public static void takeAwayPermissionInRegion(String userLogin, int voivodshipId, int permissionId) {
+		try{
+			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			AdministrativeUnit administrativeUnit = DataBaseApi.selectVoivodships("administrative_unit_id="+voivodshipId).get(0);
+			Permission permission = DataBaseApi.selectPermissions().get(permissionId-1);
+			if(DataBaseApi.unassignPermissionFromUser(user, administrativeUnit, permission)){
+				Application.openAccountDisplay(userLogin, false);
+			}
+			else {
+				Window.showMessageBox("Nie udało się usunąć uprawnienia!");
+			}
+		}
+		catch(NullPointerException e){
+			Window.showMessageBox("Błąd pobierania dnaych z bazy");
+		}
 	}
 
 	public static void addLocalityToFavourites(Locality locality, String adnotation) {

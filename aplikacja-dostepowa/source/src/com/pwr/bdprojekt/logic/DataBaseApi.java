@@ -748,7 +748,10 @@ public class DataBaseApi {
 			CallableStatement callableStatement = user_connection.prepareCall("call unassign_permission_from_user(?, ?, ?)");
 			callableStatement.setString(1, user.getLogin());
 			callableStatement.setInt(2, voivodship.getId());
-			callableStatement.setInt(3, permission.getId());
+			if(permission == null)
+				callableStatement.setNull(3, Types.INTEGER);
+			else
+				callableStatement.setInt(3, permission.getId());
 			callableStatement.execute();
 			callableStatement.close();
 			return true;

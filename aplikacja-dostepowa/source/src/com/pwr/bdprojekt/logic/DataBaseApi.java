@@ -279,8 +279,19 @@ public class DataBaseApi {
 	 * @param user
 	 */
 	public static boolean delUser(User user) {
-		// TODO - implement DataBaseApi.delUser
-		throw new UnsupportedOperationException();
+		Connection connection = user_connection;
+		String sql = "call del_user(?)";
+
+		try {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**

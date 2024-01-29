@@ -208,11 +208,18 @@ public class Application {
 
 	public static void deleteUserAccount(String userLogin) {
 		try{
-			User user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
+			User user;
+			if(userLogin.equals(current_user.getLogin()))
+				user = current_user;
+			else
+				user = DataBaseApi.selectUsers("login = '"+userLogin+"'").get(0);
 			boolean success = DataBaseApi.delUser(user);
 			if(success){
 				Window.showMessageBox("Konto zostało usunięte");
-				Application.browseUsersList();
+				if(current_user.getLogin().equals(userLogin))
+					Application.logOut();
+				else
+					Application.browseUsersList();
 			}
 			else{
 				Window.showMessageBox("Nie udało się usunąć konta!");

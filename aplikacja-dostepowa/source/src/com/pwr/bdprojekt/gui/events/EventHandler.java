@@ -10,6 +10,10 @@ import com.pwr.bdprojekt.logic.entities.UserRole;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class EventHandler implements ActionListener {
 
@@ -95,13 +99,18 @@ public class EventHandler implements ActionListener {
 		AttractionEditorView window = (AttractionEditorView) Window.getCurrentView();
 		switch (e.getActionCommand()){
 			case EventCommand.modifyBaseAttractionData:
+				Attraction attraction = new Attraction();
+				attraction.setName(window.getAttractionName());
+				attraction.setDescription(window.getAttractionDesc());
+
 				if(window.getAttractionId()==-1)
 				{
-					Attraction attraction = new Attraction();
-					attraction.setName(window.getAttractionName());
-					attraction.setDescription(window.getAttractionDesc());
 					Application.setCurrentlyAddedAttraction(attraction);
 					Application.showAvailableAddresses(window.getLocalityId());
+				}
+				else
+				{
+					attraction.setAttractionTypes(Arrays.stream(window.getAttractionTypesIds()).boxed().collect(Collectors.toList()));
 				}
 				break;
 			default:
@@ -171,6 +180,13 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleLocalityDataViewEvents(ActionEvent e){
 		LocalityDataView window = (LocalityDataView) Window.getCurrentView();
+
+		if(e.getActionCommand().contains(EventCommand.unassignAttractionFromLocality)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.deleteAttractionFromLocality(window.getLocalityId(), Integer.parseInt(command[2]));
+			return;
+		}
+
 		switch (e.getActionCommand()){
 			case EventCommand.openLocalityEditor:
 				Application.openLocalityEditor(window.getLocalityId());
@@ -179,10 +195,10 @@ public class EventHandler implements ActionListener {
 				Application.deleteLocality(window.getLocalityId());
 				break;
 			case EventCommand.openPreviousView:
-				if(Window.getPreviousDisplayType().equals(ViewType.LOCALITY_LIST) || Window.getPreviousDisplayType().equals(ViewType.LOCALITY_LIST_ADMIN_MERIT))
-					Application.browseLocalitiesList();
-				else
+				if(Window.getPreviousDisplayType().equals(ViewType.FAVOURITE_LOCALITY_LIST) || Window.getPreviousDisplayType().equals(ViewType.FAVOURITE_LOCALITY_LIST_MERITORICAL_ADMIN))
 					Application.browseFavouriteList();
+				else
+					Application.browseLocalitiesList();
 				break;
 			case EventCommand.addLocalityToFavourites:
 				Locality locality = new Locality();

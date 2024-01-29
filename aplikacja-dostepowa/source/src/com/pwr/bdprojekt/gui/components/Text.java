@@ -50,6 +50,8 @@ public class Text extends GuiComponent {
         setSizeOfElement(0,LETTER_HEIGHT * number_of_lines + 2);
         setLayout(null);
         this.number_of_lines = number_of_lines;
+        if(number_of_lines > 1)
+            label.setLineWrap(true);
 
         redraw();
     }

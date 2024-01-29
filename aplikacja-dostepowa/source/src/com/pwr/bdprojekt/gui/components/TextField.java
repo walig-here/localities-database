@@ -73,6 +73,8 @@ public class TextField extends GuiComponent {
 		content.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         add(content);
         number_of_lines = lines;
+        if(number_of_lines > 1)
+            content.setLineWrap(true);
 		setSizeOfElement(0, Text.HEIGHT + number_of_lines * Text.HEIGHT);
         setBackground(Color.WHITE);
 

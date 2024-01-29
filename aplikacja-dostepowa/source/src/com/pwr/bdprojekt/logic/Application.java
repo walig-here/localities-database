@@ -114,7 +114,7 @@ public class Application {
 							locality.getMunicipality().getSuperiorAdministrativeUnit().getName() + ", " +
 							locality.getMunicipality().getSuperiorAdministrativeUnit().getSuperiorAdministrativeUnit().getName() + ";";
 			localityData += locality.getPopulation() + ";";
-			localityData += "0" + ";";
+			localityData += DataBaseApi.getLocalitiesNumberOfAttraction(locality) + ";";
 
 			if(DataBaseApi.selectFavouriteLocalities("locality_id="+locality.getId()).size()>0){
 				localityData += "true";
@@ -286,7 +286,7 @@ public class Application {
 
 		// województwo, w którym nadawane jest uprawnienie
 		try{
-			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("").get(voivodship_index);
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("administrative_unit_id="+voivodship_index).get(0);
 			dataForGui.add(Integer.toString(voivodship.getId()));
 			dataForGui.add(voivodship.getName());
 
@@ -378,7 +378,12 @@ public class Application {
 				attractionAddresses += attraction.getAddress().toString()+"'";
 
 				List<AttractionType> attractionsTypes = DataBaseApi.getTypesAssignedToAttraction(attraction);
-				attractionTypes += " ;";
+				for (AttractionType attractionsType : attractionsTypes) {
+					attractionTypes += attractionsType.getName()+",";
+				}
+				if(attractionsTypes.size() == 0)
+					attractionTypes += " ";
+				attractionTypes += ";";
 			}
 
 			dataForGui.add(attractionIds);
@@ -522,9 +527,20 @@ public class Application {
 		else Window.showMessageBox("Zmiana nie powiodła się!");
 	}
 
-	public static void deleteAttractionFromLocality() {
-		// TODO - implement Logic.deleteAttractionFromLocality
-		throw new UnsupportedOperationException();
+	public static void deleteAttractionFromLocality(int localityId, int attractionId) {
+		try{
+			Locality locality = DataBaseApi.selectLocalities("locality_id="+localityId).get(0);
+			if(DataBaseApi.unassignAttractionFromLocality(attractionId, locality)){
+				Window.showMessageBox("Usunięto atrakcję z miejscowości");
+				Application.examineLocalityData(localityId);
+			}
+			else {
+				Window.showMessageBox("Nie udało się usunąć atrakcji z miejscowości");
+			}
+		}
+		catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania miejsciowości z bazy!");
+		}
 	}
 
 	public static void openNewAttractionEditor(int localityId){
@@ -601,11 +617,12 @@ public class Application {
 	}
 
 	public static void addNewAttraction(Address address) {
-		if(DataBaseApi.addNewAttraction(currentlyAddedAttraction, address)){
+		boolean success = DataBaseApi.addNewAttraction(currentlyAddedAttraction, address);
+		if(!success) Window.showMessageBox("Nie udało się dodać atrakcji!");
+		else{
 			Window.showMessageBox("Nowa atrakcja została poprawnie dodana!");
 			Application.examineLocalityData(address.getLocality().getId());
 		}
-		else Window.showMessageBox("Nie udało się dodać atrakcji!");
 	}
 
 	public static void modifyLocality(Locality locality, int municiplaity_index, int type_index) {
@@ -740,7 +757,7 @@ public class Application {
 			List<AdministrativeUnit> voivodshipsManagedByUser = DataBaseApi.getVoivodshipsManagedByUser(user);
 			int i = 0;
 			for (AdministrativeUnit voivodship : voivodshipsManagedByUser) {
-				String dataForVoivodship = i + ";" + voivodship.getName();
+				String dataForVoivodship = voivodship.getId() + ";" + voivodship.getName();
 				i++;
 
 				List<Permission> permissionsInVoivodship = DataBaseApi.getUserPermissionsInVoivodship(user, voivodship);

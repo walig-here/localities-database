@@ -17,6 +17,7 @@ import java.util.List;
  * [3] nazwa miejscowości, do której przypisywane są atrakcje
  * [4] lista nazw atrakcji (posortowana wg id) oddzielana średnikami
  * [5] lista opisw atrakcji (posortowana wg id) oddzielana średnikami
+ * [6] lista id atrakcji (posortowana wg id) oddzielana średnikami
  * */
 public class AssignAttractionView extends View {
 
@@ -126,8 +127,9 @@ public class AssignAttractionView extends View {
 		if(attraction_names[0].isEmpty())
 			return;
 		String[] attraction_descs = data[5].split(";");
+		String[] attraction_ids = data[6].split(",");
 		for(int i = 0; i < attraction_names.length; i++){
-			AttractionDataPanel attraction_panel = new AttractionDataPanel(elements_panel, event_handler, i);
+			AttractionDataPanel attraction_panel = new AttractionDataPanel(elements_panel, event_handler, Integer.parseInt(attraction_ids[i]));
 			attraction_panel.setAttractionName(attraction_names[i]);
 			attraction_panel.setAttractionDescription(attraction_descs[i]);
 			elements_panel.insertComponent(attraction_panel);

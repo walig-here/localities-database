@@ -516,8 +516,10 @@ public class Application {
 	}
 
 	public static void assignAttractionToLocality(int attraction_id, Address address) {
-		if(DataBaseApi.assignAttractionToLocality(attraction_id, address))
+		if(DataBaseApi.assignAttractionToLocality(attraction_id, address)){
 			Window.showMessageBox("Przypisanie powiodło się!");
+			Application.examineLocalityData(address.getLocality().getId());
+		}
 		else Window.showMessageBox("Przypisanie nie powiodło się!");
 	}
 
@@ -584,15 +586,18 @@ public class Application {
 			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
 			dataForGui.add(locality.getName());
 
-			List<Attraction> attractions = DataBaseApi.selectAttractions("");
+			List<Attraction> attractions = DataBaseApi.selectAttractions("locality_id != "+localityId);
 			String attractionsNames = "";
 			String attractionsDescs = "";
+			String attractionIds = "";
 			for (Attraction attraction : attractions) {
 				attractionsNames += attraction.getName()+";";
-				attractionsDescs += attraction.getDescription()+";";
+				attractionsDescs += (attraction.getDescription().isEmpty() ? " " : attraction.getDescription())+";";
+				attractionIds += attraction.getId()+",";
 			}
 			dataForGui.add(attractionsNames);
 			dataForGui.add(attractionsDescs);
+			dataForGui.add(attractionIds);
 		} catch(NullPointerException e){
 			Window.showMessageBox("Błąd pobierania danych z bazy!");
 			return;
@@ -659,7 +664,7 @@ public class Application {
 		Window.switchToView(ViewType.ADDRESS_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
-	public static void showAvailableAddresses(int localityId){
+	public static void showAvailableAddresses(int localityId, int attractionId){
 		List<String> dataForGui = new ArrayList<>();
 		dataForGui.add(current_user.getLogin());
 		dataForGui.add(current_user.getRoleName());
@@ -669,7 +674,7 @@ public class Application {
 			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
 			dataForGui.add(locality.getName());
 
-			dataForGui.add("-1");
+			dataForGui.add(Integer.toString(attractionId));
 			dataForGui.add("");
 
 			List<Address> addresses = DataBaseApi.getLocationsFromLocality(locality);
@@ -686,9 +691,18 @@ public class Application {
 		Window.switchToView(ViewType.ASSIGN_ADDRESS, dataForGui.toArray(new String[0]));
 	}
 
-	public static void assignAddressToAttraction() {
-		// TODO - implement Logic.assignAddressToAttraction
-		throw new UnsupportedOperationException();
+	public static void assignAddressToAttraction(int attractionId, int addressIndex, int localityId) {
+		Locality locality = new Locality();
+		locality.setId(localityId);
+		try{
+			Address address = DataBaseApi.getLocationsFromLocality(locality).get(addressIndex);
+			if(attractionId == -1)
+				Application.addNewAttraction(address);
+			else
+				Application.assignAttractionToLocality(attractionId, address);
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych adresu!");
+		}
 	}
 
 	public static void addNewAddress() {

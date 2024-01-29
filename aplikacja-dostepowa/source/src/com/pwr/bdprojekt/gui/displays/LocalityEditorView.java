@@ -219,7 +219,11 @@ public class LocalityEditorView extends View {
 	 * Pobranie populacji
 	 * */
 	public int getPopulation(){
-		return Integer.parseInt(population.getText());
+		try{
+			return Integer.parseInt(population.getText());
+		} catch (NumberFormatException e){
+			return 0;
+		}
 	}
 
 	/**

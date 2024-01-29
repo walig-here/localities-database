@@ -641,7 +641,7 @@ public class DataBaseApi {
 			CallableStatement callableStatement = user_connection.prepareCall("call modify_locality(?, ?, ?, ?, ?, ?, ?, ?)");
 			callableStatement.setInt(1, locality.getId());
 			callableStatement.setString(2, locality.getName());
-			callableStatement.setString(3, locality.getDescription());
+			callableStatement.setString(3, (locality.getDescription().isEmpty() ? " " : locality.getDescription()));
 
 			if(locality.getPopulation() < 0){
 				Window.showMessageBox("Populacja nie może być liczbą ujemną!");

@@ -104,7 +104,7 @@ public class EventHandler implements ActionListener {
 				if(window.getAttractionId()==-1)
 				{
 					Application.setCurrentlyAddedAttraction(attraction);
-					Application.showAvailableAddresses(window.getLocalityId());
+					Application.showAvailableAddresses(window.getLocalityId(), window.getAttractionId());
 				}
 				else
 				{
@@ -136,6 +136,9 @@ public class EventHandler implements ActionListener {
 				{
 					Application.addNewAttraction(address);
 				}
+				else{
+					Application.assignAttractionToLocality(window.getAttractionId(), address);
+				}
 				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
@@ -147,6 +150,13 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleAssignAddressViewEvents(ActionEvent e){
 		AssignAddressView window = (AssignAddressView) Window.getCurrentView();
+
+		if(e.getActionCommand().contains(EventCommand.assignAddressToAttraction)){
+			String[] command = e.getActionCommand().split( " ");
+			Application.assignAddressToAttraction(window.getAttractionId(), Integer.parseInt(command[2]), window.getLocalityId());
+			return;
+		}
+
 		switch (e.getActionCommand()){
 			case EventCommand.openAddressEditorView:
 				Application.openNewAddressEditor(window.getLocalityId(), window.getAttractionId());
@@ -161,6 +171,7 @@ public class EventHandler implements ActionListener {
 	 * */
 	private void handleAssignAttractionToLocalityViewEvents(ActionEvent e){
 		AssignAttractionView window = (AssignAttractionView) Window.getCurrentView();
+
 		switch (e.getActionCommand()){
 			case EventCommand.openPreviousView:
 				Application.examineLocalityData(window.getLocalityId());
@@ -169,6 +180,11 @@ public class EventHandler implements ActionListener {
 				Application.openNewAttractionEditor(window.getLocalityId());
 				break;
 			default:
+				if(e.getActionCommand().contains(EventCommand.assignAttractionToLocality)){
+					String[] command = e.getActionCommand().split(" ");
+					Application.showAvailableAddresses(window.getLocalityId(), Integer.parseInt(command[2]));
+					return;
+				}
 				throw new UnsupportedOperationException("Wykryto nieobsługiwany wyjątek: "+e.getActionCommand());
 		}
 	}

@@ -356,6 +356,9 @@ public class DataBaseApi {
 
 				Address address = new Address();
 				address.setId(resultSet.getInt("location_id"));
+				Locality locality = new Locality();
+				locality.setId(resultSet.getInt("locality_id"));
+				address.setLocality(locality);
 				address.setStreet(resultSet.getString("street"));
 				address.setBuilding_number(resultSet.getString("building_number"));
 				address.setFlat_number(resultSet.getString("flat_number"));

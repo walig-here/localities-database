@@ -3,6 +3,11 @@ package com.pwr.bdprojekt.gui.events;
 public interface EventCommand {
 
 	/**
+	 * Przypisanie typów do atrakcji
+	 * */
+	String assignTypesToAttraction = "assign types to attractions";
+
+	/**
 	 * Logowanie użytkownika
 	 * */
 	String loginUser = "login";

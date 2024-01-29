@@ -100,10 +100,17 @@ CREATE OR REPLACE TRIGGER After_Delete_On_Attractions_Locations
 	AFTER DELETE ON attractions_locations FOR EACH ROW
 BEGIN
 		
-		-- Usunięcie wszystkich atrakcji, które były zlokalizowane tylko w tej miejscowości
+		-- Usunięcie wszystkich atrakcji, które były zlokalizowane tylko w jednej lokacji
 		DELETE FROM attractions
 		WHERE attraction_id NOT IN (
 			SELECT DISTINCT al.attraction_id
+			FROM attractions_locations AS al
+		);
+		
+		-- Usunięcie wszystkich lokalizacji, które były przypisane tylko do jednej atrakcji
+		DELETE FROM locations
+		WHERE location_id NOT IN (
+			SELECT DISTINCT al.location_id
 			FROM attractions_locations AS al
 		);
 		

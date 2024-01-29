@@ -585,9 +585,64 @@ public class Application {
 				availableAttractionTypes += attractionType.getName()+",";
 			}
 			dataForGui.add(availableAttractionTypes);
-			dataForGui.add("0");
+			dataForGui.add("-1");
 
 			dataForGui.add("");
+			dataForGui.add("");
+			dataForGui.add("");
+
+			dataForGui.add(Integer.toString(localityId));
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy!");
+			return;
+		}
+
+		Window.switchToView(ViewType.ATTRACTION_EDITOR, dataForGui.toArray(new String[0]));
+	}
+
+
+
+	public static void openAttractionEditor(int attractionId, int localityId){
+		List<String> dataForGui = new ArrayList<>();
+		dataForGui.add(current_user.getLogin());
+		dataForGui.add(current_user.getRoleName());
+
+		try{
+			Attraction attraction = DataBaseApi.selectAttractions("attraction_id="+attractionId).get(0);
+			dataForGui.add(Integer.toString(attraction.getId()));
+			dataForGui.add(attraction.getName());
+			dataForGui.add(attraction.getDescription());
+
+			// typy
+			List<AttractionType> attractionTypes = DataBaseApi.selectAttractionTypes("");
+			String availableAttractionTypes = "";
+			for (AttractionType attractionType : attractionTypes) {
+				availableAttractionTypes += attractionType.getName()+",";
+			}
+			dataForGui.add(availableAttractionTypes);
+
+			String attractionTypesIndex = "";
+			List<AttractionType> assignedAttractionTypes = DataBaseApi.getTypesAssignedToAttraction(attraction);
+			for (AttractionType attractionType : assignedAttractionTypes) {
+				for(int i = 0; i < attractionTypes.size(); i++){
+					AttractionType type = attractionTypes.get(i);
+					if(type.getId() == attractionType.getId())
+						attractionTypesIndex += i + ",";
+				}
+			}
+			if(attractionTypesIndex.isEmpty())
+				attractionTypesIndex = "-1";
+			dataForGui.add(attractionTypesIndex);
+
+			// adresy
+			List<Attraction> currentAttraction = DataBaseApi.selectAttractions("attraction_id="+attractionId);
+			String addresses = "";
+			for (Attraction attraction1 : currentAttraction) {
+				addresses += attraction1.getAddress().toString() + ";";
+			}
+			dataForGui.add(addresses);
+
+			// obrazki
 			dataForGui.add("");
 			dataForGui.add("");
 
@@ -610,7 +665,11 @@ public class Application {
 			Locality locality = DataBaseApi.selectLocalities("locality_id = "+localityId).get(0);
 			dataForGui.add(locality.getName());
 
-			List<Attraction> attractions = DataBaseApi.selectAttractions("locality_id != "+localityId);
+			List<Attraction> attractions = DataBaseApi.selectAttractions(
+					"attraction_id NOT IN (" +
+							"SELECT attraction_id FROM locations_of_attractions WHERE locality_id="+localityId +
+							")"
+			);
 			String attractionsNames = "";
 			String attractionsDescs = "";
 			String attractionIds = "";
@@ -704,7 +763,7 @@ public class Application {
 			List<Address> addresses = DataBaseApi.getLocationsFromLocality(locality);
 			String addressesList = "";
 			for (Address address : addresses) {
-				addressesList += address.getStreet()+", "+address.getBuilding_number()+", "+address.getFlat_number()+";";
+				addressesList += address.toString()+";";
 			}
 			dataForGui.add(addressesList);
 		}catch (NullPointerException e){
@@ -729,11 +788,6 @@ public class Application {
 		}
 	}
 
-	public static void addNewAddress() {
-		// TODO - implement Logic.addNewAddress
-		throw new UnsupportedOperationException();
-	}
-
 	public static void assignFigureToAttraction() {
 		// TODO - implement Logic.assignFigureToAttraction
 		throw new UnsupportedOperationException();
@@ -744,11 +798,25 @@ public class Application {
 		throw new UnsupportedOperationException();
 	}
 
-	public static void deleteAttraction(Attraction attraction) {
-		if(DataBaseApi.delAttraction(attraction))
-			Window.showMessageBox("Miejscowość została usunięta!");
-		else
-			Window.showMessageBox("Usunięcie miejscowości nie powiodło się");
+	public static void assignTypesToAttractions(int[] typesIndices, int attractionId, int localityId){
+		Attraction attraction = new Attraction();
+		attraction.setId(attractionId);
+		List<AttractionType> assignedTypes = DataBaseApi.getTypesAssignedToAttraction(attraction);
+		for (AttractionType assignedType : assignedTypes) {
+			DataBaseApi.unassignTypeFromAttraction(attractionId, assignedType);
+		}
+
+		List<AttractionType> types = DataBaseApi.selectAttractionTypes("");
+		for(int i = 0; i < types.size(); i++){
+			for (int typesIndex : typesIndices) {
+				if(typesIndex == i && !DataBaseApi.assignTypeToAttraction(attractionId, types.get(i))){
+					Window.showMessageBox("Nie udało się przypisać\ntypu do atrackji!");
+					return;
+				}
+			}
+		}
+		Window.showMessageBox("Przypisano typy do atrakcji");
+		Application.openAttractionEditor(attractionId, localityId);
 	}
 
 	public static void open() {

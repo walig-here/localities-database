@@ -98,6 +98,11 @@ public class AttractionEditorView extends View {
 	 * */
 	private Button assign_figure_button;
 
+	/**
+	 * Przycisk przypisania typów do atrakcji
+	 * */
+	private Button assignTypesButton;
+
 //======================================================================================================================
 // METODY
 
@@ -130,39 +135,49 @@ public class AttractionEditorView extends View {
 		description.setResetable(true);
 		elements_panel.insertComponent(description);
 
-		// Typ atrakcji
-		attraction_type = new MultiChoiceList(elements_panel, "Typy atrakcji", new int[0], 5);
-		attraction_type.setResetable(true);
-		elements_panel.insertComponent(attraction_type);
-
 		// Przycisk zapisu danych bazowych
 		save_base_data_button = new Button(
-			elements_panel,
-			"Zapisz dane bazowe atrakcji",
+				elements_panel,
+				"Zapisz dane bazowe atrakcji",
 				EventCommand.modifyBaseAttractionData,
 				event_handler
 		);
 		save_base_data_button.setSizeOfElement(-1, Text.LETTER_HEIGHT);
 		elements_panel.insertComponent(save_base_data_button);
 
-		// Panel adresów
-		address_panel = new PanelWithHeader(elements_panel, "Adresy atrakcji");
-		address_panel.setScrollableVertically(true);
-		elements_panel.insertComponent(address_panel);
+		// Typ atrakcji
+		attraction_type = new MultiChoiceList(elements_panel, "Typy atrakcji", new int[0], 5);
+		attraction_type.setResetable(true);
+		elements_panel.insertComponent(attraction_type);
 
-		// Panel ilustracji
-		figures_panel = new PanelWithHeader(elements_panel, "Ilustracje atrakcji");
-		figures_panel.setScrollableVertically(true);
-		elements_panel.insertComponent(figures_panel);
-
-		// Przycisk przypisania ilustracji
-		assign_figure_button = new Button(
-			main_panel,
-			"Przypisz nową ilustrację",
-			EventCommand.openAssignAttractionToFigure,
+		// przycisk typów
+		assignTypesButton = new Button(
+			elements_panel,
+			"Przypisz typy do atrakcji",
+			EventCommand.assignTypesToAttraction,
 			event_handler
 		);
-		figures_panel.insertComponent(assign_figure_button);
+		assignTypesButton.setSizeOfElement(-1, Text.LETTER_HEIGHT);
+		elements_panel.insertComponent(assignTypesButton);
+
+		// Panel adresów
+		//address_panel = new PanelWithHeader(elements_panel, "Adresy atrakcji");
+		//address_panel.setScrollableVertically(true);
+		//elements_panel.insertComponent(address_panel);
+
+		// Panel ilustracji
+		//figures_panel = new PanelWithHeader(elements_panel, "Ilustracje atrakcji");
+		//figures_panel.setScrollableVertically(true);
+		//elements_panel.insertComponent(figures_panel);
+
+		// Przycisk przypisania ilustracji
+		//assign_figure_button = new Button(
+		//	main_panel,
+		//	"Przypisz nową ilustrację",
+		//	EventCommand.openAssignAttractionToFigure,
+		//	event_handler
+		//);
+		//figures_panel.insertComponent(assign_figure_button);
 
 		redraw();
 	}
@@ -170,13 +185,13 @@ public class AttractionEditorView extends View {
 	@Override
 	protected void redraw() {
 		// Przycisk przypisania ilustracji
-		assign_figure_button.setSizeOfElement(-1, Text.LETTER_HEIGHT);
+		//assign_figure_button.setSizeOfElement(-1, Text.LETTER_HEIGHT);
 
 		// Panel ilustracji
-		figures_panel.setSizeOfElement(-1, 600);
+		//figures_panel.setSizeOfElement(-1, 600);
 
 		// Panel adresów
-		address_panel.setSizeOfElement(-1, 120);
+		//address_panel.setSizeOfElement(-1, 120);
 
 		// Panel z elementami
 		elements_panel.setPosition(0,topbar.getBottomY());
@@ -203,6 +218,11 @@ public class AttractionEditorView extends View {
 		// typy
 		attraction_type.setElements(data[5].split(","));
 		attraction_type.setDefaultSelectedElements(data[6].split(","));
+
+		locality_id = data[10];
+
+		if(figures_panel == null)
+			return;
 
 		// adresy
 		address_panel.removeAllComponents();
@@ -240,8 +260,6 @@ public class AttractionEditorView extends View {
 			figures_panel.insertComponent(figurePanel);
 			pictures.add(figurePanel);
 		}
-
-		locality_id = data[10];
 	}
 
 	public int getLocalityId(){

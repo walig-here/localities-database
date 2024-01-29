@@ -96,6 +96,9 @@ public class EventHandler implements ActionListener {
 	private void handelAttractionEditorEvents(ActionEvent e){
 		AttractionEditorView window = (AttractionEditorView) Window.getCurrentView();
 		switch (e.getActionCommand()){
+			case EventCommand.openAttractionView, EventCommand.openPreviousView:
+				Application.examineLocalityData(window.getLocalityId());
+				break;
 			case EventCommand.modifyBaseAttractionData:
 				Attraction attraction = new Attraction();
 				attraction.setName(window.getAttractionName());
@@ -108,8 +111,12 @@ public class EventHandler implements ActionListener {
 				}
 				else
 				{
-					attraction.setAttractionTypes(Arrays.stream(window.getAttractionTypesIds()).boxed().collect(Collectors.toList()));
+					attraction.setId(window.getAttractionId());
+					Application.modifyAttraction(attraction);
 				}
+				break;
+			case EventCommand.assignTypesToAttraction:
+				Application.assignTypesToAttractions(window.getAttractionTypesIds(), window.getAttractionId(), window.getLocalityId());
 				break;
 			default:
 				throw new UnsupportedOperationException("Wykryto nieobsługiwane zdarzenie: "+e.getActionCommand());
@@ -198,6 +205,11 @@ public class EventHandler implements ActionListener {
 		if(e.getActionCommand().contains(EventCommand.unassignAttractionFromLocality)){
 			String[] command = e.getActionCommand().split(" ");
 			Application.deleteAttractionFromLocality(window.getLocalityId(), Integer.parseInt(command[2]));
+			return;
+		}
+		else if(e.getActionCommand().contains(EventCommand.openAttractionEditor)){
+			String[] command = e.getActionCommand().split(" ");
+			Application.openAttractionEditor(Integer.parseInt(command[2]), window.getLocalityId());
 			return;
 		}
 
@@ -359,6 +371,9 @@ public class EventHandler implements ActionListener {
 				Application.browseFavouriteList();
 				break;
 			case EventCommand.openPreviousView:
+				break;
+			case EventCommand.refreshView:
+				Application.openHomeDisplay();
 				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e);

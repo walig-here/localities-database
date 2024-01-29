@@ -37,6 +37,7 @@ public class DataBaseApi {
 		try {
 			connection_to_establish = DriverManager.getConnection(url);
 		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 			System.out.println("Cannot connect to database as " + login);
 			return false;
 		}

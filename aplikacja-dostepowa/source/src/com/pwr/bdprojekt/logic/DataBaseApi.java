@@ -239,7 +239,19 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean delLocality(Locality locality) {
-		return true;
+		Connection connection = user_connection;
+		String sql = "call del_locality(?)";
+
+		try  {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -247,8 +259,19 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static boolean delLocalityFromFavList(Locality locality) {
-		// TODO - implement DataBaseApi.delLocalityFromFavList
-		throw new UnsupportedOperationException();
+		Connection connection = user_connection;
+		String sql = "call del_locality_from_fav_list(?)";
+
+		try {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setInt(1, locality.getId());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -256,8 +279,19 @@ public class DataBaseApi {
 	 * @param user
 	 */
 	public static boolean delUser(User user) {
-		// TODO - implement DataBaseApi.delUser
-		throw new UnsupportedOperationException();
+		Connection connection = user_connection;
+		String sql = "call del_user(?)";
+
+		try {
+			CallableStatement callableStatement = connection.prepareCall(sql);
+			callableStatement.setString(1, user.getLogin());
+			callableStatement.execute();
+			callableStatement.close();
+			return true;
+
+		} catch (SQLException e) {
+			return false;
+		}
 	}
 
 	/**
@@ -386,8 +420,22 @@ public class DataBaseApi {
 	 * @param locality
 	 */
 	public static int getLocalitiesNumberOfAttraction(Locality locality) {
-		// TODO - implement DataBaseApi.getLocalitiesNumberOfAttraction
-		throw new UnsupportedOperationException();
+		int numberOfAttractions = -1;
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_localities_number_of_attractions(?)");
+			callableStatement.setInt(1, locality.getId());
+			ResultSet set = callableStatement.executeQuery();
+
+			if (set.next()) {
+				numberOfAttractions = set.getInt(1);
+			}
+			callableStatement.close();
+			set.close();
+
+		}catch (SQLException e){
+			numberOfAttractions = -1;
+		}
+		return numberOfAttractions;
 	}
 
 	/**
@@ -463,8 +511,30 @@ public class DataBaseApi {
 	 * @param attraction
 	 */
 	public static List<AttractionType> getTypesAssignedToAttraction(Attraction attraction) {
-		return null;
-	}
+		List<AttractionType> attractionTypes = new ArrayList<>();
+		try{
+			CallableStatement callableStatement = user_connection.prepareCall("call get_types_assigned_to_attraction(?)");
+			callableStatement.setInt(1, attraction.getId());
+			callableStatement.execute();
+
+			PreparedStatement preparedStatement = user_connection.prepareStatement("SELECT * FROM return_table");
+			ResultSet resultSet = preparedStatement.executeQuery();
+
+			while (resultSet.next()) {
+				AttractionType type = new AttractionType();
+				type.setId(resultSet.getInt("attraction_type_id"));
+				type.setName(resultSet.getString("name"));
+				attractionTypes.add(type);
+			}
+			callableStatement.close();
+			preparedStatement.close();
+			resultSet.close();
+
+		} catch (SQLException e) {
+            attractionTypes.clear();
+        }
+		return attractionTypes;
+    }
 
 	/**
 	 * 
@@ -793,6 +863,7 @@ public class DataBaseApi {
 				localityFromDatabase.setId(resultSet.getInt("locality_id"));
 				localityFromDatabase.setName(resultSet.getString("locality_name"));
 				localityFromDatabase.setDescription(resultSet.getString("locality_desc"));
+				localityFromDatabase.setPopulation(resultSet.getInt("population"));
 				localityFromDatabase.setLatitude(resultSet.getDouble("locality_latitude"));
 				localityFromDatabase.setLongitude(resultSet.getDouble("locality_longitude"));
 

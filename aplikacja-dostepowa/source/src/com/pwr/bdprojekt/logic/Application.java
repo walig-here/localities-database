@@ -321,9 +321,19 @@ public class Application {
 		else Window.showMessageBox("Dodanie do ulubionych nie powiodło się!");
 	}
 
-	public static void removeLocalityFromFavourites() {
-		// TODO - implement Logic.removeLocalityFromFavourites
-		throw new UnsupportedOperationException();
+	public static void deleteLocalityFromFavourites(int localityId) {
+		try{
+			Locality locality = DataBaseApi.selectLocalities("locality_id="+localityId).get(0);
+			if(DataBaseApi.delLocalityFromFavList(locality)){
+				Window.showMessageBox("Usunięto miejscowość z ulubionych!");
+				Application.examineLocalityData(localityId);
+			}
+			else {
+				Window.showMessageBox("Nie udało się usunąć miejscowości z ulubionych!");
+			}
+		}catch (NullPointerException e){
+			Window.showMessageBox("Błąd pobierania danych z bazy");
+		}
 	}
 
 	public static void examineLocalityData(int localityId) {

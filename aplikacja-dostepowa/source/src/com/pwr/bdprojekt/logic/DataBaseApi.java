@@ -863,6 +863,7 @@ public class DataBaseApi {
 				localityFromDatabase.setId(resultSet.getInt("locality_id"));
 				localityFromDatabase.setName(resultSet.getString("locality_name"));
 				localityFromDatabase.setDescription(resultSet.getString("locality_desc"));
+				localityFromDatabase.setPopulation(resultSet.getInt("population"));
 				localityFromDatabase.setLatitude(resultSet.getDouble("locality_latitude"));
 				localityFromDatabase.setLongitude(resultSet.getDouble("locality_longitude"));
 

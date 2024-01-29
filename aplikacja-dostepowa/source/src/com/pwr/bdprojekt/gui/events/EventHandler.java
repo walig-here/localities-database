@@ -218,6 +218,7 @@ public class EventHandler implements ActionListener {
 				locality.setName(window.gerLocalityName());
 				locality.setId(window.getLocalityId());
 				locality.setDescription(window.getLocalityDesc());
+				locality.setPopulation(window.getPopulation());
 				locality.setLatitude(window.getLatitude());
 				locality.setLongitude(window.getLongitude());
 				if(locality_id == -1)

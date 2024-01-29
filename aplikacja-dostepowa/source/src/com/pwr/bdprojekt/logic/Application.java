@@ -286,7 +286,7 @@ public class Application {
 
 		// województwo, w którym nadawane jest uprawnienie
 		try{
-			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("administrative_unit_id="+voivodship_index).get(0);
+			AdministrativeUnit voivodship = DataBaseApi.selectVoivodships("").get(voivodship_index);
 			dataForGui.add(Integer.toString(voivodship.getId()));
 			dataForGui.add(voivodship.getName());
 

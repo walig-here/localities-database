@@ -3,10 +3,8 @@ package com.pwr.bdprojekt.gui.events;
 import com.pwr.bdprojekt.gui.displays.*;
 import com.pwr.bdprojekt.gui.*;
 import com.pwr.bdprojekt.logic.Application;
-import com.pwr.bdprojekt.logic.entities.Address;
-import com.pwr.bdprojekt.logic.entities.Attraction;
-import com.pwr.bdprojekt.logic.entities.Locality;
-import com.pwr.bdprojekt.logic.entities.UserRole;
+import com.pwr.bdprojekt.logic.DataBaseApi;
+import com.pwr.bdprojekt.logic.entities.*;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -379,8 +377,16 @@ public class EventHandler implements ActionListener {
 
 		if(e.getActionCommand().contains(EventCommand.openAssignPermissionInRegionView)){
 			String[] command = e.getActionCommand().split(" ");
+
 			int voivodshipId = Integer.parseInt(command[1]);
-			Application.openPermissionInRegionView(voivodshipId, window.getUserLogin());
+			int voivodshipIndex;
+			List<AdministrativeUnit> administrativeUnits = DataBaseApi.selectVoivodships("");
+			for(voivodshipIndex = 0; voivodshipIndex < administrativeUnits.size(); voivodshipIndex++){
+				if(administrativeUnits.get(voivodshipIndex).getId() == voivodshipId)
+					break;
+			}
+
+			Application.openPermissionInRegionView(voivodshipIndex, window.getUserLogin());
 			return;
 		}
 		else if (e.getActionCommand().contains(EventCommand.unassignPermissionToRegion)){

@@ -94,3 +94,18 @@ BEGIN
 		
 END; //
 DELIMITER ;
+
+DELIMITER //
+CREATE OR REPLACE TRIGGER After_Delete_On_Attractions_Locations
+	AFTER DELETE ON attractions_locations FOR EACH ROW
+BEGIN
+		
+		-- Usunięcie wszystkich atrakcji, które były zlokalizowane tylko w tej miejscowości
+		DELETE FROM attractions
+		WHERE attraction_id NOT IN (
+			SELECT DISTINCT al.attraction_id
+			FROM attractions_locations AS al
+		);
+		
+END; //
+DELIMITER ;

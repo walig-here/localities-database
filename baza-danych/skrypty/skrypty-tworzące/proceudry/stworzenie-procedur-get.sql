@@ -24,7 +24,7 @@ CREATE OR REPLACE PROCEDURE get_localities_number_of_attractions (
 	
 	SELECT COUNT(*) AS `header`
 	FROM locations_of_attractions AS loa
-	WHERE loa.location_id = locality_id;
+	WHERE loa.locality_id = locality_id;
 
 END;
 // 

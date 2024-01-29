@@ -5,6 +5,11 @@ package com.pwr.bdprojekt.gui.displays;
  * */
 public enum ViewType {
 	/**
+	 * Widok edyutora nowej atrackji
+	 * */
+	NEW_ATTRACTIOn_EDITOR,
+
+	/**
 	 * Widok domowy administratora technicznego
 	 * */
 	HOME_ADMIN_TECH,

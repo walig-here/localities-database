@@ -40,7 +40,7 @@ public class EventHandler implements ActionListener {
 				case ADDRESS_EDITOR -> {
 					handleAddressEditorEvents(e);
 				}
-				case ATTRACTION_EDITOR -> {
+				case ATTRACTION_EDITOR, NEW_ATTRACTIOn_EDITOR -> {
 					handelAttractionEditorEvents(e);
 				}
 				case LOCALITY_EDITOR -> {

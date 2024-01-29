@@ -597,7 +597,7 @@ public class Application {
 			return;
 		}
 
-		Window.switchToView(ViewType.ATTRACTION_EDITOR, dataForGui.toArray(new String[0]));
+		Window.switchToView(ViewType.NEW_ATTRACTIOn_EDITOR, dataForGui.toArray(new String[0]));
 	}
 
 

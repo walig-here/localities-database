@@ -109,7 +109,7 @@ public class AttractionEditorView extends View {
 	/**
 	 * Tworzy nowy panel edytora atrakcji.
 	 * */
-	public AttractionEditorView(JFrame parent, EventHandler event_handler) {
+	public AttractionEditorView(JFrame parent, EventHandler event_handler, boolean isNewAttractionEditor) {
 		super(parent, false, event_handler);
 		this.eventHandler = event_handler;
 
@@ -145,20 +145,22 @@ public class AttractionEditorView extends View {
 		save_base_data_button.setSizeOfElement(-1, Text.LETTER_HEIGHT);
 		elements_panel.insertComponent(save_base_data_button);
 
-		// Typ atrakcji
-		attraction_type = new MultiChoiceList(elements_panel, "Typy atrakcji", new int[0], 5);
-		attraction_type.setResetable(true);
-		elements_panel.insertComponent(attraction_type);
+		if(!isNewAttractionEditor){
+			// Typ atrakcji
+			attraction_type = new MultiChoiceList(elements_panel, "Typy atrakcji", new int[0], 5);
+			attraction_type.setResetable(true);
+			elements_panel.insertComponent(attraction_type);
 
-		// przycisk typów
-		assignTypesButton = new Button(
-			elements_panel,
-			"Przypisz typy do atrakcji",
-			EventCommand.assignTypesToAttraction,
-			event_handler
-		);
-		assignTypesButton.setSizeOfElement(-1, Text.LETTER_HEIGHT);
-		elements_panel.insertComponent(assignTypesButton);
+			// przycisk typów
+			assignTypesButton = new Button(
+					elements_panel,
+					"Przypisz typy do atrakcji",
+					EventCommand.assignTypesToAttraction,
+					event_handler
+			);
+			assignTypesButton.setSizeOfElement(-1, Text.LETTER_HEIGHT);
+			elements_panel.insertComponent(assignTypesButton);
+		}
 
 		// Panel adresów
 		//address_panel = new PanelWithHeader(elements_panel, "Adresy atrakcji");
@@ -216,8 +218,10 @@ public class AttractionEditorView extends View {
 		description.setDefaultValue(data[4], description.getText().equals(""));
 
 		// typy
-		attraction_type.setElements(data[5].split(","));
-		attraction_type.setDefaultSelectedElements(data[6].split(","));
+		if(attraction_type != null){
+			attraction_type.setElements(data[5].split(","));
+			attraction_type.setDefaultSelectedElements(data[6].split(","));
+		}
 
 		locality_id = data[10];
 

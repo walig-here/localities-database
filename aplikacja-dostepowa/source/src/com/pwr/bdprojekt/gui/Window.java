@@ -49,7 +49,10 @@ public class Window {
 					current_view = new AddressEditorView(frame, event_handler);
 					break;
 			case ATTRACTION_EDITOR:
-					current_view = new AttractionEditorView(frame, event_handler);
+					current_view = new AttractionEditorView(frame, event_handler, false);
+					break;
+			case NEW_ATTRACTIOn_EDITOR:
+					current_view = new AttractionEditorView(frame, event_handler, true);
 					break;
 			case LOCALITY_EDITOR:
 					current_view = new LocalityEditorView(frame, event_handler);

@@ -307,7 +307,8 @@ public class EventHandler implements ActionListener {
 			case EventCommand.assignPermissionInRegionToUser:
 				Application.givePermissionInRegion(window.getVoivodshipId(), window.getUserLogin(), window.getPermissionId());
 				break;
-			case EventCommand.refreshView:
+			case EventCommand.refreshView, EventCommand.openPreviousView:
+				break;
 			default:
 				throw new UnsupportedOperationException("Wystąpiło nieobsugiwane zdarzenie: " + e.getActionCommand());
 		}

@@ -27,6 +27,6 @@ This repository contains materials from university project for *Databases 2* cou
 * Public presentation about the created database system.
 
 ## Materials
-* Project guidelines: http://roman.ptak.staff.iiar.pwr.wroc.pl/BD_projekt_wytyczne_v3_2.pdf 
-* Doccumentation for MariaDB: https://mariadb.com/kb/en/documentation/
-* Doccumentation for MariaDB Java API: https://mariadb.com/kb/en/mariadb-connector-j/
+* [Project guidelines](http://roman.ptak.staff.iiar.pwr.wroc.pl/BD_projekt_wytyczne_v3_2.pdf) 
+* [Doccumentation for MariaDB](https://mariadb.com/kb/en/documentation/)
+* [Doccumentation for MariaDB Java API](https://mariadb.com/kb/en/mariadb-connector-j/)

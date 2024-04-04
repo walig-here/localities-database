@@ -1,10 +1,10 @@
-# Bazy Danych 2 - projekt
-Repozytorium zawiera materiały z projektu na kurs Bazy Danych 2 z Politechniki Worcławskiej. Nadrzędnym celem projektu jest stworzenie bazy danych miejscowości Polski.
+# Localities Database - university projectc
+This repository contains materials from university project for *Databases 2* course at Wrocław University of Science and Technology. The primary goal was to create a database of Polish towns and their tourist attractions.
 
-## Przydatne linki
+## Materials
 * Wytyczne projektowe: http://roman.ptak.staff.iiar.pwr.wroc.pl/BD_projekt_wytyczne_v3_2.pdf 
-* Dokumentacja bazy danych: https://mariadb.com/kb/en/documentation/
-* Dokumentacja API dla technologii Java: https://mariadb.com/kb/en/mariadb-connector-j/
+* Doccumentation for MariaDB: https://mariadb.com/kb/en/documentation/
+* Doccumentation for MariaDB Java API: https://mariadb.com/kb/en/mariadb-connector-j/
 
 ## Etapy projektu
 Praca nad projektem została podzielona na kolejne etapy, kótre dodatkowo opatrzone są dedykowaną dokumentacją.

@@ -10,7 +10,7 @@ This repository contains materials from university project for *Databases 2* cou
 
 ### Milestone 2 - Database modeling
 * Designing relational database that's going to be a foundation of created database system.
-* Creating conceptual, logical (at least 3rd normal form) and physical (could be denormalized) database model diagram.
+* Creating conceptual, logical (at least 3rd normal form) and physical (could be denormalized) database diagram.
 * Creating UML use case diagram for database's access application.
 
 ### Milestone 3 - Database implementation

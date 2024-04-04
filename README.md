@@ -1,4 +1,4 @@
-# Localities Database - university projectc
+# Localities Database - university project
 This repository contains materials from university project for *Databases 2* course at Wrocław University of Science and Technology. The primary goal was to create a database of Polish localities and their tourist attractions.
 
 ## Milestones
